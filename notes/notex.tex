@@ -51,8 +51,45 @@ While they have properties that make them attractive as a model of deep neural n
 Another hypothesis would be at the local level. Even if the global version fails, we could still use TTNs as a local surrogate for the training dynamics. Consider a deep neural networks with smooth activation functions. Taylor expand these activation functions to some order. This Taylor expansion is a polynomial. Then represent this polynomial as a TTN. The hypothesis is that locally, the TTN is a good surrogate model of the training dynamics for the DNN.
 
 \section{Theoretical background}
+We define tree tensor networks and review some of their important mathematical properties. 
+
+A tensor is a multilinear map i.e. it maps a tensor product of vector spaces to another tensor product of vector spaces. A tensor network is a graph $(V,E)$ at which each vertex is a tensor each leg is linear operation. For example a vertex with two input legs and one output leg is a bilinear map. One can define the matricisation of a tensor by bipartitioning the indices of the tensor into two groups and flattening the tensor along each of these groups to define a linear map. 
+
+A tree tensor network is a tensor network whose graph is a tree. By cutting the tree tensor at one edge e one can define a particular bipartition of the indices of the tensor into a group $A_e$ and its complement. This allows to define a tuple of matrices with rank $r_e$:
+\[
+(M_e, r_e)_{e\in E}
+\]
+The dimension of the edge $e$ along which matrices are contracted is called the bond dimension. The rank across a cut $r_e$ is upper bounded by the bond dimension. Tree tensor networks are interested in that an edge cut at $e$ define a canonical matricisation. This is not generally the case for tensor networks at they can have many bipartitions. In particular we can define the hierarchical singular value decomposition for a TTN. Namely consider the matrix $M_e$ from the matricisation of the bond $e$ and form the SVD at $e$:
+\[
+M_e = U_eS_eV_e^{\top}
+\]
+The hierarchal SVD of the TTN is define by the tuples formed by all the SVDs across all the bonds of the TTN. 
+Tensor networks admits various notions of rank. CP rank is the smallest number of rank 1 tensor that you can decompose a tensor into. In practice it is challenging to compute. The mode rank is the rank obtained by the matricisation obtain from partitioning the tensor indices into some bond $i$ and its complement. Tucker rank is a tuple formed from all the mode rank of the tensor. For a TTN, hierarchical tucker rank is the tuple of rank $(r_e)$.
+
+A deep polynomial neural network is a deep neural networks with polynomial activation functions. The most basic example is a deep quadratic neural network (DQN). Consider a polynomial neural network with monomial activation function (e.g. quadratic) then it admits a tensor network representation. By identifying the power n operation with a the n-linear application we can identify a DMN with a tree tensor networks with tied weight applied on copies of the input. For example the non linear application
+\[
+\sigma(Wx)_i = \sum_{kj} W_{ik}x_iW_{ij}x_j
+\]
+Can be identified with a binary tree with one node one output leg $i$ ant two input legs with tied weigh $W$ applied to copies of the input $x$. TTNs have one advantage over DMN is that they admits this notion of hierarchical SVD which give a more canonical sense of their internal structure (that are gauge independent). The idea would then be to use the TTN representing a DMN to interpret its internal structure using the TTN HSVD as internal features that the network is learning. 
+
+More generally, consider a deep polynomial neural network with polynomial activation functions. Consider the polynomial of degree $d$:
+\[
+p(z) = \sum_k a_kz^k
+\]
+Such polynomial can be made into a homogoneous polynomial by introducing a new coordinate:
+\[
+p_h(z_0,z) = z_0^d p(\frac{z}{z_0})
+\]
+and we have $p_h(1,z) = p(z)$ This construction generalizes to multivariate polynomial. 
+A homogenous polynomial can be further identified as a symmetric multilinear-map. In the case of a polynomial activation function, that activation function has one output leg and K input leg (for a polynomial of degree K). Therefore it has a tree structure. By identifying the activations function of the DPN with the corresponding tree tensor network node we can see that there is a TTN representing the DPN. That TTN is a weight-tied tree tensor network applied on copies of the inputs $(1,x)$ (the extra coordinate $1$ is induced by the homogeneization).
+This is an exciting result because it means that we can represent a DPN as a TTN. This allows to define a notion of hierarchial features for the TTN and measure of learning capacity. The hierarchical features are given by the hierarchical singular values and vectors of the hierarchical SVD of the corresponding TTN. The learning capacity is given by the hierarchical ranks of the corresponding TTN. \textbf{Question}: what would be a reasonable global notion of learning capacity? The min,sum, max of the ranks? Some other complexity measure using the TTN structure?
+\textbf{Question for Interpretability}If we use the TTN as a surrogate model and its HSVD to interpretet it. Do the singular values and vectors correspond to some meaningful structure? For example if we use a toy model that we can interpret, do the features of the TTN correspond to the known features. Modular arithmetic would be an interesting example to investigate.
 
 
+\subsection{Surrogate model of a deep neural network}
+Consider a general deep neural networks with smooth non linear activation functions. Taylor expand that DNN into a DPN. The Taylor expansion requires to chose a center $m$. A promising candidate for the center would be to chose the average activation value over some calibration set. So the taylor expansion happens around a typical value of the activation over the input space. From the corresponding DPN which Taylor expands the DNN we can then form the TTN representing that DPN. We say that such TTN is a surrogate model of a DNN at a particular training point. We would like to know how good of an approximation such TTN would be for the DNN and wether we can use the HSVD of the TTN to extract structure that the DPN has learned and predict its training dynamics.
+
+Another more direct approach would be to replace the activation functions of the original neural network by polynomial activation functions. We then train the corresponding TTN, define some useful observables (HSVDs) and check wether their training dynamics are similar to the original DNN. A problem is to chose the degree of the nodes in the TTN. 
 \section{Experiments}
 
 
