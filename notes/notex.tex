@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% Operators
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Rep}{\operatorname{Rep}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Supp}{\operatorname{Supp}}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib} 
+\bibliographystyle{unsrtnat}
+
+% Required packages for algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage[normalem]{ulem}
+\usepackage{comment}
+\usepackage{tikz}
+\usepackage{authblk}
+\usetikzlibrary{arrows.meta,positioning}
+% theorem/proposition environments
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\title{Tensor networks as surrogate model of training dynamics}
+\begin{document}
+\maketitle
+\section{Introduction}
+In this research note I motivate tree tensor networks as a surrogate model of the training dynamics. I also suggest some experiments to run to check that TTNs are a promising surrogate model of the training dynamics of more realistic neural networks. 
+
+Why work on deep learning theory and training dynamics in particular? To be brief, my current position is that AI safety is bottlenecked by understanding. Interpretability as a field remains quite shallow in that interp methods cannot explain much about the behaviour of the current models or are likely to not be scalable. One of the main reason causing this state of affair is that we are still confused about some fundamental questions about how neural networks work. For example, one of this question is what kind of structure do neural network learn. Extracting such structure at the end of training seems extremely challenging. A training dynamics bet is that internal structure decomposes more naturally throughout training as it is progressively learned.
+
+
+Why look at tensor networks? Currently we have a good understanding of deep linear networks. Andrew Saxe and others have been able to solve the saddle to saddle dynamics of DLNs and show that they learn features in a stagewise fashion (ref). However we are still far from understanding more complex architectures like transformers. Understanding the learning dynamics of deep quadratic neural networks is still largely opened, even if we have interesting results on shallow networks. TTNs provide an interesting model of more complex deep neural networks. They can learn generic non-linear function exponentially fast while they also have functions that are computationally hard to learn (ref Zach furman). At the same time, they look more interpretable because of their hierarchical singular value decomposition property. Empirically, one can show that they undergoe a saddle to saddle dynamics with small initialization i.e. they learn features sequentially and since they are more expressive than DLNs, they can also do soft hierarchical learning meaning that learning some features enable them to accelerate learning subsequent features.
+
+While they have properties that make them attractive as a model of deep neural networks, we would like to first establish how far their training dynamics is from more realistic architectures. If they are a good model to use for the training dynamics of neural networks, we should be able to find that according to a range of observable the training dynamics of tree tensor networks track the training dynamics of more realistic architectures. This hypothesis happens at two level. The first level is a global hypothesis. Meaning, if we fix the data, loss function and hyperparameters, can we show that the training dynamics observable for the TTN and some DNN are sufficiently close. An example of observable could be time to learn particular features or the order at which they are learned. 
+
+Another hypothesis would be at the local level. Even if the global version fails, we could still use TTNs as a local surrogate for the training dynamics. Consider a deep neural networks with smooth activation functions. Taylor expand these activation functions to some order. This Taylor expansion is a polynomial. Then represent this polynomial as a TTN. The hypothesis is that locally, the TTN is a good surrogate model of the training dynamics for the DNN.
+
+\section{Theoretical background}
+
+
+\section{Experiments}
+
+
+
+
+
+
+
+\end{document}
