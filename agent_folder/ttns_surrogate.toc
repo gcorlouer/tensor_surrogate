@@ -1,0 +1,18 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {paragraph}{Why training dynamics?}{2}{section*.2}%
+\contentsline {paragraph}{Why tensor networks?}{2}{section*.3}%
+\contentsline {paragraph}{Two hypotheses.}{3}{section*.4}%
+\contentsline {paragraph}{Outline.}{4}{section*.5}%
+\contentsline {section}{\numberline {2}Theoretical background}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}The hierarchical singular value decomposition}{8}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Notions of rank}{9}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Deep polynomial networks as tree tensor networks}{10}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{11}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{12}{subsubsection.2.6.2}%
+\contentsline {subsubsection}{\numberline {2.6.3}Hierarchical features and learning capacity}{15}{subsubsection.2.6.3}%
+\contentsline {subsection}{\numberline {2.7}Surrogate model of a deep neural network}{17}{subsection.2.7}%
+\contentsline {paragraph}{A more direct approach: polynomial activations.}{20}{section*.6}%
+\contentsline {section}{\numberline {3}Experiments}{21}{section.3}%
