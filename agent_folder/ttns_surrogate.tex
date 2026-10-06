@@ -113,6 +113,7 @@ and the chosen observables agree within $\varepsilon$ on $[t_j,t_j+H]$.
 
 If $\varepsilon$ exceeds the initial prediction error, some positive horizon always exists by continuity; the content of the hypothesis is that the horizon is long enough to cover non-trivial learning, such as the acquisition of a feature. A sequence of such local surrogates, rebuilt at successive checkpoints, could provide an interpretable ``atlas'' of training even when no single TTN is globally faithful \citep{hfl_surrogate}.
 
+Note that even if these hypotheses fail, solving the training dynamics of TTNs could still be highly instructive in the same way that studying the training dynamics of DLNs is instructive although their training dynamics differs from more realistic architectures. For example the saddle to saddle dynamics regime is a regime that we can find in more realistic architecture and they teach us about the theoretical gap between simple toy models and more realistic architectures
 \begin{remark}[Comparing different parameterizations]\label{rem:kernel}
 A DNN and a TTN have different parameters, but their dynamics can be compared in function space. Let $x_1,\dots,x_n$ be the training inputs, $F_\theta=(f_\theta(x_i))_{i\le n}$, $J_\theta=D_\theta F_\theta$, and $K_\theta=\frac1n J_\theta J_\theta^\top\in\R^{n\times n}$ the empirical tangent kernel \citep{jacot2018neural}; define $\tilde F_\vartheta$ and $\tilde K_\vartheta$ in the same way for the TTN. Under full-batch gradient flow on the empirical square loss, $\dot F_\theta=-K_\theta(F_\theta-y)$, hence
 \[

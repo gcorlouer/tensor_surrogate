@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1791222742.01764 "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" "ttns_surrogate.pdf" "ttns_surrogate" 1791222743.1468 0
-  "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" 1791222332.64865 96774 141c6b7bd0c9cfe163272c3537fdc392 ""
+["pdflatex"] 1791278722.00087 "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" "ttns_surrogate.pdf" "ttns_surrogate" 1791278723.07206 0
+  "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" 1791278720.23991 100309 435d3cc5f9d7d5177360b15e749597ae ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc" 1202520719 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -70,6 +70,7 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb" 1255129361 112593 fda2373ba4420af33949610de4c28fe8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb" 1254269338 27863 09ce3735688ffde955e72da27c95b61a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb" 1254269338 28109 6d61305ed3d0eb794ebe36f15cf44aa0 ""
+  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy7.pfb" 1254269338 27941 d1f5d03f61a46c3fcc3a2ba904ddda52 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb" 1254269338 27802 5c876bb2c4040caaf035d60bd74a86bd ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb" 1254269338 27835 16c2fa83351d4ef8cf5aebfab8a44bc1 ""
   "/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -215,10 +216,10 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1749050915 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1749050869 3345728 6e9d6b4ca934c854c1520d15fef27576 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "ttns_surrogate.aux" 1791222743.02866 17035 47124e5cb47ea7002fb819b1abbd25b7 "pdflatex"
-  "ttns_surrogate.out" 1791222743.03007 3225 404981a8844f975cd06c2b9f9025b3de "pdflatex"
-  "ttns_surrogate.tex" 1791222332.64865 96774 141c6b7bd0c9cfe163272c3537fdc392 ""
-  "ttns_surrogate.toc" 1791222743.03035 1666 ef5a2a0e12569b15c56414eebd516e59 "pdflatex"
+  "ttns_surrogate.aux" 1791278722.95921 17264 7a0467716dc9752900cfa417352086dc "pdflatex"
+  "ttns_surrogate.out" 1791278722.96055 3225 404981a8844f975cd06c2b9f9025b3de "pdflatex"
+  "ttns_surrogate.tex" 1791278720.23991 100309 435d3cc5f9d7d5177360b15e749597ae ""
+  "ttns_surrogate.toc" 1791278722.96078 1667 cc361a8a7042bed44799bb2b3970f44f "pdflatex"
   (generated)
   "ttns_surrogate.aux"
   "ttns_surrogate.log"
