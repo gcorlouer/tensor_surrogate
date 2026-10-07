@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1791278722.00087 "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" "ttns_surrogate.pdf" "ttns_surrogate" 1791278723.07206 0
-  "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" 1791278720.23991 100309 435d3cc5f9d7d5177360b15e749597ae ""
+["pdflatex"] 1791390052.54221 "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" "ttns_surrogate.pdf" "ttns_surrogate" 1791390053.60295 0
+  "/Users/guime/projects/tensor_surrogate/agent_folder/ttns_surrogate.tex" 1791390051.66553 107241 12b3fc4c65b537e2ae17c02611f2ad01 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc" 1202520719 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -216,10 +216,10 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1749050915 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1749050869 3345728 6e9d6b4ca934c854c1520d15fef27576 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "ttns_surrogate.aux" 1791278722.95921 17264 7a0467716dc9752900cfa417352086dc "pdflatex"
-  "ttns_surrogate.out" 1791278722.96055 3225 404981a8844f975cd06c2b9f9025b3de "pdflatex"
-  "ttns_surrogate.tex" 1791278720.23991 100309 435d3cc5f9d7d5177360b15e749597ae ""
-  "ttns_surrogate.toc" 1791278722.96078 1667 cc361a8a7042bed44799bb2b3970f44f "pdflatex"
+  "ttns_surrogate.aux" 1791390053.49215 17527 dec9b1c6bf03ee13e62c06d8146e00cd "pdflatex"
+  "ttns_surrogate.out" 1791390053.49355 3646 17462805811b6042e50da4db79061ab6 "pdflatex"
+  "ttns_surrogate.tex" 1791390051.66553 107241 12b3fc4c65b537e2ae17c02611f2ad01 ""
+  "ttns_surrogate.toc" 1791390053.49377 1841 cefe182f58b73206c547ce869bcdb4af "pdflatex"
   (generated)
   "ttns_surrogate.aux"
   "ttns_surrogate.log"

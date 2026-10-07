@@ -780,9 +780,75 @@ A problem is to choose the degree of the nodes of the TTN. Several consideration
 \end{enumerate}
 A pragmatic rule is to choose the smallest $K$ for which the defects of Proposition~\ref{prop:defect} are below a tolerance at initialization and at a few checkpoints.
 \end{remark}
+\section{Training dynamics of TTNs}
 
+\section{How to compare TTNs and DNNs}
+We want to test experimentally wether the TTN training dynamics is similar to some DNN with more realistic architecture training dynamics. A first step would be to compare TTN with deep neural networks with standard activation functions (ReLU, GeLU etc). For simplicity we can start with a binary teacher tree tensor network of depth L generating some training data. The features are defined by the hierarchical SVD of the TTN. The feature of the DNN are defined by a functional SVD of the DNN. Here is how the functional SVD works. For a tree cut at edge $e$ we matricize the TTN which paritions the inputs into $I_e = \{x_1,..,x_{i_e}\}$ and $J_e = \{x_{i_e + 1},..,x_{d_0}\}$. For a bipartition of the inpute into $x = (x_{I_e}, x_{J_e})$ we construct the matrix $f_{\theta}(x_{I_e}, x_{J_e})$ of input-output relations for the function $f$ of the DNN. We SVD this matrix and for each edge $e$ this gives a functional HSVD of the DNN which defines the hierarchical features of the DNN.
+The function writes:
+\[
+f(x_{I_e}, x_{J_e}) \approx \sum_q \sigma_q\phi_q(x_{I_e})\psi_q(x_{J_e})
+\]
+\textbf{Question} If the input dim is very large this could be a big matrix. Is there some principled computational proxy?
+In practice we form the functional SVD by sampling $n_L$ inputs $x_{I_e,i}\sim \mu_L$ and $n_R$ inputs $x_{J_e,i}\mu_R$ with data distribution $\mu \approx \mu_L \otimes \mu_R$ from the sampling distribution and we estimate the average:
+\[
+M_{I_e, J_e} = \frac{1}{\sqrt{n_Rn_L}}\sum_{i,j}f(x_{I_e,i}, x_{J_e,j})
+\]
+The SVD of $M_{I_e, J_e}$ will be the HSVD of the function $f$ at edge $e$. A big limitation about this approach is assuming that we can factorize the data distribution. In general we don't know such factorisation and this is partly why we are using DNNs in the first place. However this could still be used as a ground truth test.
+
+A more scalable approach would be to decode the activations of the DNN and compare them with the features learned by the TTN. At least for the student and teacher TTNs there is a clean notion of hierarchical features being learned that are given by their HSVDs. 
+
+For the DNN, consider the activations at layer $l$ given by $h_l(x)$ we can define a feature empirically by decoding these representations into a linear probe:
+\[
+D_{l,v} = 1 - \frac{\text{min}_w(\mathbb{E}[(\chi_v - w^{\top}h_l(x,t))^2])}{var{\chi_v}}
+\] 
+Note that we need to define the feature $\chi_v$ of the tree. They are related to the HSVD of the TTN.
+
+Consider the tensor teacher tensor $T$. Consider its HSVD: $(U_e, S_e, V_e)_{e}$. Consider the input data distribution $x$ sampled from some distribution with data covariance matrix $\Sigma$. For the edge $e$ we can write the tensor $T$ via its matricisation at $e$:
+\[
+T = \sum_k S_{e,k} u_e v_e^{\top}
+\]
+In particular across one output leg, for a bipartition of the inputs legs into $I_e$ and $I_e^c$, we have the following input-output relatinship:
+\[
+y = \sum_k S_{e,k} <u_{e,k},x_{I_e}> <v_{e,k},x_{I_e^c}>
+\]
+If the inputs are whitened, define $\phi_{e,k}=  <u_{e,k},x_{I_e}>$ and $\psi_{e,k} = <v_{e,k},x_{I_e^c}>$
+The hierarchical $k$-feature  $e$ is defined by the tuple $(S_e, \phi_e, \psi_e)$
+
+If the inputs are not whitened we have $\Sigma_e := \mathbb{E}[x_{I_e}x_{I_e}^{\top}]; \ \Sigma_e^c := \mathbb{E}[x_{I_e^c}x_{I_e^c}^{\top}] $ and we define the feature vectors as:
+$\phi_{e,k} := u{e,k}^{\top}\Sigma_e^{-\frac{1}{2}}x_{I_e}; \ \psi{e,k} := v{e,k}^{\top}\Sigma_e^{-\frac{1}{2}}x_{I_e};$. This comes from the weighting of the function by the data covariance (need to explain in more details here). For degenerate singular values instead of considering one particular feature vector, we extend to the whole subspace of feature vectors associated to a particular singular value. 
+
+One atom of computation is defined by $\sigma_e\phi_e\psi_e$ i.e. one mode of the SVD which is part of the TTN decomposition. To estimate wether the DNN has learned a particular mode of the TTN we can estimate it in the hilbert space of the data by computing:
+
+\[
+\alpha_{e,k} := \frac{c_{e,k}}{\sigma_{e,k}}
+\]
+For each edge cut $e$ and $k$ where:
+\[
+c_{e,k} = < f, \phi_e\psi_e > = \mathbb{E}[f(\phi_e\psi_e)^{\top}]
+\]
+A score of 0 means the feature has not been learned and a score close to 1 means that it has. For degenerate block we can extend this to the whole subspace of degenerate features.
+
+To dive more specifically into the internal structure leading to computing that atom, we check wether $h_l(x)$ already represent the feature $k$ for edge $e$. We compute the following acquisition score:
+
+\[
+A^z_{l,e,k} = \frac{\mathbb{E}[z_{e,k}h_l^{\top}]^{\top}H_l^{\dagger}\mathbb{E}[z_{e,k}h_l^{\top}]}{\text{Var}(z_{e,k})}
+\]
+With $z=\phi,\psi,\phi\psi$ and  $H_l^{\dagger}$ is the Moore Penrose pseudo inverse of $\mathbb{E}[h_lh_l^{\top}]$
+
+Acquisition score close to 1 means $h_l$ represent the feature vector (or input or output feature vector). A particularly interesting hypothesis is wether early layer represent features that correspond to edges closer to the leaves and later layer to edges closer to the root. Again for degenerate subspace we can extend to the degenerate features. 
+
+Estimating wether some feature has been learned and where it has been learned across layers would be particularly useful things to track experimentally to establish that DNN learn representation in a similar way to TTN at least in this simple TTN student teacher setup with known ground truth. Also we can measure acquisition time during training as the first time at which some particular features have been learned i.e. when the $c_{e,k}$ and acquisition score $A^z_{l,e,k}$ are above a certain threshold (unclear what threshold they should be). 
+
+Another interesting experiment would be to establish wether a represented feature is actually useful for some computation. One approach would be to ablate one represented feature from the DNN and measure the effect on the loss. If the loss does not change the feature is represented but not causally useful in some computation. 
+
+For practical estimation of wether mode have been learned collect set of inputs, estimate features and function then compute empirical estimator of $C$ (which replace expected value with sample mean) compute the frobenius norm between $C$ and the matrix of singular values $S$ for each edge $e$. Compute acquisition times. 
+
+
+For pratical estimation of acquisition score we need to collect activations over some a set of inputs split them into training, validation and test probes. Fit the linear probe to the features, estimate acquisition scores. For degenerate subspace maybe CCA or multivariate regression would be useful. 
+
+Also need to define similar observable for the student TTN but should be easier because it has well defined HSVD that we could compare with the teacher. 
 %======================================================================
-\section{Experiments}\label{sec:experiments}
+\section{Experiments (slop)}\label{sec:experiments}
 %======================================================================
 
 % Outline compiled from the experiments suggested in Sections 1-2; to be completed.
