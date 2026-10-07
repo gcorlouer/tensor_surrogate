@@ -36,6 +36,8 @@
 \newcommand{\Eext}{E_{\mathrm{ext}}}
 \newcommand{\Lhat}{\widehat{\mathcal L}}
 \newcommand{\fhat}{\hat f}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
 
 % Theorem-like environments (definition style, as in the original note)
 \theoremstyle{definition}
@@ -123,7 +125,7 @@ Function-space agreement is therefore plausible when the two models have close p
 \end{remark}
 
 \paragraph{Outline.}
-Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:experiments} lists the experiments suggested in the text.
+Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:compare} constructs observables for comparing the training dynamics of TTN and DNN students of a TTN teacher. Section~\ref{sec:experiments} lists the experiments suggested in the text.
 
 %======================================================================
 \section{Theoretical background}\label{sec:background}
@@ -782,71 +784,482 @@ A pragmatic rule is to choose the smallest $K$ for which the defects of Proposit
 \end{remark}
 \section{Training dynamics of TTNs}
 
-\section{How to compare TTNs and DNNs}
-We want to test experimentally wether the TTN training dynamics is similar to some DNN with more realistic architecture training dynamics. A first step would be to compare TTN with deep neural networks with standard activation functions (ReLU, GeLU etc). For simplicity we can start with a binary teacher tree tensor network of depth L generating some training data. The features are defined by the hierarchical SVD of the TTN. The feature of the DNN are defined by a functional SVD of the DNN. Here is how the functional SVD works. For a tree cut at edge $e$ we matricize the TTN which paritions the inputs into $I_e = \{x_1,..,x_{i_e}\}$ and $J_e = \{x_{i_e + 1},..,x_{d_0}\}$. For a bipartition of the inpute into $x = (x_{I_e}, x_{J_e})$ we construct the matrix $f_{\theta}(x_{I_e}, x_{J_e})$ of input-output relations for the function $f$ of the DNN. We SVD this matrix and for each edge $e$ this gives a functional HSVD of the DNN which defines the hierarchical features of the DNN.
-The function writes:
+%======================================================================
+\section{How to compare TTNs and DNNs}\label{sec:compare}
+%======================================================================
+
+We want to test experimentally whether the training dynamics of TTNs is similar to that of DNNs with standard activation functions, such as ReLU, GELU or SiLU. Hypothesis~\ref{hyp:global} phrases this question in terms of observables, i.e.\ quantities that can be evaluated along the trajectory of any architecture. This section constructs such observables in the setting in which they are easiest to interpret: a teacher--student experiment in which the teacher is a TTN. The teacher's tree then provides a canonical hierarchy of interfaces, its bonds, and the singular value decomposition across each bond provides a canonical, gauge-invariant list of candidate features, which we call \emph{atoms}. Comparing a TTN with a DNN then amounts to asking, for each atom and each student, when the student acquires the atom, where it computes it, and whether it relies on it.
+
+These questions call for different kinds of evidence, which should not be conflated (Figure~\ref{fig:compare}):
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{output}: the predictor of the student contains the atom, with the teacher's strength;
+\item \emph{representation}: the atom, or the two factors of which it is the product, can be read off a hidden layer of the student;
+\item \emph{use}: the computation downstream of that layer is sensitive to this internal code, and causally relies on it.
+\end{enumerate}
+Section~\ref{sec:compare-setting} fixes the setting, and Sections~\ref{sec:dw-hsvd} and~\ref{sec:atoms} define the atoms of the teacher. The HSVD of Section~\ref{sec:hsvd} has to be modified for this purpose, because it is computed in the Euclidean geometry of coefficient tensors, whereas learning takes place in the geometry of the data. Section~\ref{sec:output-obs} defines output observables in the coordinates of the teacher, and Section~\ref{sec:student-fsvd} complements them with a teacher-free description of a student, its own functional SVD. Sections~\ref{sec:representation} and~\ref{sec:use} define the representation and use observables. Section~\ref{sec:ttn-students} explains why all observables are simpler, and partly exact, for TTN students. Section~\ref{sec:compare-protocol} turns the observables into acquisition times, comparisons between students and an estimation protocol, and Table~\ref{tab:evidence} in Section~\ref{sec:compare-summary} summarizes them.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  core/.style={circle, draw, thick, minimum size=7mm, inner sep=0pt, font=\small},
+  insub/.style={core, fill=blue!12},
+  outsub/.style={core, fill=orange!22},
+  layer/.style={rectangle, draw, thick, fill=white, minimum width=15mm, minimum height=6.5mm, font=\small},
+  lab/.style={font=\footnotesize},
+  arr/.style={-{Stealth[length=2mm]}, thick}]
+  % (a) teacher
+  \node[outsub] (r) at (0,2.4) {$C_\rho$};
+  \node[insub] (u) at (-1.25,1.2) {$C_u$};
+  \node[outsub] (v) at (1.25,1.2) {$C_v$};
+  \node[insub] (c1) at (-1.9,0) {$C_1$};
+  \node[insub] (c2) at (-0.6,0) {$C_2$};
+  \node[outsub] (c3) at (0.6,0) {$C_3$};
+  \node[outsub] (c4) at (1.9,0) {$C_4$};
+  \foreach \i/\xx in {1/-1.9, 2/-0.6, 3/0.6, 4/1.9} {
+    \draw[thick] (c\i) -- (\xx,-0.8) node[below, lab] {$x^{(\i)}$};
+  }
+  \draw[thick] (r) -- (u) (r) -- (v) (u) -- (c1) (u) -- (c2) (v) -- (c3) (v) -- (c4);
+  \draw[red!75!black, dashed, very thick] (-1.0,2.15) -- (-0.25,1.45);
+  \node[lab, red!75!black] at (-1.25,2.4) {$e$};
+  \node[lab, blue!50!black] at (-1.25,-1.65) {$\phi^\star_{e,q}(x^{(1)},x^{(2)})$};
+  \node[lab, orange!50!black] at (1.3,-1.65) {$\psi^\star_{e,q}(x^{(3)},x^{(4)})$};
+  \node[lab, align=center, anchor=north] at (0,-2.2) {(a) teacher: the atom $(e,q)$ is\\$\sigma^\star_{e,q}\,\phi^\star_{e,q}(x^{(1)},x^{(2)})\,\psi^\star_{e,q}(x^{(3)},x^{(4)})$};
+  % (b) student
+  \begin{scope}[xshift=5.3cm]
+    \node[layer] (h0) at (0,-0.45) {$x$};
+    \node[layer] (h1) at (0,0.55) {$h_1$};
+    \node[layer] (h2) at (0,1.55) {$h_2$};
+    \node[layer] (h3) at (0,2.55) {$h_3$};
+    \node[font=\small] (f) at (0,3.45) {$f_t$};
+    \draw[arr] (h0) -- (h1);
+    \draw[arr] (h1) -- (h2);
+    \draw[arr] (h2) -- (h3);
+    \draw[arr] (h3) -- (f);
+    \node[lab, anchor=west] at (1.0,3.45) {output: $C_e[f_t]$, $a_{e,q}(t)$};
+    \node[lab, anchor=west, align=left] at (1.0,2.45) {use: sensitivity of $f_t$ to the code in $h_2$,\\erasure and injection of that code};
+    \node[lab, anchor=west] at (1.0,1.55) {representation: $R^2_2[\phi^\star_{e,q}]$, $R^2_2[\chi^\star_{e,q}]$, \dots};
+    \node[lab, align=center, anchor=north] at (2.4,-2.2) {(b) student: three levels of observables};
+  \end{scope}
+\end{tikzpicture}
+\caption{Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi^\star_{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi^\star_{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref{sec:dw-hsvd} and~\ref{sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref{sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref{sec:representation}), and whether the layers above use and rely on that code (Section~\ref{sec:use}).}
+\label{fig:compare}
+\end{figure}
+
+%----------------------------------------------------------------------
+\subsection{The teacher--student setting}\label{sec:compare-setting}
+%----------------------------------------------------------------------
+
+\paragraph{Teacher.}
+Fix a binary tree whose $N$ leaves carry one open leg each, indexed by $a\in[N]$; a balanced tree, with $N$ a power of two, is the simplest choice. We root the tree at an internal vertex $\rho$ and, as in Proposition~\ref{prop:nested}, let $A_e$ be the set of legs below the bond $e$, so that $A_e$ and $A_e^c$ are the two sides of the cut of Lemma~\ref{lem:cut}. A TTN on this tree (Definition~\ref{def:ttn}) represents a tensor $T^\star$. Leg $a$ receives the block $x^{(a)}\in\mathcal X_a$ of the input through a fixed embedding $\xi_a:\mathcal X_a\to\R^{d_a}$, for example $\xi_a(z)=z$ or $\xi_a(z)=(1,z)$, and, as in~\eqref{eq:ttn-model}, the teacher is
+\begin{equation}\label{eq:teacher}
+f^\star(x)=\Big\langle T^\star,\ \bigotimes_{a=1}^N\xi_a\big(x^{(a)}\big)\Big\rangle .
+\end{equation}
+The labels are $y=f^\star(x)$, possibly plus independent zero-mean noise. This is a \emph{physical} TTN in the sense of Section~\ref{sec:tn}: distinct legs receive distinct blocks of the input. For example, the balanced bilinear teacher of \citet[Section~6.2]{hfl_surrogate}, which applies linear maps at the leaves, planted bilinear maps at the internal vertices and a linear readout at the root, is of this form with $\xi_a(z)=z$.
+
+\paragraph{Data.}
+We assume throughout that the blocks are independent:
+\begin{equation}\label{eq:independent-blocks}
+\nu_x=\mu_1\otimes\cdots\otimes\mu_N,\qquad\E\norm{\xi_a(X^{(a)})}^2<\infty\quad(a\in[N]).
+\end{equation}
+The blocks need not be Gaussian, centred, whitened or identically distributed. For $A\subseteq[N]$, we write $x_A=(x^{(a)})_{a\in A}$, $\mu_A=\bigotimes_{a\in A}\mu_a$ and $\Xi_A(x_A)=\bigotimes_{a\in A}\xi_a(x^{(a)})$, and $X\sim\nu_x$ denotes a random input. Norms and inner products of functions are those of $L^2(\nu_x)$, or of $L^2(\mu_A)$ for functions of $x_A$. Assumption~\eqref{eq:independent-blocks} holds by construction in synthetic experiments. It is what makes the features of the teacher canonical functions of disjoint groups of input variables; Remark~\ref{rem:scope} discusses what is lost without it.
+
+\paragraph{Students.}
+A DNN $f_\theta$ of the form~\eqref{eq:network}, with a standard activation, and a TTN $g_\vartheta$ of the form~\eqref{eq:ttn-model}, normally on the teacher's tree, are trained on the same data, with the same loss and optimizer, and compared in the same time variable $t$, without time warping, as in Hypothesis~\ref{hyp:global}. We write $f_t$ for the predictor of a student at time $t$, whichever its architecture: $f_t=f_{\theta(t)}$ or $f_t=g_{\vartheta(t)}$. Three precautions apply \citep[Sections~6.6 and~6.7]{hfl_surrogate}. Every student should be able to fit the teacher under a generous training budget, since an underfitting student says nothing about dynamics. There is no single notion of equal capacity for a DNN and a TTN, so widths, ranks and initialization scales should be bracketed rather than matched by one number. Finally, a TTN on a wrong tree is a useful structural control.
+
+%----------------------------------------------------------------------
+\subsection{The data-weighted HSVD of the teacher}\label{sec:dw-hsvd}
+%----------------------------------------------------------------------
+
+Fix a bond $e$ of the teacher. It splits the legs into the legs $A_e$ below $e$ and the others, $A_e^c$, and contracting~\eqref{eq:teacher} gives, up to the ordering of the legs,
+\begin{equation}\label{eq:teacher-cut}
+f^\star(x)=\Xi_{A_e}(x_{A_e})^\top M^\star_e\,\Xi_{A_e^c}(x_{A_e^c}),\qquad M^\star_e:=T^{\star\langle A_e\rangle}.
+\end{equation}
+The HSVD of Definition~\ref{def:hsvd} decomposes $M^\star_e$ in the Euclidean geometry of coefficients. This is the right geometry for comparing tensors, but not for comparing functions: learning is driven by the population loss, hence by the geometry of $L^2(\nu_x)$. The two geometries agree when the leaf embeddings are orthonormal under the data, $\E[\xi_a\xi_a^\top]=I$, for instance for whitened inputs and $\xi_a(z)=z$. Otherwise they differ, and the Euclidean singular values can be misleading about which features matter (Example~\ref{ex:dw}). We therefore re-express the teacher in leaf bases that are orthonormal under the data, and take the HSVD there. No preprocessing is applied to the inputs seen by the students: the change of basis only concerns the coordinates in which we describe the teacher.
+
+\begin{definition}[Data-weighted HSVD]\label{def:dw-hsvd}
+For $a\in[N]$, let $\Sigma_a:=\E\big[\xi_a(X^{(a)})\,\xi_a(X^{(a)})^\top\big]$ be the Gram matrix of the embedding of leg $a$, and let $\Sigma_A:=\bigotimes_{a\in A}\Sigma_a$ for $A\subseteq[N]$. Write $(\cdot)^{1/2}$ for the positive semidefinite square root and $(\cdot)^+$ for the Moore--Penrose pseudoinverse. The \emph{whitened embeddings} are $\tilde\xi_a:=(\Sigma_a^{1/2})^+\xi_a$, with $\tilde\Xi_A:=\bigotimes_{a\in A}\tilde\xi_a$, and the \emph{data-weighted tensor} $\tilde T^\star$ is obtained from $T^\star$ by multiplying each leg $a$ by $\Sigma_a^{1/2}$. For each bond $e$, let
 \[
-f(x_{I_e}, x_{J_e}) \approx \sum_q \sigma_q\phi_q(x_{I_e})\psi_q(x_{J_e})
+\tilde M^\star_e:=\tilde T^{\star\langle A_e\rangle}=U^\star_eS^\star_eV^{\star\top}_e,\qquad
+S^\star_e=\diag\big(\sigma^\star_{e,1},\dots,\sigma^\star_{e,r^\star_e}\big),\quad\sigma^\star_{e,1}\ge\dots\ge\sigma^\star_{e,r^\star_e}>0,
 \]
-\textbf{Question} If the input dim is very large this could be a big matrix. Is there some principled computational proxy?
-In practice we form the functional SVD by sampling $n_L$ inputs $x_{I_e,i}\sim \mu_L$ and $n_R$ inputs $x_{J_e,i}\mu_R$ with data distribution $\mu \approx \mu_L \otimes \mu_R$ from the sampling distribution and we estimate the average:
+be a compact SVD, with columns $u^\star_{e,q}$ of $U^\star_e$ and $v^\star_{e,q}$ of $V^\star_e$. The \emph{singular functions} of the teacher at $e$ are
+\begin{equation}\label{eq:singular-functions}
+\phi^\star_{e,q}(x_{A_e}):=u^{\star\top}_{e,q}\,\tilde\Xi_{A_e}(x_{A_e}),\qquad
+\psi^\star_{e,q}(x_{A_e^c}):=v^{\star\top}_{e,q}\,\tilde\Xi_{A_e^c}(x_{A_e^c}),\qquad q\le r^\star_e .
+\end{equation}
+The family $(\sigma^\star_{e,q},\phi^\star_{e,q},\psi^\star_{e,q})_{e\in\Eint,\,q\le r^\star_e}$ is the \emph{data-weighted HSVD} of the teacher.
+\end{definition}
+
+For $\xi_a(z)=(1,z)$, $\Sigma_a$ is the matrix of the first and second moments of $x^{(a)}$, whatever its distribution. In general, $\Sigma_a$ is computed analytically or estimated once, from a large sample independent of all other data.
+
+\begin{proposition}[Properties of the data-weighted HSVD]\label{prop:dw-hsvd}
+Under~\eqref{eq:independent-blocks}:
+\begin{enumerate}[label=(\roman*),nosep]
+\item $\E\big[\Xi_A(X_A)\,\Xi_A(X_A)^\top\big]=\Sigma_A$ for every $A\subseteq[N]$, and $\tilde M^\star_e=\Sigma_{A_e}^{1/2}M^\star_e\,\Sigma_{A_e^c}^{1/2}$ for every bond $e$.
+\item $\tilde T^\star$ is represented by the teacher TTN in which the open leg of each leaf core is multiplied by $\Sigma_a^{1/2}$, with the same tree and bond dimensions. Hence the data-weighted HSVD is the HSVD of a TTN: Propositions~\ref{prop:nested} and~\ref{prop:truncation} and Remark~\ref{rem:stability} apply to it, and it is gauge invariant.
+\item $f^\star(x)=\big\langle\tilde T^\star,\bigotimes_a\tilde\xi_a(x^{(a)})\big\rangle$ for $\nu_x$-almost every $x$.
+\item For every bond $e$, $(\phi^\star_{e,q})_q$ is orthonormal in $L^2(\mu_{A_e})$, $(\psi^\star_{e,q})_q$ is orthonormal in $L^2(\mu_{A_e^c})$, and
+\begin{equation}\label{eq:dw-expansion}
+f^\star(x)=\sum_{q=1}^{r^\star_e}\sigma^\star_{e,q}\,\phi^\star_{e,q}(x_{A_e})\,\psi^\star_{e,q}(x_{A_e^c})\qquad\text{for $\nu_x$-almost every $x$.}
+\end{equation}
+\item The expansion~\eqref{eq:dw-expansion} is the Schmidt decomposition of $f^\star$ across the physical cut $(A_e\mid A_e^c)$ of Remark~\ref{rem:which-tensor}: $\sigma^\star_{e,q}=s_q(f^\star)$, and $r^\star_e$ is the rank of $f^\star$ across the cut. The singular values, and the spans of the singular functions that belong to equal singular values, depend only on $f^\star$, $\nu_x$ and the bipartition. In particular, they depend neither on the gauge nor on the choice of the embeddings $\xi_a$, as long as $f^\star$ is unchanged.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) By independence, $\E\big[\bigotimes_{a\in A}\xi_a\xi_a^\top\big]=\bigotimes_{a\in A}\E[\xi_a\xi_a^\top]$. Matricizing $\tilde T^\star$ across $(A_e\mid A_e^c)$ gives $\big(\bigotimes_{a\in A_e}\Sigma_a^{1/2}\big)M^\star_e\big(\bigotimes_{a\in A_e^c}\Sigma_a^{1/2}\big)$, and the Kronecker product of the square roots of positive semidefinite matrices is the square root of their Kronecker product. (ii) Multiplying an open leg of a core by a matrix multiplies the corresponding mode of the contraction~\eqref{eq:contraction} by that matrix. Since $\tilde T^\star$ is determined by $T^\star$, it is gauge invariant (Proposition~\ref{prop:gauge}). (iii) Let $\Pi_a:=\Sigma_a^{1/2}(\Sigma_a^{1/2})^+$ be the orthogonal projector onto the range of $\Sigma_a$. If $\Sigma_aw=0$, then $\E[(w^\top\xi_a)^2]=w^\top\Sigma_aw=0$, so $\xi_a(X^{(a)})$ lies in the range of $\Sigma_a$ almost surely, i.e.\ $\Pi_a\xi_a=\xi_a$. Hence $\langle\tilde T^\star,\bigotimes_a\tilde\xi_a\rangle=\langle T^\star,\bigotimes_a\Pi_a\xi_a\rangle=f^\star$ almost surely. (iv) By (i), $\E[\tilde\Xi_A\tilde\Xi_A^\top]=\bigotimes_{a\in A}(\Sigma_a^{1/2})^+\Sigma_a(\Sigma_a^{1/2})^+=\bigotimes_{a\in A}\Pi_a=:\Pi_A$, the orthogonal projector onto the range of $\Sigma_A^{1/2}$. The columns of $U^\star_e$ lie in $\col(\tilde M^\star_e)$, which is contained in that range, so $\E[\phi^\star_{e,q}\phi^\star_{e,q'}]=u^{\star\top}_{e,q}\Pi_{A_e}u^\star_{e,q'}=\delta_{qq'}$; the same argument applies to the $\psi^\star_{e,q}$. By (iii), $f^\star=\tilde\Xi_{A_e}^\top\tilde M^\star_e\tilde\Xi_{A_e^c}$ almost surely, and inserting the SVD gives~\eqref{eq:dw-expansion}. (v) Under~\eqref{eq:independent-blocks}, $L^2(\nu_x)=L^2(\mu_{A_e})\otimes L^2(\mu_{A_e^c})$, and $f^\star$ is the kernel of a Hilbert--Schmidt operator $K_{f^\star}:L^2(\mu_{A_e^c})\to L^2(\mu_{A_e})$, $(K_{f^\star}\psi)(x_{A_e})=\E[f^\star(x_{A_e},X_{A_e^c})\,\psi(X_{A_e^c})]$. By (iv), $K_{f^\star}K_{f^\star}^*=\sum_q\sigma^{\star2}_{e,q}\,\phi^\star_{e,q}\langle\phi^\star_{e,q},\cdot\rangle$, so the $\sigma^{\star2}_{e,q}$ are the nonzero eigenvalues of $K_{f^\star}K_{f^\star}^*$, with eigenspaces spanned by the $\phi^\star_{e,q}$ of equal $\sigma^\star_{e,q}$. These are determined by $f^\star$ and $\nu_x$. The same argument with $K_{f^\star}^*K_{f^\star}$ applies to the $\psi^\star_{e,q}$.
+\end{proof}
+
+When all $\Sigma_a$ are invertible, $r^\star_e=\rank M^\star_e$. When some $\Sigma_a$ is singular, which happens when the embedding is redundant on the support of the data, $r^\star_e$ can be smaller than $\rank M^\star_e$: directions of coefficients that vanish on the data do not count.
+
+\begin{example}[Why the data weighting matters]\label{ex:dw}
+Take $N=2$ blocks $x^{(1)},x^{(2)}\in\R^2$, $\xi_a(z)=z$, and the teacher $f^\star(x)=\langle x^{(1)},x^{(2)}\rangle=x^{(1)}_1x^{(2)}_1+x^{(1)}_2x^{(2)}_2$, a TTN with two leaves and one bond. Its coefficient matrix is $M^\star=I_2$, so the Euclidean HSVD has a degenerate pair $\sigma_1=\sigma_2=1$ and suggests two equally important atoms, $x^{(1)}_1x^{(2)}_1$ and $x^{(1)}_2x^{(2)}_2$. Now let $x^{(2)}\sim\mathcal N(0,I_2)$ and $x^{(1)}\sim\mathcal N(0,\Sigma_1)$ with $\Sigma_1=\left(\begin{smallmatrix}1&\rho\\\rho&1\end{smallmatrix}\right)$ and $0<\rho<1$. Then $\tilde M^\star=\Sigma_1^{1/2}$ has the singular values $\sqrt{1+\rho}$ and $\sqrt{1-\rho}$, and
 \[
-M_{I_e, J_e} = \frac{1}{\sqrt{n_Rn_L}}\sum_{i,j}f(x_{I_e,i}, x_{J_e,j})
+f^\star=\sqrt{1+\rho}\;\phi^\star_+\psi^\star_++\sqrt{1-\rho}\;\phi^\star_-\psi^\star_-,\qquad
+\phi^\star_\pm=\frac{x^{(1)}_1\pm x^{(1)}_2}{\sqrt{2(1\pm\rho)}},\qquad
+\psi^\star_\pm=\frac{x^{(2)}_1\pm x^{(2)}_2}{\sqrt2}.
 \]
-The SVD of $M_{I_e, J_e}$ will be the HSVD of the function $f$ at edge $e$. A big limitation about this approach is assuming that we can factorize the data distribution. In general we don't know such factorisation and this is partly why we are using DNNs in the first place. However this could still be used as a ground truth test.
+Under the data, there is one strong atom, which carries the fraction $(1+\rho)/2$ of $\norm{f^\star}^2$, and one weak atom. For $\rho$ close to $1$, the best predictor of rank one across the cut already has the small population loss $(1-\rho)/2$ (Proposition~\ref{prop:atoms}(iii) below). Which atoms the loss favours, and plausibly which atoms a loss-driven learner acquires first, is decided by the data-weighted singular values, not by the Euclidean ones.
+\end{example}
 
-A more scalable approach would be to decode the activations of the DNN and compare them with the features learned by the TTN. At least for the student and teacher TTNs there is a clean notion of hierarchical features being learned that are given by their HSVDs. 
-
-For the DNN, consider the activations at layer $l$ given by $h_l(x)$ we can define a feature empirically by decoding these representations into a linear probe:
+\begin{remark}[Why only second moments appear]\label{rem:second-moments}
+The data enter the data-weighted HSVD only through the Gram matrices $\Sigma_a$. This is not a Gaussian assumption. It holds because a physical TTN is linear in each leaf embedding separately: for two functions $g=\langle T,\bigotimes_a\xi_a\rangle$ and $h=\langle T',\bigotimes_a\xi_a\rangle$, independence gives
 \[
-D_{l,v} = 1 - \frac{\text{min}_w(\mathbb{E}[(\chi_v - w^{\top}h_l(x,t))^2])}{var{\chi_v}}
-\] 
-Note that we need to define the feature $\chi_v$ of the tree. They are related to the HSVD of the TTN.
-
-Consider the tensor teacher tensor $T$. Consider its HSVD: $(U_e, S_e, V_e)_{e}$. Consider the input data distribution $x$ sampled from some distribution with data covariance matrix $\Sigma$. For the edge $e$ we can write the tensor $T$ via its matricisation at $e$:
-\[
-T = \sum_k S_{e,k} u_e v_e^{\top}
+\E[g(X)h(X)]=\vect(T)^\top\Big(\bigotimes_{a=1}^N\Sigma_a\Big)\vect(T').
 \]
-In particular across one output leg, for a bipartition of the inputs legs into $I_e$ and $I_e^c$, we have the following input-output relatinship:
+Moreover, $\Sigma_a$ is a second moment of the \emph{embedding}, not of the raw input: for a scalar block and $\xi_a(z)=(1,z,z^2,z^3)$, it contains the moments of $z$ up to order six. Higher joint moments enter as soon as this multilinear structure in independent variables is lost: when blocks are dependent, or when the same input feeds several legs, as in the computational TTN of a DPN (Remark~\ref{rem:copies}), whose $L^2$ geometry involves the moments of $x$ up to twice the number of copies of the input \citep[Section~8.1]{hfl_local}.
+\end{remark}
+
+\begin{remark}[Features of the teacher are built from features of the teacher]\label{rem:dw-nested}
+By Proposition~\ref{prop:dw-hsvd}(ii), Proposition~\ref{prop:nested} applies to $\tilde T^\star$. Let $u$ be an internal vertex with parent bond $e$ and child bonds $e_1,e_2$, and let $B_u:=(U^\star_{e_1}\otimes U^\star_{e_2})^\top U^\star_e$. Since $U^\star_e=(U^\star_{e_1}\otimes U^\star_{e_2})B_u$ and $\tilde\Xi_{A_e}=\tilde\Xi_{A_{e_1}}\otimes\tilde\Xi_{A_{e_2}}$ up to the ordering of the legs,
+\begin{equation}\label{eq:feature-composition}
+\phi^\star_{e,q}(x_{A_e})=\sum_{i\le r^\star_{e_1}}\ \sum_{j\le r^\star_{e_2}}(B_u)_{(i,j),q}\;\phi^\star_{e_1,i}(x_{A_{e_1}})\,\phi^\star_{e_2,j}(x_{A_{e_2}}).
+\end{equation}
+Each left singular function is thus a \emph{bilinear} function of the left singular functions at the two bonds below it. At a \emph{leaf bond}, i.e.\ a bond $e$ that joins a leaf $a$ to its parent, $A_e=\{a\}$ and $\phi^\star_{e,q}=u^{\star\top}_{e,q}\tilde\xi_a$ is linear in the embedding. This is the precise sense in which the features of the teacher are hierarchical, and it motivates looking for them in successive layers of a DNN (Hypothesis~\ref{hyp:layer-bond}). The two child bonds of the root define the same bipartition, with left and right exchanged, and therefore have the same singular values and atoms.
+\end{remark}
+
+\begin{remark}[Computing the data-weighted HSVD]\label{rem:dw-compute}
+The matrices $\tilde M^\star_e$ are exponentially large and are never formed. One multiplies the leaf cores by $\Sigma_a^{1/2}$ (Proposition~\ref{prop:dw-hsvd}(ii)), orthonormalizes the network towards $e$ by QR decompositions, and takes the SVD of the resulting small centre matrix \citep{grasedyck2010hierarchical}, \citep[Section~9.2]{hfl_diagonal}. The values of the singular functions at a sample are obtained by contracting the two orthonormalized halves of the network with the whitened embeddings $\tilde\xi_a(x^{(a)})$ and rotating the results by the singular vectors of the centre matrix. The cost is polynomial in the bond and leg dimensions and linear in $N$.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Atoms: identity and strength}\label{sec:atoms}
+%----------------------------------------------------------------------
+
+\begin{definition}[Atoms]\label{def:atom}
+For a bond $e$ and $i,j\le r^\star_e$, let $\chi^\star_{e,ij}(x):=\phi^\star_{e,i}(x_{A_e})\,\psi^\star_{e,j}(x_{A_e^c})$, and $\chi^\star_{e,q}:=\chi^\star_{e,qq}$. The \emph{atom} $(e,q)$ of the teacher is the function $\sigma^\star_{e,q}\chi^\star_{e,q}$. We call $\chi^\star_{e,q}$ the \emph{normalized atom}, $\phi^\star_{e,q}$ its \emph{left factor} and $\psi^\star_{e,q}$ its \emph{right factor}.
+\end{definition}
+
+An atom is one mode of the data-weighted SVD at one bond: one ``atom of computation'' of the teacher. Its left factor is a function computed by the subtree below $e$, its right factor is a function computed by the rest of the tree, and the atom is their product, weighted by the strength $\sigma^\star_{e,q}$ with which the two sides are coupled.
+
+\begin{proposition}[Atoms]\label{prop:atoms}
+Under~\eqref{eq:independent-blocks}, for every bond $e$:
+\begin{enumerate}[label=(\roman*),nosep]
+\item the functions $\chi^\star_{e,ij}$, $i,j\le r^\star_e$, are orthonormal in $L^2(\nu_x)$; in particular $\norm{\chi^\star_{e,q}}=1$ and $\norm{\sigma^\star_{e,q}\chi^\star_{e,q}}=\sigma^\star_{e,q}$;
+\item $f^\star=\sum_{q\le r^\star_e}\sigma^\star_{e,q}\chi^\star_{e,q}$ and $\norm{f^\star}^2=\sum_q\sigma^{\star2}_{e,q}$;
+\item for $r<r^\star_e$, the truncation $f^\star_{e,r}:=\sum_{q\le r}\sigma^\star_{e,q}\chi^\star_{e,q}$ minimizes $\norm{f^\star-g}$ over the functions $g\in L^2(\nu_x)$ of rank at most $r$ across $(A_e\mid A_e^c)$, i.e.\ of the form $g=\sum_{k\le r}a_k(x_{A_e})\,b_k(x_{A_e^c})$, and $\norm{f^\star-f^\star_{e,r}}^2=\sum_{q>r}\sigma^{\star2}_{e,q}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) By the independence of $X_{A_e}$ and $X_{A_e^c}$ and Proposition~\ref{prop:dw-hsvd}(iv),
 \[
-y = \sum_k S_{e,k} <u_{e,k},x_{I_e}> <v_{e,k},x_{I_e^c}>
+\E\big[\chi^\star_{e,ij}\chi^\star_{e,kl}\big]=\E\big[\phi^\star_{e,i}\phi^\star_{e,k}\big]\,\E\big[\psi^\star_{e,j}\psi^\star_{e,l}\big]=\delta_{ik}\delta_{jl}.
 \]
-If the inputs are whitened, define $\phi_{e,k}=  <u_{e,k},x_{I_e}>$ and $\psi_{e,k} = <v_{e,k},x_{I_e^c}>$
-The hierarchical $k$-feature  $e$ is defined by the tuple $(S_e, \phi_e, \psi_e)$
+(ii) follows from~\eqref{eq:dw-expansion} and (i). (iii) is the Eckart--Young theorem \citep{eckart1936approximation}, which holds verbatim for Hilbert--Schmidt operators, applied to the operator $K_{f^\star}$ of the proof of Proposition~\ref{prop:dw-hsvd}(v): its approximations of rank at most $r$ are exactly the kernels of rank at most $r$ across the cut.
+\end{proof}
 
-If the inputs are not whitened we have $\Sigma_e := \mathbb{E}[x_{I_e}x_{I_e}^{\top}]; \ \Sigma_e^c := \mathbb{E}[x_{I_e^c}x_{I_e^c}^{\top}] $ and we define the feature vectors as:
-$\phi_{e,k} := u{e,k}^{\top}\Sigma_e^{-\frac{1}{2}}x_{I_e}; \ \psi{e,k} := v{e,k}^{\top}\Sigma_e^{-\frac{1}{2}}x_{I_e};$. This comes from the weighting of the function by the data covariance (need to explain in more details here). For degenerate singular values instead of considering one particular feature vector, we extend to the whole subspace of feature vectors associated to a particular singular value. 
+\paragraph{Identity and strength.}
+The normalized factors $\phi^\star_{e,q}$ and $\psi^\star_{e,q}$ specify \emph{which} computation the atom performs on each side of the interface; the singular value specifies its \emph{strength}. By Proposition~\ref{prop:atoms}, $\sigma^{\star2}_{e,q}$ is the part of the teacher's second moment $\E[f^\star(X)^2]=\norm{f^\star}^2$ carried by the atom, and replacing the truncation $f^\star_{e,q-1}$ by $f^\star_{e,q}$, i.e.\ adding the atom to the stronger atoms at $e$, lowers the population loss $\mathcal L(f)=\frac12\E[(f(x)-y)^2]$ by $\sigma^{\star2}_{e,q}/2$. A student can have acquired the identity of an atom, for instance by computing its factors internally, without having amplified it in its output; conversely, its output can contain a weak version of the right atom. Direction acquisition and amplification must therefore be tracked separately \citep[Sections~3.2 and~9.4]{hfl_diagonal}.
 
-One atom of computation is defined by $\sigma_e\phi_e\psi_e$ i.e. one mode of the SVD which is part of the TTN decomposition. To estimate wether the DNN has learned a particular mode of the TTN we can estimate it in the hilbert space of the data by computing:
+\begin{remark}[Degenerate atoms]\label{rem:degenerate}
+If $\sigma^\star_{e,q}$ is a simple singular value, then $(\phi^\star_{e,q},\psi^\star_{e,q})$ is unique up to a simultaneous change of sign, which leaves $\chi^\star_{e,q}$ unchanged: the atom is canonical. If instead a block $B$ of $k\ge2$ singular values equals a common value $\sigma^\star_B$, then $(U^\star_{e,B}R,\,V^\star_{e,B}R)$ is another valid choice of the corresponding singular vectors for any $R\in\mathrm O(k)$ (Remark~\ref{rem:hsvd-canonical}). The canonical objects are then the left and right subspaces $\operatorname{span}\{\phi^\star_{e,q}:q\in B\}$ and $\operatorname{span}\{\psi^\star_{e,q}:q\in B\}$, and the \emph{block atom} $\sigma^\star_B\sum_{q\in B}\chi^\star_{e,q}$, which is invariant because $\sum_q(UR)_{:,q}\otimes(VR)_{:,q}=\sum_qu_q\otimes v_q$ when $RR^\top=I$. Individual atoms inside a degenerate block have no separate meaning, and Example~\ref{ex:modular} shows that such blocks occur in natural tasks. When singular values are distinct but their gaps are comparable to the estimation error, the cluster should also be treated as a block, since singular functions are stable only relative to the gaps (Remark~\ref{rem:stability}); the strengths within the cluster are then described by the corresponding diagonal block $S^\star_{e,BB}$ of $S^\star_e$ rather than by a common value. The observables below have block versions, which reduce to single atoms for simple singular values.
+\end{remark}
 
+\begin{remark}[Atoms are attached to bonds]\label{rem:edge-specific}
+For each bond $e$, Proposition~\ref{prop:atoms}(ii) decomposes the same function $f^\star$ into orthonormal features with strengths, exactly as in~\eqref{eq:acquisition}, with $\chi_m=\chi^\star_{e,q}$ and $\lambda_m=\sigma^{\star2}_{e,q}$. Different bonds give different decompositions. The teacher therefore supplies not one flat dictionary of features but one decomposition per bond, and these decompositions are linked by the nestedness~\eqref{eq:feature-composition}. Accordingly, observables are indexed by a bond and a mode, or a block.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Output observables: has the predictor acquired an atom?}\label{sec:output-obs}
+%----------------------------------------------------------------------
+
+The most direct question is whether the predictor $f_t$ of a student contains the atom $\sigma^\star_{e,q}\chi^\star_{e,q}$. The distance $\norm{f_t-\sigma^\star_{e,q}\chi^\star_{e,q}}$ is not the right observable: a student that has learned this atom \emph{and} the other ones is far from it, since $\norm{f^\star-\sigma^\star_{e,q}\chi^\star_{e,q}}^2=\sum_{q'\neq q}\sigma^{\star2}_{e,q'}$. The right operation is a projection, which measures the component of $f_t$ along the atom. Since a student can also couple the teacher's factors in ways that the teacher does not, pairing $\phi^\star_{e,i}$ with $\psi^\star_{e,j}$ for $i\neq j$, we measure all pairings at once.
+
+\begin{definition}[Coupling matrix and output acquisition coefficients]\label{def:coupling}
+Let $\Phi^\star_e:=(\phi^\star_{e,1},\dots,\phi^\star_{e,r^\star_e})^\top$ and $\Psi^\star_e:=(\psi^\star_{e,1},\dots,\psi^\star_{e,r^\star_e})^\top$. The \emph{coupling matrix} of a function $f\in L^2(\nu_x)$ at the bond $e$ is
+\begin{equation}\label{eq:coupling}
+C_e[f]:=\E\Big[f(X)\,\Phi^\star_e(X_{A_e})\,\Psi^\star_e(X_{A_e^c})^\top\Big]\in\R^{r^\star_e\times r^\star_e},\qquad\text{i.e.}\quad C_e[f]_{ij}=\langle f,\chi^\star_{e,ij}\rangle .
+\end{equation}
+Along a trajectory $f_t$, the \emph{output acquisition coefficients} of the atom $(e,q)$ and of a block $B$ (a set of equal, or nearly equal, singular values) are
 \[
-\alpha_{e,k} := \frac{c_{e,k}}{\sigma_{e,k}}
+a_{e,q}(t):=\frac{C_e[f_t]_{qq}}{\sigma^\star_{e,q}}=\frac{\langle f_t,\chi^\star_{e,q}\rangle}{\sigma^\star_{e,q}},\qquad
+a_{e,B}(t):=\frac{\operatorname{tr}C_e[f_t]_{BB}}{\operatorname{tr}S^\star_{e,BB}},
 \]
-For each edge cut $e$ and $k$ where:
+where $C_{BB'}$ denotes the submatrix of a matrix $C$ with rows in $B$ and columns in $B'$. For a block of equal singular values, $\operatorname{tr}S^\star_{e,BB}=|B|\,\sigma^\star_B$.
+\end{definition}
+
+By Remark~\ref{rem:edge-specific}, $a_{e,q}$ is the coefficient~\eqref{eq:acquisition} of the decomposition of $f^\star$ at $e$: $a_{e,q}(t)=0$ means that the atom is absent from the predictor, and $a_{e,q}(t)=1$ that it is present with the teacher's strength. The coupling matrix contains more information than these coefficients.
+
+\begin{proposition}[Exact error decomposition at a bond]\label{prop:error-decomposition}
+Assume~\eqref{eq:independent-blocks}, and let $\Pi_e$ be the orthogonal projector of $L^2(\nu_x)$ onto $\operatorname{span}\{\chi^\star_{e,ij}:i,j\le r^\star_e\}$, the tensor product of the span of the left singular functions at $e$ with the span of the right ones. For every $f\in L^2(\nu_x)$:
+\begin{enumerate}[label=(\roman*),nosep]
+\item $\Pi_ef=\Phi^{\star\top}_e\,C_e[f]\,\Psi^\star_e$ and $\norm{\Pi_ef}^2=\norm{C_e[f]}_F^2$;
+\item $C_e[f^\star]=S^\star_e$;
+\item writing $C=C_e[f]$, $S^\star=S^\star_e$, and letting $B,B'$ range over the blocks of a partition of the modes $\{1,\dots,r^\star_e\}$,
+\begin{equation}\label{eq:error-decomposition}
+\norm{f-f^\star}^2=\underbrace{\sum_B\norm{C_{BB}-S^\star_{BB}}_F^2}_{\text{within blocks}}+\underbrace{\sum_{B\neq B'}\norm{C_{BB'}}_F^2}_{\text{across blocks}}+\underbrace{\norm{f}^2-\norm{C}_F^2}_{\text{outside}};
+\end{equation}
+when all blocks are single modes, the first two terms are $\sum_q\sigma^{\star2}_{e,q}(a_{e,q}-1)^2$, with $a_{e,q}=C_{qq}/\sigma^\star_{e,q}$, and $\sum_{i\neq j}C_{ij}^2$;
+\item if the blocks are the sets of equal singular values, the three terms of~\eqref{eq:error-decomposition}, the block coefficients $\operatorname{tr}C_{BB}/\operatorname{tr}S^\star_{BB}$ and the singular values of $C$ do not depend on the choices of singular functions allowed by Remark~\ref{rem:degenerate}.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) By Proposition~\ref{prop:atoms}(i), the $\chi^\star_{e,ij}$ form an orthonormal basis of the range of $\Pi_e$, and the $C_e[f]_{ij}$ are the coordinates of $\Pi_ef$ in this basis. (ii) follows from Proposition~\ref{prop:atoms}(i) and~(ii). (iii) Since $f^\star$ lies in the range of $\Pi_e$, $f-f^\star=(\Pi_ef-f^\star)+(f-\Pi_ef)$ is an orthogonal decomposition. By (i), $\norm{f-\Pi_ef}^2=\norm f^2-\norm{C}_F^2$, and by (i), (ii) and orthonormality, $\norm{\Pi_ef-f^\star}^2=\norm{C-S^\star_e}_F^2$. Since $S^\star_e$ is diagonal, its off-diagonal blocks vanish, and splitting $\norm{C-S^\star_e}_F^2$ into blocks gives the first two terms. (iv) An allowed change of singular functions replaces $\Phi^\star_e$ and $\Psi^\star_e$ by $R^\top\Phi^\star_e$ and $R^\top\Psi^\star_e$, where $R$ is block diagonal and orthogonal: a sign for each simple singular value and some $R_B\in\mathrm O(|B|)$ for each block. Then $C\mapsto R^\top CR$, i.e.\ $C_{BB'}\mapsto R_B^\top C_{BB'}R_{B'}$, and $S^\star_{BB}=\sigma^\star_BI$ is unchanged; this preserves the Frobenius norm of every block of $C$ and of $C-S^\star$, the traces of the diagonal blocks and the singular values of $C$, while $\Pi_e$ depends only on the spans.
+\end{proof}
+
+\paragraph{Interpretation.}
+For noiseless labels, $\norm{f-f^\star}^2=2\mathcal L(f)$; with independent zero-mean label noise, it is twice the excess loss. For every bond $e$, with the blocks of equal singular values,~\eqref{eq:error-decomposition} therefore splits the excess loss of a student into three parts, all of which can be read off $C_e[f_t]$ and $\norm{f_t}^2$:
+\begin{enumerate}[label=(\alph*),nosep]
+\item an error \emph{within blocks}: for a simple singular value, the student pairs the teacher's factors correctly but with the wrong strength, typically because the atom has not yet been amplified ($a_{e,q}<1$) or has overshot; for a degenerate block, this term also contains mispairings inside the block, since $C_{BB}=\sigma^\star_BR$ with an orthogonal $R\neq I$ has the right strengths and subspaces but pairs them differently from the teacher;
+\item an error \emph{across blocks}: the student couples a left factor of the teacher with a right factor that belongs to a different singular value;
+\item an \emph{outside} error: the energy of $f_t$ outside the teacher's factor spaces at $e$, i.e.\ the student uses functions of $x_{A_e}$ or of $x_{A_e^c}$ that the teacher does not use across this cut.
+\end{enumerate}
+Each bond gives a different split of the same number. Matching the coefficients $a_{e,q}$ while carrying a large outside error is not a success \citep[Section~7.1]{hfl_surrogate}, so the three terms should be reported together, for instance divided by $\norm{f^\star}^2=\norm{S^\star_e}_F^2$: the three fractions then add up to the relative error $\norm{f_t-f^\star}^2/\norm{f^\star}^2$, and how they split shows where the error lies at each bond. If only the leading $r<r^\star_e$ modes are used, (i)--(iii) hold with $C_e$ and $S^\star_e$ restricted to them, the last term becoming $\norm{(I-\Pi_{e,r})(f-f^\star)}^2$, where $\Pi_{e,r}$ is the projector onto the span of the $\chi^\star_{e,ij}$ with $i,j\le r$.
+
+\begin{remark}[Removing an atom from the output is not informative]\label{rem:output-ablation}
+One may try to assess whether an atom is useful to the student by removing the student's own component along it, $f^{(-q)}:=f-C_e[f]_{qq}\,\chi^\star_{e,q}$, and measuring the resulting change of the loss. For the square loss, with or without independent label noise, expanding the square and using $\langle f-f^\star,\chi^\star_{e,q}\rangle=C_e[f]_{qq}-\sigma^\star_{e,q}$ gives
 \[
-c_{e,k} = < f, \phi_e\psi_e > = \mathbb{E}[f(\phi_e\psi_e)^{\top}]
+\mathcal L\big(f^{(-q)}\big)-\mathcal L(f)=\frac{\sigma^{\star2}_{e,q}}2\Big(1-\big(1-a_{e,q}\big)^2\Big),\qquad a_{e,q}=\frac{C_e[f]_{qq}}{\sigma^\star_{e,q}}.
 \]
-A score of 0 means the feature has not been learned and a score close to 1 means that it has. For degenerate block we can extend this to the whole subspace of degenerate features.
+This is a function of $a_{e,q}$ alone: it is positive for $0<a_{e,q}<2$, maximal at $a_{e,q}=1$, and negative for $a_{e,q}<0$ or $a_{e,q}>2$. It carries no information beyond $a_{e,q}$, so causal questions have to be asked inside the network (Section~\ref{sec:use}).
+\end{remark}
 
-To dive more specifically into the internal structure leading to computing that atom, we check wether $h_l(x)$ already represent the feature $k$ for edge $e$. We compute the following acquisition score:
+%----------------------------------------------------------------------
+\subsection{The functional HSVD of a student}\label{sec:student-fsvd}
+%----------------------------------------------------------------------
 
+The coupling matrix describes a student in the coordinates of the teacher. A complementary, teacher-free description uses the student's own decomposition across the same cuts. Under~\eqref{eq:independent-blocks}, every $f\in L^2(\nu_x)$ has, for every bond $e$ of the teacher's tree, a Schmidt decomposition (Remark~\ref{rem:which-tensor})
+\begin{equation}\label{eq:student-fsvd}
+f(x)=\sum_{q\ge1}s_{e,q}(f)\,\phi^f_{e,q}(x_{A_e})\,\psi^f_{e,q}(x_{A_e^c}),
+\end{equation}
+with $s_{e,1}(f)\ge s_{e,2}(f)\ge\dots\ge0$ and orthonormal families $(\phi^f_{e,q})_q$ in $L^2(\mu_{A_e})$ and $(\psi^f_{e,q})_q$ in $L^2(\mu_{A_e^c})$. We call the family of these decompositions over the bonds of the teacher's tree the \emph{functional HSVD} of $f$ \citep[Section~7.4]{hfl_surrogate}, \citep[Section~9.2]{hfl_diagonal}. By Proposition~\ref{prop:dw-hsvd}(v), the functional HSVD of $f^\star$ is its data-weighted HSVD. For a student, it depends only on the predictor and on $\nu_x$, so it is defined in the same way for a DNN, for a TTN on any tree and for a polynomial surrogate, and its ranks are not bounded by any width. It describes what a student computes. The computational HSVD of Definition~\ref{def:features}, which describes how a polynomial network computes, is not used in this section.
+
+\paragraph{Comparison with the teacher.}
+The strengths $s_{e,q}(f_t)$ are compared with the $\sigma^\star_{e,q}$, and the directions through the alignment of the leading singular subspaces,
 \[
-A^z_{l,e,k} = \frac{\mathbb{E}[z_{e,k}h_l^{\top}]^{\top}H_l^{\dagger}\mathbb{E}[z_{e,k}h_l^{\top}]}{\text{Var}(z_{e,k})}
+\mathrm{Al}_{e,r}(t):=\frac1r\operatorname{tr}\big(P^{f_t}_{e,r}P^\star_{e,r}\big)\in[0,1],
 \]
-With $z=\phi,\psi,\phi\psi$ and  $H_l^{\dagger}$ is the Moore Penrose pseudo inverse of $\mathbb{E}[h_lh_l^{\top}]$
+where $P^{f_t}_{e,r}$ and $P^\star_{e,r}$ are the orthogonal projectors of $L^2(\mu_{A_e})$ onto the spans of the $r$ leading left singular functions of $f_t$ and of $f^\star$, with $r$ chosen at a gap of both spectra \citep[Section~9.4]{hfl_diagonal}; right subspaces are compared in the same way. Alignment measures the acquisition of directions, and singular values measure amplification. Both are stable: the cut operator of $f-f^\star$ has Hilbert--Schmidt norm $\norm{f-f^\star}$, so $|s_{e,q}(f)-\sigma^\star_{e,q}|\le\norm{f-f^\star}$ by Weyl's inequality, and the deviation of the subspaces is controlled by the Davis--Kahan theorem relative to the gap \citep[Section~8.3]{hfl_local}. The coupling matrix sees the part of this decomposition that lies in the teacher's factor spaces: the singular values of $C_e[f]$ are those of $\Pi_ef$, and $s_{e,q}(\Pi_ef)\le s_{e,q}(f)$ for every $q$, because the cut operator of $\Pi_ef$ is that of $f$ multiplied on both sides by orthogonal projectors.
 
-Acquisition score close to 1 means $h_l$ represent the feature vector (or input or output feature vector). A particularly interesting hypothesis is wether early layer represent features that correspond to edges closer to the leaves and later layer to edges closer to the root. Again for degenerate subspace we can extend to the degenerate features. 
+\paragraph{Estimation.}
+Draw $x^{\mathrm L}_1,\dots,x^{\mathrm L}_{n_L}\sim\mu_{A_e}$ and $x^{\mathrm R}_1,\dots,x^{\mathrm R}_{n_R}\sim\mu_{A_e^c}$ independently, and form the crossed-grid matrix
+\begin{equation}\label{eq:crossed-grid}
+\hat K_e[f]:=\bigg[\frac{f(x^{\mathrm L}_k,x^{\mathrm R}_l)}{\sqrt{n_Ln_R}}\bigg]_{k\le n_L,\ l\le n_R}.
+\end{equation}
+If $\hat K_e[f]=\hat U\hat S\hat V^\top$, the singular values estimate the $s_{e,q}(f)$, and $\sqrt{n_L}\,\hat U_{:,q}$ and $\sqrt{n_R}\,\hat V_{:,q}$ estimate the values of $\phi^f_{e,q}$ at the $x^{\mathrm L}_k$ and of $\psi^f_{e,q}$ at the $x^{\mathrm R}_l$ \citep[Section~8.4]{hfl_local}. Indeed, substituting~\eqref{eq:student-fsvd} gives $\hat K_e[f]=\sum_qs_{e,q}(f)\,p_qw_q^\top$ with $p_q=\big(\phi^f_{e,q}(x^{\mathrm L}_k)/\sqrt{n_L}\big)_k$ and $w_q=\big(\psi^f_{e,q}(x^{\mathrm R}_l)/\sqrt{n_R}\big)_l$, and these vectors are orthonormal up to sampling error by the law of large numbers. Letting first $n_R$ and then $n_L$ tend to infinity reduces the consistency of the leading singular values to the convergence of the spectra of kernel matrices to those of integral operators \citep{koltchinskii2000random}. The same grid should be used for the teacher and all students. Since the $n_Ln_R$ entries share rows and columns, uncertainty should be estimated with independent grids or by resampling rows and columns, not by an i.i.d.\ bootstrap of the entries; a $64\times64$ grid with a stability check at $128\times128$ is a reasonable start \citep[Sections~9 and~10.2]{hfl_surrogate}.
 
-Estimating wether some feature has been learned and where it has been learned across layers would be particularly useful things to track experimentally to establish that DNN learn representation in a similar way to TTN at least in this simple TTN student teacher setup with known ground truth. Also we can measure acquisition time during training as the first time at which some particular features have been learned i.e. when the $c_{e,k}$ and acquisition score $A^z_{l,e,k}$ are above a certain threshold (unclear what threshold they should be). 
+\begin{remark}[Cost, and proxies for large inputs]\label{rem:fsvd-cost}
+The size of $\hat K_e$ is chosen by the analyst and does not grow with the input dimension; the matrix costs $n_Ln_R$ evaluations of the student. The number of samples needed is set by the number of modes to resolve, by their gaps and by the tails of $f$, rather than by $\dim x$. When even this is too expensive, two proxies need only ordinary samples $X\sim\nu_x$. (a) The coupling matrix $C_e[f]$: an $r^\star_e\times r^\star_e$ matrix, whose Monte Carlo estimate from $M$ samples has error $O(M^{-1/2})$ when $f\,\phi^\star_{e,i}\psi^\star_{e,j}$ has finite variance. (b) More generally, a Galerkin version. Let $\Phi^D$ and $\Psi^D$ be finite families of functions of $x_{A_e}$ and of $x_{A_e^c}$, orthonormal in $L^2(\mu_{A_e})$ and $L^2(\mu_{A_e^c})$ and containing the teacher's singular functions. The SVD of $C^D_e[f]:=\E\big[f(X)\,\Phi^D(X_{A_e})\Psi^D(X_{A_e^c})^\top\big]$ is the functional SVD of the projection of $f$ onto $\operatorname{span}\Phi^D\otimes\operatorname{span}\Psi^D$, and the captured fraction $\norm{C^D_e[f]}_F^2/\norm f^2$ certifies how much of $f$ the dictionaries resolve. Natural dictionaries add products of whitened leaf embeddings, or orthonormal polynomials of the blocks, to the teacher's singular functions \citep[Section~8.2]{hfl_local}. As the dictionaries become complete, the projections converge to $f$, and their singular values and well-separated singular subspaces converge to those of~\eqref{eq:student-fsvd}.
+\end{remark}
 
-Another interesting experiment would be to establish wether a represented feature is actually useful for some computation. One approach would be to ablate one represented feature from the DNN and measure the effect on the loss. If the loss does not change the feature is represented but not causally useful in some computation. 
+\begin{remark}[Scope: dependent inputs]\label{rem:scope}
+Both $C_e$ and the functional HSVD rely on the independence~\eqref{eq:independent-blocks}: it makes the products $\chi^\star_{e,ij}$ orthonormal, makes $L^2(\nu_x)$ a tensor product across each cut, and makes the crossed grid sample from the data distribution. For real data, recombined inputs $(x^{\mathrm L}_k,x^{\mathrm R}_l)$ can be far from the data, and a factorization of $\nu_x$ is generally unknown, which is part of the reason for using DNNs in the first place. Conditional samplers, explicitly empirical operators or comparisons in representation space are then needed \citep[Section~6.5]{hfl_surrogate}. In the teacher--student benchmark, independence holds by construction, and the functional HSVD serves as a ground truth against which the more scalable representation observables below can be validated.
+\end{remark}
 
-For practical estimation of wether mode have been learned collect set of inputs, estimate features and function then compute empirical estimator of $C$ (which replace expected value with sample mean) compute the frobenius norm between $C$ and the matrix of singular values $S$ for each edge $e$. Compute acquisition times. 
+%----------------------------------------------------------------------
+\subsection{Representation observables: where is an atom represented?}\label{sec:representation}
+%----------------------------------------------------------------------
 
+Output observables say what a student computes, not where it computes it \citep[Section~8.5]{hfl_local}. Let $h_\ell(x)\in\R^{d_\ell}$ be the representation at layer $\ell$ of a DNN student, as in~\eqref{eq:network}, with $h_0=x$. We ask whether the left factor $\phi^\star_{e,q}$, the right factor $\psi^\star_{e,q}$ and the normalized atom $\chi^\star_{e,q}$ can be read off $h_\ell$. These are functions of the whole input, by composition with $x\mapsto x_{A_e}$ or $x\mapsto x_{A_e^c}$, so decoding them from $h_\ell(x)$ is well defined. The first two targets test whether the factors are available, and the third whether their product has been formed. As decoders we use affine maps, because the next layer acts on $h_\ell$ through an affine map.
 
-For pratical estimation of acquisition score we need to collect activations over some a set of inputs split them into training, validation and test probes. Fit the linear probe to the features, estimate acquisition scores. For degenerate subspace maybe CCA or multivariate regression would be useful. 
+\begin{definition}[Linear acquisition scores]\label{def:probe}
+Let $h(x)\in\R^d$ be a representation with $\E\norm{h(X)}^2<\infty$. For a target $\zeta\in L^2(\nu_x)$ with $\Var\zeta>0$, let
+\[
+R^2_h[\zeta]:=1-\frac{\min_{w\in\R^d,\,b\in\R}\E\big[(\zeta(X)-w^\top h(X)-b)^2\big]}{\Var\zeta}\in[0,1]
+\]
+be the population coefficient of determination of the best affine decoder. For a vector target $Z(x)\in\R^p$, let
+\[
+R^2_h[Z]:=\frac1{p_Z}\operatorname{tr}\Big(\Cov(Z)^+\,\Cov(Z,h)\,\Cov(h)^+\,\Cov(h,Z)\Big),\qquad p_Z:=\rank\Cov(Z)\ge1.
+\]
+For layer $\ell$ of a student at time $t$, we write $R^2_\ell[\zeta](t)$. The three scalar scores of the atom $(e,q)$ are $R^2_\ell[\phi^\star_{e,q}]$, $R^2_\ell[\psi^\star_{e,q}]$ and $R^2_\ell[\chi^\star_{e,q}]$; for a block $B$, the vector targets are $(\phi^\star_{e,q})_{q\in B}$, $(\psi^\star_{e,q})_{q\in B}$ and the products $(\chi^\star_{e,ij})_{i,j\in B}$.
+\end{definition}
 
-Also need to define similar observable for the student TTN but should be easier because it has well defined HSVD that we could compare with the teacher. 
+\begin{proposition}[Closed forms and invariances]\label{prop:probe}
+Let $h^{\mathrm w}:=(\Cov(h)^{1/2})^+(h-\E h)$ be the whitened representation.
+\begin{enumerate}[label=(\roman*),nosep]
+\item $R^2_h[\zeta]=\Cov(h,\zeta)^\top\Cov(h)^+\Cov(h,\zeta)/\Var\zeta=\norm{\E[h^{\mathrm w}\zeta]}^2/\Var\zeta$, and $w=\Cov(h)^+\Cov(h,\zeta)$ is an optimal decoder.
+\item $R^2_h[Z]$ is the sum of the squared canonical correlations between $h$ and $Z$ \citep{hotelling1936relations}, divided by $p_Z$. Equivalently, let $Z^{\mathrm w}:=(\Cov(Z)^{1/2})^+(Z-\E Z)$ be the whitened target; then $p_Z\,R^2_h[Z]$ is the total variance of $Z^{\mathrm w}$ explained by the best affine function of $h$. For a scalar target, $R^2_h[Z]=R^2_h[\zeta]$ with $\zeta=Z$.
+\item $R^2_h[\zeta]$ and $R^2_h[Z]$ do not change when $h$ is replaced by $Qh+c$ and $Z$ by $RZ+c'$, for invertible matrices $Q$ and $R$. In particular, they are invariant under permutations and rescalings of hidden units, and the block scores $R^2_h[Z]$ are invariant under the rotations within degenerate blocks of Remark~\ref{rem:degenerate}; the scalar scores of individual atoms inside a degenerate block are not.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) The optimal $b$ centres the decoder, so the minimum equals $\min_w\E[(\zeta-\E\zeta-w^\top(h-\E h))^2]$. If $\Cov(h)w=0$, then $w^\top(h-\E h)=0$ almost surely, hence $w^\top\Cov(h,\zeta)=0$. Thus $\Cov(h,\zeta)$ lies in the range of $\Cov(h)$, the normal equations $\Cov(h)w=\Cov(h,\zeta)$ are solved by $w=\Cov(h)^+\Cov(h,\zeta)$, and the minimum is $\Var\zeta-\Cov(h,\zeta)^\top\Cov(h)^+\Cov(h,\zeta)$. The second expression follows from $\E[h^{\mathrm w}\zeta]=(\Cov(h)^{1/2})^+\Cov(h,\zeta)$, which holds because $h^{\mathrm w}$ is centred. (ii) The canonical correlations are the singular values of $(\Cov(h)^{1/2})^+\Cov(h,Z)(\Cov(Z)^{1/2})^+$, and by cyclicity of the trace the sum of their squares is the trace in the definition of $R^2_h[Z]$. By (i) applied to each coordinate, the same trace is the total variance of the whitened target explained by $h$. (iii) Canonical correlations and best affine predictions depend only on the spaces of affine functions of $h$ and of $Z$, which invertible affine maps leave unchanged.
+\end{proof}
+
+\paragraph{Reading the three scores.}
+High scores $R^2_\ell[\phi^\star_{e,q}]$ and $R^2_\ell[\psi^\star_{e,q}]$ with a low $R^2_\ell[\chi^\star_{e,q}]$ mean that both factors are available at layer $\ell$ but that their product has not been formed as an explicit feature; a later rise of $R^2_\ell[\chi^\star_{e,q}]$ means that the composition has become explicit. At the last hidden layer, $f_\theta=c^\top h_L+b_{\mathrm{out}}$ is itself an affine readout, so a student with $f_\theta\approx f^\star$ represents the sum of the atoms there, but not necessarily each atom separately.
+
+\begin{remark}[What linear decodability does and does not mean]\label{rem:probe-meaning}
+Linear decodability is deliberately restrictive: it says that a feature has become explicitly and cheaply accessible to the next layer. A low score does not show that the information is absent, since it can be encoded nonlinearly. Conversely, unrestricted nonlinear decoders are too permissive: if $h_\ell$ is an injective function of $x$, every function of $x$ can be decoded from it, whether or not the network has computed it. A controlled hierarchy of decoders interpolates between the two, for instance polynomial decoders of a low degree $k$, which are linear decoders on $(h,h^{\otimes2},\dots,h^{\otimes k})$ so that Proposition~\ref{prop:probe} applies, or small multilayer perceptrons of fixed width; the score is then reported as a function of the complexity of the decoder. In every case, the same decoder should be applied to controls \citep{alain2016understanding}: the input $h_0=x$, the network at initialization, and \emph{control targets} of the same complexity that play no role in the task, for instance the singular functions of an independently drawn teacher with the same tree and ranks. A representation that decodes the control targets as well as the teacher's factors reflects the capacity of the probe and the richness of the representation rather than the learning of the task; this is the selectivity criterion of \citet{hewitt2019designing}. The input baseline $R^2_0[\zeta]$ is essential. With linear leaf embeddings, the left factors at leaf bonds are linear functions of $x$ and are perfectly decodable from the input itself, so only targets with a small input baseline say something about what the network has computed. Finally, decodability shows that a feature is present, not that it is used \citep[Section~7.3]{hfl_surrogate}.
+\end{remark}
+
+For a DNN, one may expect the order of the layers to reflect the order of the bonds in the tree. To state this precisely, let the \emph{height} $\operatorname{ht}(e)$ of a bond be the height of the subtree below it, with $\operatorname{ht}(e)=1$ for a leaf bond, and let
+\[
+\ell_{e,q}(t;\delta):=\min\big\{\ell\ge1:\ R^2_\ell[\phi^\star_{e,q}](t)\ge\delta\big\}\qquad(\min\emptyset=+\infty)
+\]
+be the first layer in which the left factor of the atom $(e,q)$ is explicitly represented at time $t$.
+
+\begin{hypothesis}[Layer--bond correspondence]\label{hyp:layer-bond}
+In a DNN student trained on a TTN teacher, once the factors have been acquired, $\ell_{e,q}(t;\delta)$ is nondecreasing in $\operatorname{ht}(e)$: the factors of bonds closer to the leaves are first represented in earlier layers, and the factors of bonds closer to the root in later layers.
+\end{hypothesis}
+
+The first layer above the threshold, rather than the layer with the highest score, is the right statistic, because a feature computed early can remain decodable in all later layers, for instance through residual connections. The hypothesis is natural in view of~\eqref{eq:feature-composition}: once the factors at the two bonds below $e$ are linearly available, the factors at $e$ are bilinear functions of them, which one layer with quadratic activations makes exactly available, and one layer with a standard activation approximately. It can be tested with the rank correlation between $\operatorname{ht}(e)$ and $\ell_{e,q}$ across atoms with a small input baseline. In a TTN student on the teacher's tree, the correspondence is built into the architecture (Section~\ref{sec:ttn-students}); in a DNN it has to be discovered, and whether it is discovered is part of the comparison.
+
+%----------------------------------------------------------------------
+\subsection{Use and causal reliance}\label{sec:use}
+%----------------------------------------------------------------------
+
+A feature can be represented without being used: residual connections and wide layers can carry many decodable features that the downstream computation ignores. Conversely, a student can contain an atom in its output without any single layer encoding it linearly. We therefore add observables of \emph{use}, defined by derivatives of the downstream computation, and of \emph{causal reliance}, defined by interventions. Raw weights are not suitable for this purpose. They are not invariant under the symmetries of hidden units (Remark~\ref{rem:symmetries}), and unsupervised spectra of weight or activation Gram matrices can change considerably without revealing which computation has been learned; they should be paired with task-conditioned statistics \citep{hfl_review}.
+
+Write $f_\theta=f_{>\ell}\circ h_\ell$, where $f_{>\ell}:\R^{d_\ell}\to\R$ is the map computed by the layers above $\ell$, and use the whitened representation $h^{\mathrm w}_\ell:=(\Cov(h_\ell)^{1/2})^+(h_\ell-\E h_\ell)$, with the moments of the current checkpoint. In whitened coordinates, every unit direction in the range of $\Cov(h_\ell)$ has unit variance and orthogonal directions are uncorrelated, so that a perturbation of a given size means the same thing in every direction. For a target $\zeta$ with $R^2_\ell[\zeta]>0$, the \emph{code direction}
+\[
+u_\ell[\zeta]:=\frac{\E[h^{\mathrm w}_\ell\zeta]}{\norm{\E[h^{\mathrm w}_\ell\zeta]}}
+\]
+is the direction of the optimal linear decoder (Proposition~\ref{prop:probe}(i)), and the \emph{code} $u_\ell[\zeta]^\top h^{\mathrm w}_\ell(x)$ has unit variance and squared correlation $R^2_\ell[\zeta]$ with $\zeta$. For a vector target $Z$, the code directions form an orthonormal basis $U_\ell[Z]$ of the span of the columns of $\E[h^{\mathrm w}_\ell Z^\top]$.
+
+\begin{definition}[Downstream sensitivity]\label{def:sensitivity}
+Let $\partial_\ell f(x):=\Cov(h_\ell)^{1/2}\,\nabla f_{>\ell}\big(h_\ell(x)\big)$ be the gradient of the output with respect to the whitened representation, and let $\mathrm{AGOP}_\ell:=\E\big[\partial_\ell f(X)\,\partial_\ell f(X)^\top\big]$ be the corresponding average gradient outer product \citep[cf.][]{radhakrishnan2024mechanism}. The \emph{sensitivity} of the output to the code of $\zeta$, and its normalized version, are
+\[
+\operatorname{sens}_\ell[\zeta]:=u_\ell[\zeta]^\top\mathrm{AGOP}_\ell\,u_\ell[\zeta]=\E\Big[\big(\partial_\ell f(X)^\top u_\ell[\zeta]\big)^2\Big],\qquad
+\overline{\operatorname{sens}}_\ell[\zeta]:=\frac{\operatorname{sens}_\ell[\zeta]}{\operatorname{tr}(\mathrm{AGOP}_\ell)/\rank\Cov(h_\ell)},
+\]
+and, for a vector target, $\operatorname{sens}_\ell[Z]:=\operatorname{tr}\big(U_\ell[Z]^\top\mathrm{AGOP}_\ell\,U_\ell[Z]\big)$.
+\end{definition}
+
+The sensitivity is the mean squared first-order change of the output per standard deviation of the code. The denominator of $\overline{\operatorname{sens}}_\ell$ is the average of $u^\top\mathrm{AGOP}_\ell u$ over uniformly random unit directions $u$ in the range of the whitened representation, so $\overline{\operatorname{sens}}_\ell[\zeta]>1$ means that the downstream computation is more sensitive to the code than to a typical direction. A high $R^2_\ell[\zeta]$ together with $\overline{\operatorname{sens}}_\ell[\zeta]\lesssim1$ indicates a feature that is present but not preferentially used. For orientation: if $h_\ell$ contained $\phi^\star_{e,q}$ as a coordinate uncorrelated with the other coordinates, and $f_{>\ell}$ used it as the teacher does, through the term $\sigma^\star_{e,q}\phi^\star_{e,q}\psi^\star_{e,q}$, then $\operatorname{sens}_\ell[\phi^\star_{e,q}]=\sigma^{\star2}_{e,q}\Var\phi^\star_{e,q}$.
+
+The sensitivity has no sign. To know whether strengthening the code would increase the atom in the output, inject the atom along its code direction, $h^{\mathrm w}_\ell(x)\mapsto h^{\mathrm w}_\ell(x)+\varepsilon\,\chi^\star_{e,q}(x)\,u$ with $u=u_\ell[\chi^\star_{e,q}]$, and let $f^{(\varepsilon)}$ be the resulting output. Since $\frac{d}{d\varepsilon}f^{(\varepsilon)}(x)\big|_{\varepsilon=0}=\chi^\star_{e,q}(x)\,\partial_\ell f(x)^\top u$ by the chain rule, the \emph{gain}
+\[
+\operatorname{gain}_\ell(e,q):=\frac{d}{d\varepsilon}\Big|_{\varepsilon=0}\big\langle f^{(\varepsilon)},\chi^\star_{e,q}\big\rangle=\E\Big[\chi^\star_{e,q}(X)^2\,\partial_\ell f(X)^\top u\Big]
+\]
+is positive when a slightly stronger internal code would increase the output coefficient $C_e[f]_{qq}$. It is meaningful only once the atom is represented, i.e.\ once $R^2_\ell[\chi^\star_{e,q}]$ is clearly above its controls (Remark~\ref{rem:probe-meaning}), since before that the code direction is dominated by noise. For a block $B$, the same definition applies to the normalized block atom $\chi^\star_{e,B}:=|B|^{-1/2}\sum_{q\in B}\chi^\star_{e,q}$, which is invariant under the rotations of Remark~\ref{rem:degenerate}.
+
+\begin{remark}[Two other Jacobian observables]\label{rem:other-jacobians}
+(a) \emph{Transmission.} Replacing $f_{>\ell}$ by the map from $h_\ell$ to the whitened representation of the next layer measures whether that layer transmits the code: $\E\norm{(\Cov(h_{\ell+1})^{1/2})^+J_{\ell\to\ell+1}\Cov(h_\ell)^{1/2}u}^2$, with $J_{\ell\to\ell+1}=\partial h_{\ell+1}/\partial h_\ell$, compared with the same quantity for random directions $u$. Unlike $\norm{W_{\ell+1}u}$, it includes the current derivatives of the activations. (b) \emph{Input side.} If $\zeta$ is a differentiable function of $h_\ell$, then by the chain rule $\nabla_x\zeta$ lies in the row space of $\partial h_\ell/\partial x$, so a fraction equal to one of $\norm{\nabla_x\zeta}^2$ lying in that row space, at almost every $x$, is necessary for $\zeta$ to be an exact differentiable function of $h_\ell$. It is uninformative whenever the layer is at least as wide as the input and its Jacobian has full column rank, which is the typical case, so we do not use it as a primary observable.
+\end{remark}
+
+\paragraph{Interventions.}
+Neither projections nor derivatives show that a student relies on a feature: a derivative is local, and a code to which the output is sensitive may be bypassed. Causal tests intervene on the code and measure the response.
+
+\begin{definition}[Erasure and injection]\label{def:interventions}
+Fix a layer $\ell$ and a target $\zeta$, which may be a factor, an atom or the vector target of a block, with code directions $U=U_\ell[\zeta]$. The \emph{erasure} of $\zeta$ at layer $\ell$ replaces $h^{\mathrm w}_\ell$ by $(I-UU^\top)h^{\mathrm w}_\ell$, that is,
+\[
+h_\ell\ \mapsto\ h_\ell-\Cov(h_\ell)^{1/2}\,UU^\top h^{\mathrm w}_\ell,
+\]
+and passes the result to the layers above $\ell$. The \emph{injection} of a scalar target $\zeta$ along a unit direction $u$ in the range of the whitened representation replaces $h^{\mathrm w}_\ell(x)$ by $h^{\mathrm w}_\ell(x)+\varepsilon\,\zeta(x)\,u$; a vector target is injected along an orthonormal family of directions. Once $\zeta$ is represented, $u$ can be its code direction $u_\ell[\zeta]$; before that, the code direction is undefined or dominated by noise, and $u$ is a fixed direction chosen independently of the data, for instance at random. Either intervention can be applied once, at a checkpoint, or kept in place during training from some time on.
+\end{definition}
+
+\begin{proposition}[Erasure removes all linear information]\label{prop:erasure}
+If $h'_\ell$ denotes the erased representation, then $\Cov(h'_\ell,\zeta)=0$ (and $\Cov(h'_\ell,Z)=0$ for a vector target). Hence $R^2_{h'_\ell}[\zeta]=0$: no affine function of $h'_\ell$ predicts $\zeta$ better than a constant.
+\end{proposition}
+
+\begin{proof}
+Since $\E[h^{\mathrm w}_\ell\zeta]$ lies in the span of $U$,
+$\Cov(h'_\ell,\zeta)=\Cov(h_\ell,\zeta)-\Cov(h_\ell)^{1/2}\E[h^{\mathrm w}_\ell\zeta]=\Cov(h_\ell,\zeta)-\Cov(h_\ell)^{1/2}(\Cov(h_\ell)^{1/2})^+\Cov(h_\ell,\zeta)=0$, because $\Cov(h_\ell,\zeta)$ lies in the range of $\Cov(h_\ell)$ (proof of Proposition~\ref{prop:probe}). The conclusion follows from Proposition~\ref{prop:probe}(i).
+\end{proof}
+
+This erasure is the closed-form linear concept erasure (LEACE) of \citet{belrose2023leace}, which removes all linear information about $\zeta$ with the smallest possible change of the representation, in the sense made precise there. This is why the projection is done in whitened coordinates; it also replaces the code by its mean rather than by zero. Information about $\zeta$ can survive nonlinearly, so a null effect of an erasure is weaker evidence than a positive one.
+
+\paragraph{What to measure.}
+After an erasure at a checkpoint, measure the immediate response: the change of the coupling matrices $C_e[f]$, in particular the drop of $a_{e,q}$, the change of the loss, and the collateral changes of all other atoms. When the erasure is kept during training, measure the subsequent response, chiefly the acquisition times of the atoms at the bonds above $e$. By~\eqref{eq:feature-composition}, the factors of these atoms are built from the left factors at $e$, not from the atoms at $e$, which also contain the right factors $\psi^\star_{e,q}$ of the environment; the target to erase for this purpose is therefore the left factor $\phi^\star_{e,q}$, or the vector $(\phi^\star_{e,q})_{q\in B}$ for a block. The moments $\E h_\ell$ and $\Cov(h_\ell)$ and the code directions can then be frozen at the checkpoint, which applies a fixed affine map to the network, or re-estimated at every checkpoint. Proposition~\ref{prop:erasure} holds for the moments with which the erasure is computed, so only the second version keeps the feature linearly erased while the student changes and possibly re-encodes it in other directions, and only the second comes close to blocking the feature; the two versions answer different questions. An injection of $\phi^\star_{e,q}$ made before it is represented naturally asks the converse questions: does $a_{e,q}$ rise, do the atoms above $e$ appear earlier, does the loss decrease faster, or does the student ignore the injected code? Immediate and subsequent responses should be reported separately \citep[Section~7.6]{hfl_surrogate}.
+
+\paragraph{Relation with acceleration.}
+Kept in place during training, the erasure and the injection of a left factor $\phi^\star_{e,q}$ implement, for a DNN, the ``blocked'' and ``learned'' interventions of Definition~\ref{def:acceleration} on the earlier feature, the later feature being an atom $(e',q')$ at a bond $e'$ above $e$, measured by $a_{e',q'}$ with target value $1$. In a TTN student, the same questions are asked by clamping cores \citep[Section~3]{hfl_diagonal}, or by applying the same erasure to the representation at a bond (Section~\ref{sec:ttn-students}). This is what makes the comparison mechanistic: at this level, a TTN is a faithful surrogate of a DNN only if interventions on the same teacher feature have comparable effects on both \citep[Section~7.6]{hfl_surrogate}. A complementary intervention acts on the teacher instead of the students and does not require locating a code: weaken a prerequisite atom, for instance by replacing $f^\star$ with $f^\star-\frac12\sigma^\star_{e,q}\chi^\star_{e,q}$, train both students on the modified teacher, and compare the shifts of the acquisition times of the atoms above $e$. Since the modification also changes the data-weighted HSVD at the other bonds, the atoms of the modified teacher must be recomputed; what matters is that both students are compared on the same modified teacher.
+
+\paragraph{Controls.}
+Every intervention needs controls: the same intervention along random directions of the same dimension in whitened coordinates, perturbations of matched norm, and sham interventions that run the same machinery with $U=0$ \citep[Section~3.3]{hfl_diagonal}. The data used to estimate the whitening and the code directions should be disjoint from the data on which effects are measured. Temporal order alone is not evidence of dependence: two atoms with different strengths are learned at different times even when they are independent \citep[Section~3.2]{hfl_diagonal}. Only interventions separate such staging from a genuine dependence of one acquisition on another.
+
+%----------------------------------------------------------------------
+\subsection{Observables for TTN students}\label{sec:ttn-students}
+%----------------------------------------------------------------------
+
+All the observables above are defined for every student, but they are simpler, and partly exact, for a TTN student $g_\vartheta$ on the teacher's tree with the same leaf embeddings, because such a student has its own data-weighted HSVD.
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{Functional HSVD.} Proposition~\ref{prop:dw-hsvd}, applied to the tensor $T(\vartheta)$ of the student instead of $T^\star$, shows that the functional HSVD~\eqref{eq:student-fsvd} of $g_\vartheta$ is its data-weighted HSVD, which is computed exactly as in Remark~\ref{rem:dw-compute}, without crossed grids.
+\item \emph{Coupling matrices.} Let $\tilde M_e(\vartheta):=\Sigma_{A_e}^{1/2}\,T(\vartheta)^{\langle A_e\rangle}\,\Sigma_{A_e^c}^{1/2}$ be the data-weighted matricization of the student. Then $C_e[g_\vartheta]=U^{\star\top}_e\tilde M_e(\vartheta)V^\star_e$, which is computed exactly by contracting the student with the two orthonormalized halves of the teacher, and by Remark~\ref{rem:second-moments}, $\norm{g_\vartheta-f^\star}^2=\vect(T(\vartheta)-T^\star)^\top\Sigma_{[N]}\vect(T(\vartheta)-T^\star)$. The error decomposition~\eqref{eq:error-decomposition} is therefore exact, with no sampling error.
+\item \emph{Representations.} The role of a hidden layer is played by the representation that the subtree below a bond $e$ passes through it, $h_e(x_{A_e}):=F_e^\top\Xi_{A_e}(x_{A_e})\in\R^{D_e}$, where $F_e$ is the contraction of the student's cores below $e$ (Lemma~\ref{lem:cut}). Unlike a hidden layer of a DNN, $h_e$ only sees the blocks below $e$, and by independence it is uncorrelated with every function of the other blocks. No bond sees all the blocks, and no bond sees exactly the blocks of $A_e^c$ unless $e$ is a child bond of the root. Hence the atoms $\chi^\star_{e,q}$ cannot be fully read off any bond, and neither can the right factors $\psi^\star_{e,q}$, except at a child bond of the root, whose right factors are functions of the blocks below the other child bond. Representation observables at bonds therefore concern left factors: the probes $R^2_{h_{e'}}[\phi^\star_{e,q}]$, for the bond $e'=e$ and for the bonds $e'$ above $e$, and the corresponding code directions and erasures. Since $g_\vartheta(x)=h_e(x_{A_e})^\top n_e(x_{A_e^c})$, with $n_e:=H_e^\top\Xi_{A_e^c}$ the representation that the rest of the network passes through $e$, the gradient of the output with respect to the whitened $h_e$, the other blocks being fixed, is $\Cov(h_e)^{1/2}n_e(x_{A_e^c})$; it replaces $\partial_\ell f$ in the sensitivities. All these moments are computable exactly from the first and second moments $\E\xi_a$ and $\Sigma_a$ of the embeddings. Finally, the student's own left singular functions at $e$ are linear readouts of $h_e$, since $\tilde M_e(\vartheta)=\Sigma_{A_e}^{1/2}F_eH_e^\top\Sigma_{A_e^c}^{1/2}$ by Lemma~\ref{lem:cut}, as in Proposition~\ref{prop:features}(ii).
+\end{enumerate}
+For (ii), Proposition~\ref{prop:dw-hsvd}(iii) applied to the student gives $g_\vartheta=\tilde\Xi_{A_e}^\top\tilde M_e(\vartheta)\tilde\Xi_{A_e^c}$ almost surely. Multiply by $\phi^\star_{e,i}\psi^\star_{e,j}=(u^{\star\top}_{e,i}\tilde\Xi_{A_e})(v^{\star\top}_{e,j}\tilde\Xi_{A_e^c})$ and take expectations: by independence, and since $\E[\tilde\Xi_A\tilde\Xi_A^\top]$ is the orthogonal projector onto the range of $\Sigma_A^{1/2}$ (proof of Proposition~\ref{prop:dw-hsvd}), which contains the singular vectors of the teacher, $C_e[g_\vartheta]_{ij}=u^{\star\top}_{e,i}\tilde M_e(\vartheta)v^\star_{e,j}$. The difference between the two kinds of students is now clear. In a TTN student on the teacher's tree, the correspondence between the teacher's bonds and the student's representations is fixed by the architecture, and the question is only when each left factor and each atom are acquired. In a DNN student, this correspondence has to be discovered (Hypothesis~\ref{hyp:layer-bond}), and the atoms need not be localized in any layer. A TTN on a wrong tree is an intermediate control: its output observables are those of any student, but its bonds do not match those of the teacher.
+
+%----------------------------------------------------------------------
+\subsection{Acquisition times, comparison of students, and estimation}\label{sec:compare-protocol}
+%----------------------------------------------------------------------
+
+\begin{definition}[Acquisition times]\label{def:acq-times}
+Fix a threshold $\delta\in(0,1)$ and a persistence window $\Delta\ge0$. The \emph{output acquisition time} and the \emph{representation acquisition times} of the atom $(e,q)$ are
+\begin{align*}
+\tau^{\mathrm{out}}_{e,q}(\delta)&:=\inf\big\{t\ge0:\ a_{e,q}(s)\ge\delta\ \text{for all }s\in[t,t+\Delta]\big\},\\
+\tau^{\zeta}_{e,q}(\delta)&:=\inf\Big\{t\ge0:\ \max_{\ell\ge1}R^2_\ell[\zeta](s)\ge\delta\ \text{for all }s\in[t,t+\Delta]\Big\},\qquad\zeta\in\{\phi^\star_{e,q},\psi^\star_{e,q},\chi^\star_{e,q}\},
+\end{align*}
+with $\inf\emptyset=+\infty$, and similarly with $a_{e,B}$ and $R^2_\ell[Z]$ for blocks. For a TTN student, $\tau^{\phi^\star_{e,q}}_{e,q}$ is defined with a maximum over bonds instead of layers, while $\tau^{\psi^\star_{e,q}}_{e,q}$ and $\tau^{\chi^\star_{e,q}}_{e,q}$ are in general infinite, since a bond only sees the blocks below it (Section~\ref{sec:ttn-students}).
+\end{definition}
+
+For $\Delta=0$, $\tau^{\mathrm{out}}_{e,q}$ is the acquisition time $\tau_m(\delta)$ of~\eqref{eq:acquisition}. The persistence window prevents noisy, transient crossings from being counted as acquisitions; with discrete checkpoints, it is a number of consecutive checkpoints. A time that is not observed before the end of training is reported as right-censored, not dropped \citep[Section~7.3]{hfl_surrogate}.
+
+\paragraph{Choosing the thresholds.}
+No threshold is canonical. One should report the curves $a_{e,q}(t)$ and $R^2_\ell[\zeta](t)$ themselves, together with acquisition times for several thresholds, for example $\delta\in\{0.1,0.25,0.5\}$ \citep[Section~7.3]{hfl_surrogate}, and draw only conclusions that hold over this range. In saddle-to-saddle dynamics, transitions are typically sharp and well separated, so that orders of acquisition do not depend on $\delta$; when two curves cross, the order depends on $\delta$ and should be reported as unresolved. For representation scores, the threshold must in addition exceed the input and initialization baselines and the scores of the control targets of Remark~\ref{rem:probe-meaning}.
+
+\paragraph{Comparing a TTN and a DNN.}
+All the observables are functions of the predictor, or of a representation and of fixed teacher targets, so they can be computed for both students and compared in the same time variable (Hypothesis~\ref{hyp:global}). The comparison has several levels:
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{trajectories}: $\sup_t|a^{\mathrm{DNN}}_{e,q}(t)-a^{\mathrm{TTN}}_{e,q}(t)|$, or a root mean square over $t$, for every atom, and the time course of the three terms of~\eqref{eq:error-decomposition} at every bond;
+\item \emph{orders}: the rank correlation, for instance Spearman's, of the acquisition times $\tau^{\mathrm{out}}_{e,q}(\delta)$ across atoms, and whether atoms at lower bonds are acquired before atoms at higher bonds in both students;
+\item \emph{delays}: the delay $\tau^{\mathrm{out}}_{e,q}-\tau^{\phi^\star_{e,q}}_{e,q}$ between the representation of the left factor and the appearance of the atom in the output, which is defined for both students; for a DNN, also whether the factors are represented before their product;
+\item \emph{interventions}: whether erasing or injecting the same left factor, or weakening the same teacher atom, shifts the same acquisition times by comparable amounts in both students.
+\end{enumerate}
+
+\paragraph{Estimation protocol.}
+\begin{enumerate}[label=\arabic*.,nosep,leftmargin=*]
+\item \emph{Teacher.} Compute the $\Sigma_a$ analytically, or estimate them on a large sample independent of all other data. Compute the data-weighted HSVD at every bond (Remark~\ref{rem:dw-compute}), and record the singular values, their gaps, and the blocks of singular values whose gaps are below the estimation error.
+\item \emph{Output observables.} Fix a held-out audit set $x_1,\dots,x_M$, independent of the training data, and use it at every checkpoint; reusing the same inputs reduces the noise of differences over time. Estimate
+\[
+\hat C_e[f_t]=\frac1M\sum_{n=1}^Mf_t(x_n)\,\Phi^\star_e(x_{n,A_e})\,\Psi^\star_e(x_{n,A_e^c})^\top
+\]
+and $\norm{f_t}^2$ on this set, with error bars from a bootstrap over audit examples or from independent audit sets. The estimates of $C_e[f_t]$ and of the coefficients $a_{e,q}(t)$ are unbiased, and their error is $O(M^{-1/2})$ when $f_t\,\phi^\star_{e,i}\psi^\star_{e,j}$ has finite variance \citep[Section~9.1]{hfl_diagonal}. The three terms of~\eqref{eq:error-decomposition} are quadratic in $C_e[f_t]$, and plugging in $\hat C_e[f_t]$ biases them: $\E\norm{\hat C-S^\star_e}_F^2$ exceeds $\norm{C-S^\star_e}_F^2$ by the sum of the variances of the entries of $\hat C$, of order $r^{\star2}_e/M$, so the within-block and across-block terms are overestimated, the outside term is underestimated, and the across-block term has a positive floor even when the student pairs the factors correctly. Sample splitting removes this bias: if $\hat C^{(1)}$ and $\hat C^{(2)}$ are computed on two disjoint halves of the audit set, then $\langle\hat C^{(1)}_{BB'}-S^\star_{e,BB'},\hat C^{(2)}_{BB'}-S^\star_{e,BB'}\rangle_F$ is an unbiased estimate of $\norm{C_{BB'}-S^\star_{e,BB'}}_F^2$ for every pair of blocks, and $\langle\hat C^{(1)},\hat C^{(2)}\rangle_F$ an unbiased estimate of $\norm{C}_F^2$; these estimates can be negative when the true value is small. For TTN students, use the exact formulas of Section~\ref{sec:ttn-students}.
+\item \emph{Representation observables.} At each checkpoint and layer, collect $h_\ell(x_n)$ on separate sets for fitting probes, for validation and for testing. Fit ridge-regularized probes, choose the regularization on the validation set, and report the held-out $R^2$. Held-out estimation is essential: the in-sample $R^2$ of an affine probe tends to $1$ as $d_\ell$ approaches the number of probe examples, whatever the target. For blocks, use multivariate ridge regression on whitened targets, or canonical correlation analysis after reducing $h_\ell$ to its leading principal components, as in SVCCA \citep{raghu2017svcca}. Include the controls of Remark~\ref{rem:probe-meaning}.
+\item \emph{Use and interventions.} Since the output is scalar, one backward pass per audit example gives the gradient $\partial_\ell f(x)$, hence $\operatorname{sens}_\ell$, $\operatorname{gain}_\ell$ and $\operatorname{tr}(\mathrm{AGOP}_\ell)=\E\norm{\partial_\ell f(X)}^2$; Jacobian--vector products give transmissions without forming Jacobians.
+\item \emph{Statistics.} Pair the students: same teacher, same data and same seeds wherever pairing is meaningful. Use about five seeds to screen and at least twenty for confirmatory claims about orders of acquisition or effects of interventions, declare the primary bonds and atoms in advance, and report unresolved gaps and censored times \citep[Sections~9 and~10]{hfl_surrogate}.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{Summary: levels of evidence}\label{sec:compare-summary}
+%----------------------------------------------------------------------
+
+Table~\ref{tab:evidence} collects the observables. The levels should not be collapsed: an atom can be present in the output without being localized in any layer, represented in a layer without being used, and used locally without the student relying on it.
+
+\begin{table}[t]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.15\textwidth}p{0.36\textwidth}p{0.39\textwidth}}
+\hline
+\raggedright Level & \raggedright Question & \raggedright Observables \tabularnewline
+\hline
+\raggedright Output & \raggedright Does the predictor contain the atom, with the right factors, pairing and strength? & \raggedright $C_e[f_t]$, $a_{e,q}(t)$ and the decomposition~\eqref{eq:error-decomposition}; functional HSVD $s_{e,q}(f_t)$ and alignment $\mathrm{Al}_{e,r}(t)$ \tabularnewline
+\raggedright Representation & \raggedright Can the factors and the atom be read off a layer? For a TTN: can the left factor be read off a bond? & \raggedright $R^2_\ell[\phi^\star_{e,q}]$, $R^2_\ell[\psi^\star_{e,q}]$, $R^2_\ell[\chi^\star_{e,q}]$; $R^2_\ell[Z]$ for blocks; first layer $\ell_{e,q}$; for a TTN, $R^2_{h_{e'}}[\phi^\star_{e,q}]$ \tabularnewline
+\raggedright Use & \raggedright Is the downstream computation sensitive to the code, with the right sign? & \raggedright $\operatorname{sens}_\ell$, $\overline{\operatorname{sens}}_\ell$, $\operatorname{gain}_\ell(e,q)$, transmission \tabularnewline
+\raggedright Causal reliance & \raggedright Does erasing or injecting the code of the left factor change the output, the loss, or the acquisition of the atoms above it? & \raggedright erasure and injection, teacher-strength interventions; random-direction, matched-norm and sham controls \tabularnewline
+\hline
+\end{tabular}
+\caption{Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables.}
+\label{tab:evidence}
+\end{table}
+
+For an atom that a DNN acquires hierarchically, one expects the following sequence: its factors become decodable in some layer; then their product becomes decodable; the downstream computation becomes sensitive to its code; its output coefficient $a_{e,q}(t)$ grows towards $1$; and erasing the code of its left factor removes the output component and delays the acquisition of the atoms above it. A TTN student on the teacher's tree has no layer in which the product of the two factors could appear, but it has the same left factors at its bonds and the same output coefficients. The surrogate hypothesis is at its strongest if the trajectories of a TTN student predict, for a DNN student, when the left factors become accessible, when the output coefficients grow, and how interventions on one feature change the acquisition of the others.
+
 %======================================================================
 \section{Experiments (slop)}\label{sec:experiments}
 %======================================================================
@@ -867,10 +1280,20 @@ This section is to be completed. For reference, the experiments suggested in the
 %======================================================================
 \small
 
+\bibitem[Alain and Bengio(2016)]{alain2016understanding}
+G.~Alain and Y.~Bengio.
+\newblock Understanding intermediate layers using linear classifier probes.
+\newblock arXiv:1610.01644, 2016.
+
 \bibitem[Bai et~al.(2020)]{bai2020taylorized}
 Y.~Bai, B.~Krause, H.~Wang, C.~Xiong, and R.~Socher.
 \newblock Taylorized training: towards better approximation of neural network training at finite width.
 \newblock arXiv:2002.04010, 2020.
+
+\bibitem[Belrose et~al.(2023)]{belrose2023leace}
+N.~Belrose, D.~Schneider-Joseph, S.~Ravfogel, R.~Cotterell, E.~Raff, and S.~Biderman.
+\newblock {LEACE}: perfect linear concept erasure in closed form.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~36, 2023.
 
 \bibitem[Cohen et~al.(2016)]{cohen2016expressive}
 N.~Cohen, O.~Sharir, and A.~Shashua.
@@ -947,6 +1370,11 @@ J.~H{\aa}stad.
 \newblock Tensor rank is {NP}-complete.
 \newblock \emph{Journal of Algorithms}, 11(4):644--654, 1990.
 
+\bibitem[Hewitt and Liang(2019)]{hewitt2019designing}
+J.~Hewitt and P.~Liang.
+\newblock Designing and interpreting probes with control tasks.
+\newblock In \emph{Conference on Empirical Methods in Natural Language Processing (EMNLP-IJCNLP)}, 2019.
+
 \bibitem[Hillar and Lim(2013)]{hillar2013most}
 C.~J. Hillar and L.-H. Lim.
 \newblock Most tensor problems are {NP}-hard.
@@ -961,6 +1389,11 @@ F.~L. Hitchcock.
 S.~Holtz, T.~Rohwedder, and R.~Schneider.
 \newblock On manifolds of tensors of fixed {TT}-rank.
 \newblock \emph{Numerische Mathematik}, 120(4):701--731, 2012.
+
+\bibitem[Hotelling(1936)]{hotelling1936relations}
+H.~Hotelling.
+\newblock Relations between two sets of variates.
+\newblock \emph{Biometrika}, 28(3/4):321--377, 1936.
 
 \bibitem[Huang and Yau(2020)]{huang2020dynamics}
 J.~Huang and H.-T. Yau.
@@ -981,6 +1414,11 @@ A.~Jacot, F.~Ged, B.~\c{S}im\c{s}ek, C.~Hongler, and F.~Gabriel.
 T.~G. Kolda and B.~W. Bader.
 \newblock Tensor decompositions and applications.
 \newblock \emph{SIAM Review}, 51(3):455--500, 2009.
+
+\bibitem[Koltchinskii and Gin\'e(2000)]{koltchinskii2000random}
+V.~Koltchinskii and E.~Gin\'e.
+\newblock Random matrix approximation of spectra of integral operators.
+\newblock \emph{Bernoulli}, 6(1):113--167, 2000.
 
 \bibitem[Landsberg et~al.(2012)]{landsberg2012geometry}
 J.~M. Landsberg, Y.~Qi, and K.~Ye.
@@ -1031,6 +1469,16 @@ S.~Pesme and N.~Flammarion.
 A.~Power, Y.~Burda, H.~Edwards, I.~Babuschkin, and V.~Misra.
 \newblock Grokking: generalization beyond overfitting on small algorithmic datasets.
 \newblock arXiv:2201.02177, 2022.
+
+\bibitem[Radhakrishnan et~al.(2024)]{radhakrishnan2024mechanism}
+A.~Radhakrishnan, D.~Beaglehole, P.~Pandit, and M.~Belkin.
+\newblock Mechanism for feature learning in neural networks and backpropagation-free machine learning models.
+\newblock \emph{Science}, 383(6690):1461--1467, 2024.
+
+\bibitem[Raghu et~al.(2017)]{raghu2017svcca}
+M.~Raghu, J.~Gilmer, J.~Yosinski, and J.~Sohl-Dickstein.
+\newblock {SVCCA}: singular vector canonical correlation analysis for deep learning dynamics and interpretability.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~30, 2017.
 
 \bibitem[Razin et~al.(2022)]{razin2022implicit}
 N.~Razin, A.~Maman, and N.~Cohen.

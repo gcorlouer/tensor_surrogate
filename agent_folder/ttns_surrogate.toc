@@ -2,19 +2,44 @@
 \contentsline {paragraph}{Why training dynamics?}{2}{section*.2}%
 \contentsline {paragraph}{Why tensor networks?}{2}{section*.3}%
 \contentsline {paragraph}{Two hypotheses.}{3}{section*.4}%
-\contentsline {paragraph}{Outline.}{4}{section*.5}%
-\contentsline {section}{\numberline {2}Theoretical background}{4}{section.2}%
+\contentsline {paragraph}{Outline.}{5}{section*.5}%
+\contentsline {section}{\numberline {2}Theoretical background}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{5}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{6}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{7}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}The hierarchical singular value decomposition}{8}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Notions of rank}{10}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Deep polynomial networks as tree tensor networks}{11}{subsection.2.6}%
-\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{11}{subsubsection.2.6.1}%
-\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{12}{subsubsection.2.6.2}%
+\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{12}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{13}{subsubsection.2.6.2}%
 \contentsline {subsubsection}{\numberline {2.6.3}Hierarchical features and learning capacity}{15}{subsubsection.2.6.3}%
 \contentsline {subsection}{\numberline {2.7}Surrogate model of a deep neural network}{18}{subsection.2.7}%
 \contentsline {paragraph}{A more direct approach: polynomial activations.}{21}{section*.6}%
 \contentsline {section}{\numberline {3}Training dynamics of TTNs}{22}{section.3}%
 \contentsline {section}{\numberline {4}How to compare TTNs and DNNs}{22}{section.4}%
-\contentsline {section}{\numberline {5}Experiments (slop)}{24}{section.5}%
+\contentsline {subsection}{\numberline {4.1}The teacher--student setting}{22}{subsection.4.1}%
+\contentsline {paragraph}{Teacher.}{22}{section*.7}%
+\contentsline {paragraph}{Data.}{23}{section*.8}%
+\contentsline {paragraph}{Students.}{24}{section*.9}%
+\contentsline {subsection}{\numberline {4.2}The data-weighted HSVD of the teacher}{24}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Atoms: identity and strength}{26}{subsection.4.3}%
+\contentsline {paragraph}{Identity and strength.}{27}{section*.10}%
+\contentsline {subsection}{\numberline {4.4}Output observables: has the predictor acquired an atom?}{27}{subsection.4.4}%
+\contentsline {paragraph}{Interpretation.}{28}{section*.11}%
+\contentsline {subsection}{\numberline {4.5}The functional HSVD of a student}{29}{subsection.4.5}%
+\contentsline {paragraph}{Comparison with the teacher.}{29}{section*.12}%
+\contentsline {paragraph}{Estimation.}{30}{section*.13}%
+\contentsline {subsection}{\numberline {4.6}Representation observables: where is an atom represented?}{31}{subsection.4.6}%
+\contentsline {paragraph}{Reading the three scores.}{32}{section*.14}%
+\contentsline {subsection}{\numberline {4.7}Use and causal reliance}{32}{subsection.4.7}%
+\contentsline {paragraph}{Interventions.}{34}{section*.15}%
+\contentsline {paragraph}{What to measure.}{34}{section*.16}%
+\contentsline {paragraph}{Relation with acceleration.}{35}{section*.17}%
+\contentsline {paragraph}{Controls.}{35}{section*.18}%
+\contentsline {subsection}{\numberline {4.8}Observables for TTN students}{35}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.9}Acquisition times, comparison of students, and estimation}{36}{subsection.4.9}%
+\contentsline {paragraph}{Choosing the thresholds.}{36}{section*.19}%
+\contentsline {paragraph}{Comparing a TTN and a DNN.}{37}{section*.20}%
+\contentsline {paragraph}{Estimation protocol.}{37}{section*.21}%
+\contentsline {subsection}{\numberline {4.10}Summary: levels of evidence}{38}{subsection.4.10}%
+\contentsline {section}{\numberline {5}Experiments (slop)}{38}{section.5}%

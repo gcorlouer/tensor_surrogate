@@ -12,80 +12,79 @@
 \citation{cohen2016expressive}
 \citation{razin2022implicit}
 \citation{furman2026benign}
-\citation{hfl_diagonal}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Why training dynamics?}{2}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Why tensor networks?}{2}{section*.3}\protected@file@percent }
-\newlabel{def:acceleration}{{1.1}{2}{Hard and soft acceleration; after {\citealp [Definition~3.1]{hfl_diagonal}}}{theorem.1.1}{}}
+\citation{hfl_diagonal}
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
 \citation{hfl_review}
+\newlabel{def:acceleration}{{1.1}{3}{Hard and soft acceleration; after {\citealp [Definition~3.1]{hfl_diagonal}}}{theorem.1.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Two hypotheses.}{3}{section*.4}\protected@file@percent }
 \newlabel{eq:acquisition}{{1.1}{3}{Two hypotheses}{equation.1.1}{}}
-\newlabel{hyp:global}{{1.2}{3}{Global surrogate}{theorem.1.2}{}}
 \citation{hfl_surrogate}
 \citation{jacot2018neural}
 \citation{hfl_surrogate}
+\newlabel{hyp:global}{{1.2}{4}{Global surrogate}{theorem.1.2}{}}
+\newlabel{hyp:local}{{1.3}{4}{Local surrogate}{theorem.1.3}{}}
+\newlabel{rem:kernel}{{1.4}{4}{Comparing different parameterizations}{theorem.1.4}{}}
 \citation{furman2026benign}
 \citation{kolda2009tensor}
 \citation{hackbusch2012tensor}
 \citation{lim2021tensors}
-\newlabel{hyp:local}{{1.3}{4}{Local surrogate}{theorem.1.3}{}}
-\newlabel{rem:kernel}{{1.4}{4}{Comparing different parameterizations}{theorem.1.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Outline.}{4}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Theoretical background}{4}{section.2}\protected@file@percent }
-\newlabel{sec:background}{{2}{4}{Theoretical background}{section.2}{}}
 \citation{furman2026benign}
 \citation{kolda2009tensor}
+\@writefile{toc}{\contentsline {paragraph}{Outline.}{5}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Theoretical background}{5}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{5}{Theoretical background}{section.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{5}{subsection.2.1}\protected@file@percent }
 \newlabel{sec:tensors}{{2.1}{5}{Tensors, multilinear maps and matricizations}{subsection.2.1}{}}
 \newlabel{prop:tensor-map}{{2.3}{5}{Tensors as multilinear maps; {\citealp [Proposition~A.1]{furman2026benign}}}{theorem.2.3}{}}
 \newlabel{eq:tensor-map}{{2.1}{5}{Tensors as multilinear maps; {\citealp [Proposition~A.1]{furman2026benign}}}{equation.2.1}{}}
 \newlabel{ex:bilinear}{{2.4}{5}{}{theorem.2.4}{}}
 \newlabel{def:matricization}{{2.5}{5}{Matricization}{theorem.2.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{5}{subsection.2.2}\protected@file@percent }
-\newlabel{sec:tn}{{2.2}{5}{Tensor networks and tree tensor networks}{subsection.2.2}{}}
-\newlabel{def:tn}{{2.6}{5}{Tensor network}{theorem.2.6}{}}
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{hackbusch2009new,grasedyck2010hierarchical}
 \citation{oseledets2011tensor}
 \citation{shi2006classical}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$.}}{6}{figure.1}\protected@file@percent }
-\newlabel{fig:ttn}{{1}{6}{Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$}{figure.1}{}}
+\citation{stoudenmire2016supervised}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{6}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:tn}{{2.2}{6}{Tensor networks and tree tensor networks}{subsection.2.2}{}}
+\newlabel{def:tn}{{2.6}{6}{Tensor network}{theorem.2.6}{}}
 \newlabel{eq:contraction}{{2.2}{6}{Tensor network}{equation.2.2}{}}
 \newlabel{def:ttn}{{2.7}{6}{Tree tensor network}{theorem.2.7}{}}
-\citation{stoudenmire2016supervised}
-\citation{grasedyck2011introduction}
-\citation{furman2026benign}
-\citation{furman2026benign}
-\newlabel{eq:ttn-model}{{2.3}{7}{Tensor networks and tree tensor networks}{equation.2.3}{}}
+\newlabel{eq:ttn-model}{{2.3}{6}{Tensor networks and tree tensor networks}{equation.2.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$.}}{7}{figure.1}\protected@file@percent }
+\newlabel{fig:ttn}{{1}{7}{Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$}{figure.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{7}{subsection.2.3}\protected@file@percent }
 \newlabel{sec:cuts}{{2.3}{7}{Edge cuts, bond dimensions and hierarchical ranks}{subsection.2.3}{}}
 \newlabel{lem:cut}{{2.8}{7}{Edge cuts}{theorem.2.8}{}}
 \newlabel{def:hrank}{{2.9}{7}{Bond dimension and hierarchical rank}{theorem.2.9}{}}
-\newlabel{prop:realizability}{{2.10}{7}{Realizability; {\citealp {grasedyck2011introduction}}; {\citealp [Proposition~B.1]{furman2026benign}}}{theorem.2.10}{}}
+\citation{grasedyck2011introduction}
+\citation{furman2026benign}
+\citation{furman2026benign}
 \citation{landsberg2012geometry}
 \citation{furman2026benign}
 \citation{hackbusch2012tensor}
 \citation{uschmajew2013geometry}
-\citation{grasedyck2010hierarchical}
+\newlabel{prop:realizability}{{2.10}{8}{Realizability; {\citealp {grasedyck2011introduction}}; {\citealp [Proposition~B.1]{furman2026benign}}}{theorem.2.10}{}}
 \newlabel{rem:trees}{{2.11}{8}{Why trees: canonical matricizations}{theorem.2.11}{}}
 \newlabel{prop:gauge}{{2.12}{8}{Gauge freedom}{theorem.2.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}The hierarchical singular value decomposition}{8}{subsection.2.4}\protected@file@percent }
 \newlabel{sec:hsvd}{{2.4}{8}{The hierarchical singular value decomposition}{subsection.2.4}{}}
-\newlabel{def:hsvd}{{2.13}{8}{SVD at a bond; hierarchical SVD}{theorem.2.13}{}}
-\newlabel{eq:schmidt-tensor}{{2.4}{8}{SVD at a bond; hierarchical SVD}{equation.2.4}{}}
+\citation{grasedyck2010hierarchical}
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{grasedyck2010hierarchical}
-\citation{eckart1936approximation}
-\citation{grasedyck2010hierarchical}
+\newlabel{def:hsvd}{{2.13}{9}{SVD at a bond; hierarchical SVD}{theorem.2.13}{}}
+\newlabel{eq:schmidt-tensor}{{2.4}{9}{SVD at a bond; hierarchical SVD}{equation.2.4}{}}
 \newlabel{prop:nested}{{2.14}{9}{Nestedness; the HSVD is a TTN}{theorem.2.14}{}}
 \newlabel{eq:nested}{{2.5}{9}{Nestedness; the HSVD is a TTN}{equation.2.5}{}}
 \newlabel{rem:hsvd-canonical}{{2.15}{9}{Canonical and gauge invariant}{theorem.2.15}{}}
-\newlabel{prop:truncation}{{2.16}{9}{Truncation; {\citealp {grasedyck2010hierarchical}}}{theorem.2.16}{}}
+\citation{eckart1936approximation}
+\citation{grasedyck2010hierarchical}
 \citation{davis1970rotation,wedin1972perturbation}
 \citation{kolda2009tensor,lim2021tensors}
 \citation{hitchcock1927expression}
@@ -93,149 +92,266 @@
 \citation{desilva2008tensor}
 \citation{tucker1966some,delathauwer2000multilinear}
 \citation{hackbusch2009new,grasedyck2010hierarchical}
+\newlabel{prop:truncation}{{2.16}{10}{Truncation; {\citealp {grasedyck2010hierarchical}}}{theorem.2.16}{}}
+\newlabel{rem:stability}{{2.17}{10}{Stability}{theorem.2.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Notions of rank}{10}{subsection.2.5}\protected@file@percent }
+\newlabel{sec:ranks}{{2.5}{10}{Notions of rank}{subsection.2.5}{}}
+\newlabel{prop:rank-comparison}{{2.20}{10}{Comparison of ranks}{theorem.2.20}{}}
 \citation{hfl_diagonal}
 \citation{cohen2016expressive}
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{furman2026benign}
-\newlabel{rem:stability}{{2.17}{10}{Stability}{theorem.2.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Notions of rank}{10}{subsection.2.5}\protected@file@percent }
-\newlabel{sec:ranks}{{2.5}{10}{Notions of rank}{subsection.2.5}{}}
-\newlabel{prop:rank-comparison}{{2.20}{10}{Comparison of ranks}{theorem.2.20}{}}
 \newlabel{rem:rank-critical}{{2.21}{11}{Ranks and critical points}{theorem.2.21}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Deep polynomial networks as tree tensor networks}{11}{subsection.2.6}\protected@file@percent }
 \newlabel{sec:dpn}{{2.6}{11}{Deep polynomial networks as tree tensor networks}{subsection.2.6}{}}
 \newlabel{def:dpn}{{2.22}{11}{Deep polynomial network}{theorem.2.22}{}}
 \newlabel{eq:network}{{2.6}{11}{Deep polynomial network}{equation.2.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{11}{subsubsection.2.6.1}\protected@file@percent }
-\newlabel{prop:monomial-layer}{{2.23}{11}{A monomial layer is one TTN vertex}{theorem.2.23}{}}
-\newlabel{eq:quadratic-layer}{{2.7}{11}{A monomial layer is one TTN vertex}{equation.2.7}{}}
 \citation{pearce2024bilinear}
 \citation{dooms2025compositionality}
 \citation{furman2026benign}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{12}{subsubsection.2.6.1}\protected@file@percent }
+\newlabel{prop:monomial-layer}{{2.23}{12}{A monomial layer is one TTN vertex}{theorem.2.23}{}}
+\newlabel{eq:quadratic-layer}{{2.7}{12}{A monomial layer is one TTN vertex}{equation.2.7}{}}
 \newlabel{prop:dmn}{{2.24}{12}{DMNs are tied TTNs}{theorem.2.24}{}}
 \newlabel{rem:copies}{{2.25}{12}{Copies, not copying}{theorem.2.25}{}}
 \newlabel{rem:symmetries}{{2.26}{12}{Hidden-unit symmetries are gauge transformations}{theorem.2.26}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{12}{subsubsection.2.6.2}\protected@file@percent }
 \citation{hfl_local}
-\citation{hfl_local}
-\citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{13}{subsubsection.2.6.2}\protected@file@percent }
 \newlabel{lem:polarization}{{2.28}{13}{Polarization}{theorem.2.28}{}}
 \newlabel{prop:layer-core}{{2.29}{13}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{theorem.2.29}{}}
 \newlabel{eq:Ar}{{2.8}{13}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.8}{}}
 \newlabel{eq:G}{{2.9}{13}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.9}{}}
 \newlabel{eq:diag-identity}{{2.10}{13}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.10}{}}
-\newlabel{thm:dpn-ttn}{{2.30}{13}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{theorem.2.30}{}}
 \citation{hfl_local}
+\citation{hfl_surrogate}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The order-two surrogate of a network with two hidden layers, as a weight-tied binary TTN (Theorem~\ref {thm:dpn-ttn} and Example~\ref {ex:quadratic}, $K=L=2$). Both lower vertices carry the same core $G_1$; the $N=4$ open legs all receive the augmented input $\bar  x=(1,x)\in H_0$; the bonds carry augmented hidden states $\bar  h_1\in H_1=\mathbb  {R}\oplus \mathbb  {R}^{d_1}$; and the root carries $\bar  c^\top G_2$, i.e.\ its output is contracted with $\bar  c=(b_{\mathrm  {out}},c)$. The cut shown defines $M_e$ with $A_e=\{1,2\}$; the other bond of height one gives the complementary bipartition and the same singular values (Proposition~\ref {prop:per-layer}).}}{14}{figure.2}\protected@file@percent }
 \newlabel{fig:quadratic}{{2}{14}{The order-two surrogate of a network with two hidden layers, as a weight-tied binary TTN (Theorem~\ref {thm:dpn-ttn} and Example~\ref {ex:quadratic}, $K=L=2$). Both lower vertices carry the same core $G_1$; the $N=4$ open legs all receive the augmented input $\bar x=(1,x)\in H_0$; the bonds carry augmented hidden states $\bar h_1\in H_1=\R \oplus \R ^{d_1}$; and the root carries $\bar c^\top G_2$, i.e.\ its output is contracted with $\bar c=(b_{\mathrm {out}},c)$. The cut shown defines $M_e$ with $A_e=\{1,2\}$; the other bond of height one gives the complementary bipartition and the same singular values (Proposition~\ref {prop:per-layer})}{figure.2}{}}
+\newlabel{thm:dpn-ttn}{{2.30}{14}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{theorem.2.30}{}}
 \newlabel{eq:dpn-ttn}{{2.11}{14}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{equation.2.11}{}}
 \newlabel{rem:qualifications}{{2.31}{14}{What the representation is, and is not}{theorem.2.31}{}}
+\citation{hfl_local}
 \newlabel{ex:quadratic}{{2.32}{15}{Two layers, quadratic activations; {\citealp [Section~4]{hfl_local}}}{theorem.2.32}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.3}Hierarchical features and learning capacity}{15}{subsubsection.2.6.3}\protected@file@percent }
 \newlabel{sec:features}{{2.6.3}{15}{Hierarchical features and learning capacity}{subsubsection.2.6.3}{}}
 \newlabel{prop:per-layer}{{2.33}{15}{One SVD per layer}{theorem.2.33}{}}
-\newlabel{def:features}{{2.34}{15}{Hierarchical features}{theorem.2.34}{}}
-\newlabel{prop:features}{{2.35}{15}{What hierarchical features are}{theorem.2.35}{}}
 \citation{holtz2012manifolds,uschmajew2013geometry}
+\newlabel{def:features}{{2.34}{16}{Hierarchical features}{theorem.2.34}{}}
+\newlabel{prop:features}{{2.35}{16}{What hierarchical features are}{theorem.2.35}{}}
+\newlabel{def:capacity}{{2.36}{16}{Learning capacity}{theorem.2.36}{}}
+\newlabel{q:capacity}{{2.37}{16}{A global notion of learning capacity}{theorem.2.37}{}}
+\newlabel{rem:capacity-candidates}{{2.38}{16}{Some candidates}{theorem.2.38}{}}
 \citation{hfl_diagonal}
 \citation{roy2007effective}
 \citation{hfl_local}
 \citation{hfl_surrogate}
-\newlabel{def:capacity}{{2.36}{16}{Learning capacity}{theorem.2.36}{}}
-\newlabel{q:capacity}{{2.37}{16}{A global notion of learning capacity}{theorem.2.37}{}}
-\newlabel{rem:capacity-candidates}{{2.38}{16}{Some candidates}{theorem.2.38}{}}
-\newlabel{rem:which-tensor}{{2.39}{16}{Which tensor carries the features?}{theorem.2.39}{}}
 \citation{hfl_local}
-\citation{power2022grokking}
-\citation{nanda2023progress}
+\newlabel{rem:which-tensor}{{2.39}{17}{Which tensor carries the features?}{theorem.2.39}{}}
 \newlabel{ex:same-function}{{2.40}{17}{Same function, different hierarchical ranks}{theorem.2.40}{}}
 \newlabel{q:interpretability}{{2.41}{17}{Interpretability}{theorem.2.41}{}}
-\newlabel{ex:modular}{{2.42}{17}{Modular addition}{theorem.2.42}{}}
+\citation{power2022grokking}
+\citation{nanda2023progress}
 \citation{gromov2023grokking}
 \citation{hfl_local}
-\citation{bai2020taylorized}
+\newlabel{ex:modular}{{2.42}{18}{Modular addition}{theorem.2.42}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7}Surrogate model of a deep neural network}{18}{subsection.2.7}\protected@file@percent }
 \newlabel{sec:surrogate}{{2.7}{18}{Surrogate model of a deep neural network}{subsection.2.7}{}}
 \newlabel{def:taylor-surrogate}{{2.43}{18}{Layerwise Taylor surrogate; {\citealp [Section~2.2]{hfl_local}}}{theorem.2.43}{}}
-\newlabel{def:ttn-surrogate}{{2.44}{18}{TTN surrogate}{theorem.2.44}{}}
-\newlabel{rem:surrogate-def}{{2.45}{18}{On the definition}{theorem.2.45}{}}
+\citation{bai2020taylorized}
 \citation{hfl_local}
 \citation{morala2025nn2poly}
 \citation{bai2020taylorized}
 \citation{huang2020dynamics}
 \citation{hfl_local}
-\citation{hfl_local}
+\newlabel{def:ttn-surrogate}{{2.44}{19}{TTN surrogate}{theorem.2.44}{}}
+\newlabel{rem:surrogate-def}{{2.45}{19}{On the definition}{theorem.2.45}{}}
 \newlabel{lem:taylor}{{2.46}{19}{Taylor remainders}{theorem.2.46}{}}
 \newlabel{prop:defect}{{2.47}{19}{Loss-gradient defect; {\citealp [Proposition~2]{hfl_local}}}{theorem.2.47}{}}
 \citation{hfl_local}
 \citation{hfl_local}
-\citation{hfl_surrogate}
-\citation{hfl_surrogate}
-\citation{saxe2014exact}
 \citation{hfl_local}
 \citation{hfl_surrogate}
 \newlabel{prop:gronwall}{{2.48}{20}{Trajectory comparison; {\citealp [Section~6]{hfl_local}}}{theorem.2.48}{}}
 \newlabel{rem:floor}{{2.49}{20}{Fixed centres have an error floor}{theorem.2.49}{}}
-\newlabel{prop:sv-dynamics}{{2.50}{20}{Dynamics of hierarchical singular values}{theorem.2.50}{}}
+\citation{hfl_surrogate}
+\citation{saxe2014exact}
+\citation{hfl_local}
 \citation{hfl_surrogate}
 \citation{hfl_surrogate}
-\citation{pearce2024bilinear}
+\newlabel{prop:sv-dynamics}{{2.50}{21}{Dynamics of hierarchical singular values}{theorem.2.50}{}}
 \@writefile{toc}{\contentsline {paragraph}{A more direct approach: polynomial activations.}{21}{section*.6}\protected@file@percent }
 \newlabel{def:poly-proxy}{{2.51}{21}{Polynomial-activation proxy}{theorem.2.51}{}}
 \newlabel{rem:algebraic-dynamic}{{2.52}{21}{Algebraic equivalence is not dynamical equivalence}{theorem.2.52}{}}
-\newlabel{rem:degree}{{2.53}{21}{Choosing the degree}{theorem.2.53}{}}
+\citation{hfl_surrogate}
+\citation{pearce2024bilinear}
+\newlabel{rem:degree}{{2.53}{22}{Choosing the degree}{theorem.2.53}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Training dynamics of TTNs}{22}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}How to compare TTNs and DNNs}{22}{section.4}\protected@file@percent }
+\newlabel{sec:compare}{{4}{22}{How to compare TTNs and DNNs}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}The teacher--student setting}{22}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:compare-setting}{{4.1}{22}{The teacher--student setting}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Teacher.}{22}{section*.7}\protected@file@percent }
+\citation{hfl_surrogate}
+\citation{hfl_surrogate}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use}).}}{23}{figure.3}\protected@file@percent }
+\newlabel{fig:compare}{{3}{23}{Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use})}{figure.3}{}}
+\newlabel{eq:teacher}{{4.1}{23}{Teacher}{equation.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Data.}{23}{section*.8}\protected@file@percent }
+\newlabel{eq:independent-blocks}{{4.2}{23}{Data}{equation.4.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Students.}{24}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}The data-weighted HSVD of the teacher}{24}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:dw-hsvd}{{4.2}{24}{The data-weighted HSVD of the teacher}{subsection.4.2}{}}
+\newlabel{eq:teacher-cut}{{4.3}{24}{The data-weighted HSVD of the teacher}{equation.4.3}{}}
+\newlabel{def:dw-hsvd}{{4.1}{24}{Data-weighted HSVD}{theorem.4.1}{}}
+\newlabel{eq:singular-functions}{{4.4}{24}{Data-weighted HSVD}{equation.4.4}{}}
+\newlabel{prop:dw-hsvd}{{4.2}{24}{Properties of the data-weighted HSVD}{theorem.4.2}{}}
+\newlabel{eq:dw-expansion}{{4.5}{25}{Properties of the data-weighted HSVD}{equation.4.5}{}}
+\newlabel{ex:dw}{{4.3}{25}{Why the data weighting matters}{theorem.4.3}{}}
+\citation{hfl_local}
+\citation{grasedyck2010hierarchical}
+\citation{hfl_diagonal}
+\newlabel{rem:second-moments}{{4.4}{26}{Why only second moments appear}{theorem.4.4}{}}
+\newlabel{rem:dw-nested}{{4.5}{26}{Features of the teacher are built from features of the teacher}{theorem.4.5}{}}
+\newlabel{eq:feature-composition}{{4.6}{26}{Features of the teacher are built from features of the teacher}{equation.4.6}{}}
+\newlabel{rem:dw-compute}{{4.6}{26}{Computing the data-weighted HSVD}{theorem.4.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Atoms: identity and strength}{26}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:atoms}{{4.3}{26}{Atoms: identity and strength}{subsection.4.3}{}}
+\newlabel{def:atom}{{4.7}{26}{Atoms}{theorem.4.7}{}}
+\newlabel{prop:atoms}{{4.8}{26}{Atoms}{theorem.4.8}{}}
+\citation{eckart1936approximation}
+\citation{hfl_diagonal}
+\@writefile{toc}{\contentsline {paragraph}{Identity and strength.}{27}{section*.10}\protected@file@percent }
+\newlabel{rem:degenerate}{{4.9}{27}{Degenerate atoms}{theorem.4.9}{}}
+\newlabel{rem:edge-specific}{{4.10}{27}{Atoms are attached to bonds}{theorem.4.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Output observables: has the predictor acquired an atom?}{27}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:output-obs}{{4.4}{27}{Output observables: has the predictor acquired an atom?}{subsection.4.4}{}}
+\newlabel{def:coupling}{{4.11}{28}{Coupling matrix and output acquisition coefficients}{theorem.4.11}{}}
+\newlabel{eq:coupling}{{4.7}{28}{Coupling matrix and output acquisition coefficients}{equation.4.7}{}}
+\newlabel{prop:error-decomposition}{{4.12}{28}{Exact error decomposition at a bond}{theorem.4.12}{}}
+\newlabel{eq:error-decomposition}{{4.8}{28}{Exact error decomposition at a bond}{equation.4.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Interpretation.}{28}{section*.11}\protected@file@percent }
+\citation{hfl_surrogate}
+\citation{hfl_surrogate}
+\citation{hfl_diagonal}
+\citation{hfl_diagonal}
+\citation{hfl_local}
+\newlabel{rem:output-ablation}{{4.13}{29}{Removing an atom from the output is not informative}{theorem.4.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}The functional HSVD of a student}{29}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:student-fsvd}{{4.5}{29}{The functional HSVD of a student}{subsection.4.5}{}}
+\newlabel{eq:student-fsvd}{{4.9}{29}{The functional HSVD of a student}{equation.4.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Comparison with the teacher.}{29}{section*.12}\protected@file@percent }
+\citation{hfl_local}
+\citation{koltchinskii2000random}
 \citation{hfl_surrogate}
 \citation{hfl_local}
+\citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {paragraph}{Estimation.}{30}{section*.13}\protected@file@percent }
+\newlabel{eq:crossed-grid}{{4.10}{30}{Estimation}{equation.4.10}{}}
+\newlabel{rem:fsvd-cost}{{4.14}{30}{Cost, and proxies for large inputs}{theorem.4.14}{}}
+\newlabel{rem:scope}{{4.15}{30}{Scope: dependent inputs}{theorem.4.15}{}}
+\citation{hfl_local}
+\citation{hotelling1936relations}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Representation observables: where is an atom represented?}{31}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:representation}{{4.6}{31}{Representation observables: where is an atom represented?}{subsection.4.6}{}}
+\newlabel{def:probe}{{4.16}{31}{Linear acquisition scores}{theorem.4.16}{}}
+\newlabel{prop:probe}{{4.17}{31}{Closed forms and invariances}{theorem.4.17}{}}
+\citation{alain2016understanding}
+\citation{hewitt2019designing}
+\citation{hfl_surrogate}
+\citation{hfl_review}
+\@writefile{toc}{\contentsline {paragraph}{Reading the three scores.}{32}{section*.14}\protected@file@percent }
+\newlabel{rem:probe-meaning}{{4.18}{32}{What linear decodability does and does not mean}{theorem.4.18}{}}
+\newlabel{hyp:layer-bond}{{4.19}{32}{Layer--bond correspondence}{theorem.4.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Use and causal reliance}{32}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:use}{{4.7}{32}{Use and causal reliance}{subsection.4.7}{}}
+\citation{radhakrishnan2024mechanism}
+\newlabel{def:sensitivity}{{4.20}{33}{Downstream sensitivity}{theorem.4.20}{}}
+\newlabel{rem:other-jacobians}{{4.21}{33}{Two other Jacobian observables}{theorem.4.21}{}}
+\citation{belrose2023leace}
+\citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {paragraph}{Interventions.}{34}{section*.15}\protected@file@percent }
+\newlabel{def:interventions}{{4.22}{34}{Erasure and injection}{theorem.4.22}{}}
+\newlabel{prop:erasure}{{4.23}{34}{Erasure removes all linear information}{theorem.4.23}{}}
+\@writefile{toc}{\contentsline {paragraph}{What to measure.}{34}{section*.16}\protected@file@percent }
+\citation{hfl_diagonal}
+\citation{hfl_surrogate}
+\citation{hfl_diagonal}
+\citation{hfl_diagonal}
+\@writefile{toc}{\contentsline {paragraph}{Relation with acceleration.}{35}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Controls.}{35}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Observables for TTN students}{35}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:ttn-students}{{4.8}{35}{Observables for TTN students}{subsection.4.8}{}}
+\citation{hfl_surrogate}
+\citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Acquisition times, comparison of students, and estimation}{36}{subsection.4.9}\protected@file@percent }
+\newlabel{sec:compare-protocol}{{4.9}{36}{Acquisition times, comparison of students, and estimation}{subsection.4.9}{}}
+\newlabel{def:acq-times}{{4.24}{36}{Acquisition times}{theorem.4.24}{}}
+\@writefile{toc}{\contentsline {paragraph}{Choosing the thresholds.}{36}{section*.19}\protected@file@percent }
+\citation{hfl_diagonal}
+\citation{raghu2017svcca}
+\citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {paragraph}{Comparing a TTN and a DNN.}{37}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Estimation protocol.}{37}{section*.21}\protected@file@percent }
+\citation{hfl_surrogate}
+\citation{hfl_local}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables.}}{38}{table.1}\protected@file@percent }
+\newlabel{tab:evidence}{{1}{38}{Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10}Summary: levels of evidence}{38}{subsection.4.10}\protected@file@percent }
+\newlabel{sec:compare-summary}{{4.10}{38}{Summary: levels of evidence}{subsection.4.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments (slop)}{38}{section.5}\protected@file@percent }
+\newlabel{sec:experiments}{{5}{38}{Experiments (slop)}{section.5}{}}
 \citation{gromov2023grokking}
-\bibcite{bai2020taylorized}{{1}{2020}{{Bai et~al.}}{{}}}
-\bibcite{cohen2016expressive}{{2}{2016}{{Cohen et~al.}}{{}}}
-\bibcite{davis1970rotation}{{3}{1970}{{Davis and Kahan}}{{}}}
-\bibcite{delathauwer2000multilinear}{{4}{2000}{{De~Lathauwer et~al.}}{{}}}
-\bibcite{desilva2008tensor}{{5}{2008}{{de~Silva and Lim}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments (slop)}{24}{section.5}\protected@file@percent }
-\newlabel{sec:experiments}{{5}{24}{Experiments (slop)}{section.5}{}}
-\bibcite{hfl_diagonal}{{6}{2026}{{Diagonal TTN note}}{{}}}
-\bibcite{dooms2025compositionality}{{7}{2025}{{Dooms et~al.}}{{}}}
-\bibcite{du2018power}{{8}{2018}{{Du and Lee}}{{}}}
-\bibcite{eckart1936approximation}{{9}{1936}{{Eckart and Young}}{{}}}
-\bibcite{furman2026benign}{{10}{2026}{{Furman et~al.}}{{}}}
-\bibcite{grasedyck2010hierarchical}{{11}{2010}{{Grasedyck}}{{}}}
-\bibcite{grasedyck2011introduction}{{12}{2011}{{Grasedyck and Hackbusch}}{{}}}
-\bibcite{gromov2023grokking}{{13}{2023}{{Gromov}}{{}}}
-\bibcite{hackbusch2012tensor}{{14}{2012}{{Hackbusch}}{{}}}
-\bibcite{hackbusch2009new}{{15}{2009}{{Hackbusch and K\"uhn}}{{}}}
-\bibcite{hastad1990tensor}{{16}{1990}{{H{\r a}stad}}{{}}}
-\bibcite{hillar2013most}{{17}{2013}{{Hillar and Lim}}{{}}}
-\bibcite{hitchcock1927expression}{{18}{1927}{{Hitchcock}}{{}}}
-\bibcite{holtz2012manifolds}{{19}{2012}{{Holtz et~al.}}{{}}}
-\bibcite{huang2020dynamics}{{20}{2020}{{Huang and Yau}}{{}}}
-\bibcite{jacot2018neural}{{21}{2018}{{Jacot et~al.}}{{}}}
-\bibcite{jacot2021saddle}{{22}{2021}{{Jacot et~al.}}{{}}}
-\bibcite{kolda2009tensor}{{23}{2009}{{Kolda and Bader}}{{}}}
-\bibcite{landsberg2012geometry}{{24}{2012}{{Landsberg et~al.}}{{}}}
-\bibcite{lim2021tensors}{{25}{2021}{{Lim}}{{}}}
-\bibcite{hfl_review}{{26}{2026}{{Literature review}}{{}}}
-\bibcite{hfl_local}{{27}{2026}{{Local TN note}}{{}}}
-\bibcite{morala2025nn2poly}{{28}{2025}{{Morala et~al.}}{{}}}
-\bibcite{nanda2023progress}{{29}{2023}{{Nanda et~al.}}{{}}}
-\bibcite{oseledets2011tensor}{{30}{2011}{{Oseledets}}{{}}}
-\bibcite{pearce2024bilinear}{{31}{2024}{{Pearce et~al.}}{{}}}
-\bibcite{pesme2023saddle}{{32}{2023}{{Pesme and Flammarion}}{{}}}
-\bibcite{power2022grokking}{{33}{2022}{{Power et~al.}}{{}}}
-\bibcite{razin2022implicit}{{34}{2022}{{Razin et~al.}}{{}}}
-\bibcite{roy2007effective}{{35}{2007}{{Roy and Vetterli}}{{}}}
-\bibcite{sarao2020optimization}{{36}{2020}{{Sarao~Mannelli et~al.}}{{}}}
-\bibcite{saxe2014exact}{{37}{2014}{{Saxe et~al.}}{{}}}
-\bibcite{saxe2019mathematical}{{38}{2019}{{Saxe et~al.}}{{}}}
-\bibcite{shi2006classical}{{39}{2006}{{Shi et~al.}}{{}}}
-\bibcite{stoudenmire2016supervised}{{40}{2016}{{Stoudenmire and Schwab}}{{}}}
-\bibcite{hfl_surrogate}{{41}{2026}{{Surrogate note}}{{}}}
-\bibcite{tucker1966some}{{42}{1966}{{Tucker}}{{}}}
-\bibcite{uschmajew2013geometry}{{43}{2013}{{Uschmajew and Vandereycken}}{{}}}
-\bibcite{wedin1972perturbation}{{44}{1972}{{Wedin}}{{}}}
-\bibcite{zhang2026saddle}{{45}{2026}{{Zhang et~al.}}{{}}}
-\gdef \@abspage@last{26}
+\bibcite{alain2016understanding}{{1}{2016}{{Alain and Bengio}}{{}}}
+\bibcite{bai2020taylorized}{{2}{2020}{{Bai et~al.}}{{}}}
+\bibcite{belrose2023leace}{{3}{2023}{{Belrose et~al.}}{{}}}
+\bibcite{cohen2016expressive}{{4}{2016}{{Cohen et~al.}}{{}}}
+\bibcite{davis1970rotation}{{5}{1970}{{Davis and Kahan}}{{}}}
+\bibcite{delathauwer2000multilinear}{{6}{2000}{{De~Lathauwer et~al.}}{{}}}
+\bibcite{desilva2008tensor}{{7}{2008}{{de~Silva and Lim}}{{}}}
+\bibcite{hfl_diagonal}{{8}{2026}{{Diagonal TTN note}}{{}}}
+\bibcite{dooms2025compositionality}{{9}{2025}{{Dooms et~al.}}{{}}}
+\bibcite{du2018power}{{10}{2018}{{Du and Lee}}{{}}}
+\bibcite{eckart1936approximation}{{11}{1936}{{Eckart and Young}}{{}}}
+\bibcite{furman2026benign}{{12}{2026}{{Furman et~al.}}{{}}}
+\bibcite{grasedyck2010hierarchical}{{13}{2010}{{Grasedyck}}{{}}}
+\bibcite{grasedyck2011introduction}{{14}{2011}{{Grasedyck and Hackbusch}}{{}}}
+\bibcite{gromov2023grokking}{{15}{2023}{{Gromov}}{{}}}
+\bibcite{hackbusch2012tensor}{{16}{2012}{{Hackbusch}}{{}}}
+\bibcite{hackbusch2009new}{{17}{2009}{{Hackbusch and K\"uhn}}{{}}}
+\bibcite{hastad1990tensor}{{18}{1990}{{H{\r a}stad}}{{}}}
+\bibcite{hewitt2019designing}{{19}{2019}{{Hewitt and Liang}}{{}}}
+\bibcite{hillar2013most}{{20}{2013}{{Hillar and Lim}}{{}}}
+\bibcite{hitchcock1927expression}{{21}{1927}{{Hitchcock}}{{}}}
+\bibcite{holtz2012manifolds}{{22}{2012}{{Holtz et~al.}}{{}}}
+\bibcite{hotelling1936relations}{{23}{1936}{{Hotelling}}{{}}}
+\bibcite{huang2020dynamics}{{24}{2020}{{Huang and Yau}}{{}}}
+\bibcite{jacot2018neural}{{25}{2018}{{Jacot et~al.}}{{}}}
+\bibcite{jacot2021saddle}{{26}{2021}{{Jacot et~al.}}{{}}}
+\bibcite{kolda2009tensor}{{27}{2009}{{Kolda and Bader}}{{}}}
+\bibcite{koltchinskii2000random}{{28}{2000}{{Koltchinskii and Gin\'e}}{{}}}
+\bibcite{landsberg2012geometry}{{29}{2012}{{Landsberg et~al.}}{{}}}
+\bibcite{lim2021tensors}{{30}{2021}{{Lim}}{{}}}
+\bibcite{hfl_review}{{31}{2026}{{Literature review}}{{}}}
+\bibcite{hfl_local}{{32}{2026}{{Local TN note}}{{}}}
+\bibcite{morala2025nn2poly}{{33}{2025}{{Morala et~al.}}{{}}}
+\bibcite{nanda2023progress}{{34}{2023}{{Nanda et~al.}}{{}}}
+\bibcite{oseledets2011tensor}{{35}{2011}{{Oseledets}}{{}}}
+\bibcite{pearce2024bilinear}{{36}{2024}{{Pearce et~al.}}{{}}}
+\bibcite{pesme2023saddle}{{37}{2023}{{Pesme and Flammarion}}{{}}}
+\bibcite{power2022grokking}{{38}{2022}{{Power et~al.}}{{}}}
+\bibcite{radhakrishnan2024mechanism}{{39}{2024}{{Radhakrishnan et~al.}}{{}}}
+\bibcite{raghu2017svcca}{{40}{2017}{{Raghu et~al.}}{{}}}
+\bibcite{razin2022implicit}{{41}{2022}{{Razin et~al.}}{{}}}
+\bibcite{roy2007effective}{{42}{2007}{{Roy and Vetterli}}{{}}}
+\bibcite{sarao2020optimization}{{43}{2020}{{Sarao~Mannelli et~al.}}{{}}}
+\bibcite{saxe2014exact}{{44}{2014}{{Saxe et~al.}}{{}}}
+\bibcite{saxe2019mathematical}{{45}{2019}{{Saxe et~al.}}{{}}}
+\bibcite{shi2006classical}{{46}{2006}{{Shi et~al.}}{{}}}
+\bibcite{stoudenmire2016supervised}{{47}{2016}{{Stoudenmire and Schwab}}{{}}}
+\bibcite{hfl_surrogate}{{48}{2026}{{Surrogate note}}{{}}}
+\bibcite{tucker1966some}{{49}{1966}{{Tucker}}{{}}}
+\bibcite{uschmajew2013geometry}{{50}{2013}{{Uschmajew and Vandereycken}}{{}}}
+\bibcite{wedin1972perturbation}{{51}{1972}{{Wedin}}{{}}}
+\bibcite{zhang2026saddle}{{52}{2026}{{Zhang et~al.}}{{}}}
+\gdef \@abspage@last{42}
