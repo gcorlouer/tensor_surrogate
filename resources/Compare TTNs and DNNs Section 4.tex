@@ -1,0 +1,546 @@
+%======================================================================
+\section{How to compare TTNs and DNNs}\label{sec:compare}
+%======================================================================
+
+The comparison should not be tied to independent input blocks.  Independence is a useful
+\emph{diagonalization assumption}: it makes products of left and right cut features orthogonal,
+turns the population loss into a tensor-product norm, and gives a genuine Schmidt decomposition
+at every physical cut.  None of the basic empirical questions requires it.  Loss trajectories,
+function-space projections, representation probes, Jacobian observables and causal interventions
+can all be defined under an arbitrary joint input law.  What changes is the geometry in which the
+teacher's cut features have to be compared.
+
+This section therefore separates three regimes.
+\begin{enumerate}[label=(\roman*),nosep]
+\item A \emph{physical TTN with product data}: different leaves receive independent input blocks.
+      This is the clean special case in which the data-weighted HSVD is a functional HSVD.
+\item A \emph{physical TTN with dependent data}: different leaves receive different coordinate
+      blocks, but the blocks have an arbitrary joint distribution.  Cut features remain functions
+      of the two sides, but their products are correlated and need a joint Gram correction.
+\item A \emph{diagonal, or computational, TTN}: every formal leaf receives the same input.  The
+      joint law of the leaves is supported on the diagonal.  This includes the tied TTN that is
+      exactly equivalent to a deep monomial or polynomial network.  Its copy-cut HSVD describes a
+      chosen computation, not a canonical decomposition of the input--output function.
+\end{enumerate}
+
+For each regime we distinguish three levels of evidence.  At the \emph{output} level, does the
+student predictor contain the teacher computation?  At the \emph{representation} level, can the
+corresponding feature be decoded from an internal state?  At the \emph{use} level, is the downstream
+network sensitive to that code and causally reliant on it?  These levels should not be collapsed:
+a feature can be present but unused, or used in a distributed form that is not linearly localized.
+
+%----------------------------------------------------------------------
+\subsection{Teacher--student setting and input laws}\label{sec:compare-setting}
+%----------------------------------------------------------------------
+
+\paragraph{Physical teacher.}
+Fix a binary tree with leaves $a\in[N]$.  Leaf $a$ receives a block $x^{(a)}\in\mathcal X_a$
+through a fixed embedding $\xi_a:\mathcal X_a\to\R^{d_a}$.  The teacher tensor $T^\star$ defines
+\begin{equation}\label{eq:teacher}
+ f^\star(x)=\Big\langle T^\star,\ \bigotimes_{a=1}^N\xi_a\big(x^{(a)}\big)\Big\rangle .
+\end{equation}
+The input is now allowed to have an arbitrary joint law
+\begin{equation}\label{eq:joint-blocks}
+ X=(X^{(1)},\ldots,X^{(N)})\sim\nu_x,
+ \qquad
+ \E\Big\|\bigotimes_{a=1}^N\xi_a(X^{(a)})\Big\|^2<\infty .
+\end{equation}
+The product-law case is the additional assumption
+\begin{equation}\label{eq:independent-blocks}
+ \nu_x=\mu_1\otimes\cdots\otimes\mu_N .
+\end{equation}
+The blocks need not be Gaussian, centred, whitened or identically distributed in either case.
+
+For a set $A\subseteq[N]$, write
+\[
+ X_A=(X^{(a)})_{a\in A},\qquad
+ \Xi_A(X_A):=\bigotimes_{a\in A}\xi_a(X^{(a)}),
+\]
+and let $\nu_A$ denote the marginal law of $X_A$.  A bond $e$ of the teacher tree determines a
+physical cut $(A_e\mid A_e^c)$ and a matricization $M_e^\star=T^{\star\langle A_e\rangle}$, so that
+\begin{equation}\label{eq:teacher-cut}
+ f^\star(x)=\Xi_{A_e}(x_{A_e})^\top M_e^\star\Xi_{A_e^c}(x_{A_e^c}).
+\end{equation}
+This pointwise identity does not require independence.
+
+\paragraph{Diagonal teacher.}
+For a deep monomial network of exponent $K$ and depth $L$, $N=K^L$ formal leaves receive the
+same input and
+\begin{equation}\label{eq:diagonal-teacher}
+ f^\star(x)=\langle T^\star,x^{\otimes N}\rangle .
+\end{equation}
+For a general polynomial network, $x$ is replaced by the homogenized input $\bar x=(1,x)$.
+The formal leaf law is $(\Delta_N)_\#\mu$, where $\Delta_N(x)=(x,\ldots,x)$; it is maximally
+dependent.  The equivalence with a standard monomial network requires the structured cores of
+Proposition~\ref{prop:monomial-layer}, tied by height.  A generic height-tied multilinear core is a
+more general homogeneous polynomial layer and need not factor through one weight matrix followed
+by a coordinatewise monomial.
+
+\paragraph{Students and time.}
+Every student is trained on the same examples and target.  A DNN and a global TTN need not use the
+same raw learning rate: their parameter metrics and function-space speeds differ.  The optimizer
+family, tuning budget and time convention should be fixed before looking at the feature curves.
+For a local polynomial proxy, by contrast, the original parameters and optimizer state are shared,
+so identical updates are the correct comparison.  For independent global students, report update
+count and integrated learning-rate time, and permit at most one pre-registered global calibration
+such as matching the initial function-space speed; feature-specific or post hoc time warps would
+make the surrogate hypothesis unfalsifiable.
+
+%----------------------------------------------------------------------
+\subsection{A cut decomposition under an arbitrary joint law}\label{sec:dw-hsvd}
+%----------------------------------------------------------------------
+
+Fix a physical cut $e$ and abbreviate
+\[
+ L_e:=\Xi_{A_e}(X_{A_e}),\qquad R_e:=\Xi_{A_e^c}(X_{A_e^c}),
+\]
+with marginal Gram matrices
+\[
+ \Sigma_{e,L}:=\E[L_eL_e^\top],\qquad
+ \Sigma_{e,R}:=\E[R_eR_e^\top].
+\]
+These are Gram matrices of the full subtree embeddings.  Under dependence they generally do not
+factor into Kronecker products of leaf Gram matrices and may contain high-order joint moments of
+the raw data.
+
+\begin{definition}[Marginally weighted cut SVD]\label{def:dw-hsvd}
+Let
+\[
+ \widetilde L_e:=(\Sigma_{e,L}^{1/2})^+L_e,
+ \qquad
+ \widetilde R_e:=(\Sigma_{e,R}^{1/2})^+R_e,
+\]
+and take the compact SVD
+\begin{equation}\label{eq:cut-svd}
+ \widetilde M_e^\star
+ :=\Sigma_{e,L}^{1/2}M_e^\star\Sigma_{e,R}^{1/2}
+ =U_e^\star S_e^\star V_e^{\star\top},
+ \qquad
+ S_e^\star=\diag(\sigma_{e,1}^\star,\ldots,\sigma_{e,r_e}^\star).
+\end{equation}
+The associated left and right cut functions are
+\begin{equation}\label{eq:singular-functions}
+ \phi_{e,q}^\star(x_{A_e})=u_{e,q}^{\star\top}\widetilde L_e(x_{A_e}),
+ \qquad
+ \psi_{e,q}^\star(x_{A_e^c})=v_{e,q}^{\star\top}\widetilde R_e(x_{A_e^c}).
+\end{equation}
+We call~\eqref{eq:cut-svd} a \emph{marginally weighted cut SVD}.  Under the product law it is the
+data-weighted HSVD used in the previous version of this section.
+\end{definition}
+
+\begin{proposition}[What the cut SVD does and does not give]\label{prop:dw-hsvd}
+Under~\eqref{eq:joint-blocks}, for every physical cut $e$:
+\begin{enumerate}[label=(\roman*),nosep]
+\item The families $(\phi_{e,q}^\star)_q$ and $(\psi_{e,q}^\star)_q$ are orthonormal in
+      $L^2(\nu_{A_e})$ and $L^2(\nu_{A_e^c})$, respectively.
+\item The teacher has the pointwise expansion
+\begin{equation}\label{eq:cut-expansion}
+ f^\star(x)=\sum_{q=1}^{r_e}\sigma_{e,q}^\star
+ \phi_{e,q}^\star(x_{A_e})\psi_{e,q}^\star(x_{A_e^c})
+ \qquad \nu_x\text{-a.s.}
+\end{equation}
+\item If $X_{A_e}$ and $X_{A_e^c}$ are independent, the product functions
+      $\phi_{e,i}^\star\psi_{e,j}^\star$ are orthonormal in $L^2(\nu_x)$, and
+      \eqref{eq:cut-expansion} is the Schmidt decomposition of $f^\star$ across the cut.
+\item Under general dependence, the product functions need not be orthogonal.  The numbers
+      $\sigma_{e,q}^\star$ are then coefficient singular values, not the $L^2(\nu_x)$ strengths of
+      the products, and truncating~\eqref{eq:cut-expansion} need not be the best rank-$r$
+      approximation in population loss.
+\item If all leaves are independent, $\Sigma_{e,L}$ and $\Sigma_{e,R}$ factor into products of
+      leaf Gram matrices for every bond.  One local whitening of the open legs then produces a
+      single weighted TTN whose SVDs are nested across the tree.  Under generic dependence,
+      whitening is cut-specific and the cut SVDs need not form one nested HSVD.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The vectors $L_e$ and $R_e$ lie almost surely in the ranges of their Gram matrices.  Hence
+$L_e^\top M_e^\star R_e=\widetilde L_e^\top\widetilde M_e^\star\widetilde R_e$ almost surely.
+The nonzero left singular vectors lie in $\operatorname{range}(\Sigma_{e,L}^{1/2})$, so
+$\E[\phi_{e,q}^\star\phi_{e,q'}^\star]=\delta_{qq'}$; similarly on the right.  Inserting the SVD
+proves~\eqref{eq:cut-expansion}.  Independence factorizes the expectation of a product of a left
+and a right function, proving (iii).  The remaining statements follow because, without this
+factorization, the joint fourth moments
+$\E[\phi_i\phi_k\psi_j\psi_l]$ are not products of marginal second moments, and because a
+cut-specific square root $\Sigma_{e,L}^{1/2}$ cannot in general be absorbed into independent leaf
+maps.
+\end{proof}
+
+\begin{remark}[Computation-relative versus function-relative modes]\label{rem:joint-identifiability}
+For a fixed teacher tensor, the cut SVD is gauge invariant.  Under dependent data it need not be an
+invariant of the on-support function.  If the products of the left and right embedding coordinates
+are linearly dependent on the support of $\nu_x$, two different coefficient matrices can define the
+same function almost surely.  This is especially important on the diagonal, where antisymmetric
+multilinear extensions vanish.  The modes in~\eqref{eq:cut-svd} should therefore be called planted
+or computation-relative targets unless the joint product Gram defined below is nonsingular.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Joint-Gram atoms and output observables}\label{sec:atoms}
+%----------------------------------------------------------------------
+
+For a cut $e$, collect the marginally orthonormal factors into column vectors
+$\Phi_e^\star=(\phi_{e,1}^\star,\ldots,\phi_{e,r_e}^\star)^\top$ and
+$\Psi_e^\star=(\psi_{e,1}^\star,\ldots,\psi_{e,r_e}^\star)^\top$.  Define the complete product
+feature vector
+\begin{equation}\label{eq:product-dictionary}
+ Z_e(X):=\Psi_e^\star(X_{A_e^c})\otimes\Phi_e^\star(X_{A_e})\in\R^{r_e^2},
+\end{equation}
+and let $s_e^\star:=\vect(S_e^\star)$.  Then~\eqref{eq:cut-expansion} is simply
+$f^\star(X)=Z_e(X)^\top s_e^\star$.
+
+\begin{definition}[Joint product Gram and Gram-corrected projection]\label{def:coupling}
+For any joint input law, define
+\begin{equation}\label{eq:joint-gram}
+ G_e:=\E[Z_e(X)Z_e(X)^\top],
+ \qquad
+ b_e[f]:=\E[Z_e(X)f(X)]=\vect\!\left(\E[f(X)\Phi_e^\star\Psi_e^{\star\top}]\right).
+\end{equation}
+The raw matrix inside the vectorization is still called the \emph{coupling matrix}; it is defined
+without independence, but it is not a coordinate matrix unless $G_e=I$.  The orthogonal projection
+of $f\in L^2(\nu_x)$ onto
+$\mathcal D_e:=\operatorname{span}\{Z_{e,ij}:i,j\le r_e\}$ is
+\begin{equation}\label{eq:gram-projection}
+ (\Pi_e f)(x):=Z_e(x)^\top\beta_e[f],
+ \qquad
+ \beta_e[f]:=G_e^+b_e[f].
+\end{equation}
+\end{definition}
+
+\begin{proposition}[Exact output decomposition for arbitrary joint inputs]\label{prop:error-decomposition}
+For every $f\in L^2(\nu_x)$:
+\begin{enumerate}[label=(\roman*),nosep]
+\item Equation~\eqref{eq:gram-projection} is the $L^2(\nu_x)$ orthogonal projection onto
+      $\mathcal D_e$, and
+      $\|\Pi_e f\|^2=b_e[f]^\top G_e^+b_e[f]$.
+\item If $b_e^\star:=b_e[f^\star]=G_es_e^\star$, then
+\begin{equation}\label{eq:joint-error}
+ \|f-f^\star\|^2
+ =\underbrace{(b_e[f]-b_e^\star)^\top G_e^+(b_e[f]-b_e^\star)}_{\text{error inside the teacher factor-product space}}
+ +\underbrace{\|f\|^2-b_e[f]^\top G_e^+b_e[f]}_{\text{outside error}}.
+\end{equation}
+\item If $G_e$ is nonsingular, $\beta_e[f^\star]=s_e^\star$.  If it is singular, only the
+      equivalence class $s_e^\star+\ker G_e$ is observable from data; no output statistic can
+      identify its individual coordinates.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+If $c\in\ker G_e$, then $c^\top Z_e=0$ almost surely, so $c^\top b_e[f]=0$ and
+$b_e[f]\in\operatorname{range}G_e$.  The normal equations for least squares in the dictionary
+$Z_e$ are therefore solved by $G_e^+b_e[f]$.  This proves (i).  Since $f^\star\in\mathcal D_e$,
+$f-f^\star=\Pi_e(f-f^\star)+(I-\Pi_e)f$ is an orthogonal decomposition, which gives~\eqref{eq:joint-error}.
+The last claim is the standard identifiability statement for a singular Gram matrix.
+\end{proof}
+
+The teacher SVD supplies spectral blocks $B$ of equal or nearly equal singular values.  The
+basis-invariant target associated with such a block is
+\begin{equation}\label{eq:block-atom}
+ m_{e,B}^\star(x):=\sum_{q\in B}\sigma_{e,q}^\star
+ \phi_{e,q}^\star(x_{A_e})\psi_{e,q}^\star(x_{A_e^c}).
+\end{equation}
+For a simple singular value, this is the usual atom $m_{e,q}^\star$.  Let
+$\mathcal A_e:=\operatorname{span}\{m_{e,B}^\star:B\}$ and let $P_{\mathcal A_e}$ be its
+orthogonal projector.  Since $f^\star\in\mathcal A_e\subseteq\mathcal D_e$, there is a second,
+basis-invariant decomposition
+\begin{equation}\label{eq:three-space-decomposition}
+ \|f-f^\star\|^2
+ =\underbrace{\|P_{\mathcal A_e}(f-f^\star)\|^2}_{\text{teacher-mode error}}
+ +\underbrace{\|(\Pi_e-P_{\mathcal A_e})f\|^2}_{\text{alternative pairings inside }\mathcal D_e}
+ +\underbrace{\|(I-\Pi_e)f\|^2}_{\text{outside error}}.
+\end{equation}
+This replaces the previous entrywise ``within/across/outside'' split, which is nonnegative only
+when the product features are orthogonal.
+
+To define acquisition coefficients in correlated data, collect the canonical block atoms into a
+vector $m_e^\star(X)$ and let
+\begin{equation}\label{eq:block-regression}
+ H_e:=\E[m_e^\star m_e^{\star\top}],
+ \qquad
+ \alpha_e[f]:=H_e^+\E[m_e^\star f].
+\end{equation}
+If $H_e$ is nonsingular, $\alpha_e[f^\star]=\mathbf 1$ and $\alpha_{e,B}(f_t)$ is the partial
+least-squares acquisition coefficient of block $B$, controlling for correlations with the other
+teacher blocks.  If $H_e$ is singular or badly conditioned, individual block coefficients are not
+scientifically identifiable; report the subspace errors in~\eqref{eq:three-space-decomposition}
+and merge unstable blocks.
+
+\begin{corollary}[What independence buys]\label{prop:atoms}
+If $X_{A_e}$ and $X_{A_e^c}$ are independent, then $G_e=I$.  Consequently:
+\begin{enumerate}[label=(\roman*),nosep]
+\item the products $\phi_{e,i}^\star\psi_{e,j}^\star$ are an orthonormal dictionary;
+\item $\sigma_{e,q}^{\star2}$ is the $L^2$ energy of the simple atom, and the block atoms are
+      mutually orthogonal;
+\item $\alpha_{e,q}[f]=\langle f,\phi_{e,q}^\star\psi_{e,q}^\star\rangle/\sigma_{e,q}^\star$,
+      recovering the acquisition coefficient used in~\eqref{eq:acquisition};
+\item truncating the Schmidt expansion gives the best rank-$r$ approximation across the cut by
+      the Eckart--Young theorem;
+\item the old Frobenius coupling-matrix decomposition is the specialization of
+      \eqref{eq:joint-error} and~\eqref{eq:three-space-decomposition}.
+\end{enumerate}
+\end{corollary}
+
+%----------------------------------------------------------------------
+\subsection{Student modes: product-law HSVD and dependent-law alternatives}\label{sec:student-fsvd}
+%----------------------------------------------------------------------
+
+Under~\eqref{eq:independent-blocks},
+$L^2(\nu_x)=L^2(\nu_{A_e})\otimes L^2(\nu_{A_e^c})$, so every square-integrable student predictor
+has a genuine Schmidt decomposition
+\begin{equation}\label{eq:student-fsvd}
+ f(x)=\sum_{q\ge1}s_{e,q}(f)\,\phi^f_{e,q}(x_{A_e})\psi^f_{e,q}(x_{A_e^c}).
+\end{equation}
+The singular values and leading subspaces can be compared with the teacher, and estimated with the
+crossed-grid matrix
+$[f(x_k^{\mathrm L},x_l^{\mathrm R})/\sqrt{n_Ln_R}]_{kl}$ built from independent marginal
+samples.  This is a strong, architecture-independent observable in the product-law benchmark.
+
+For dependent inputs there is no natural isometric identification of $L^2(\nu_x)$ with the Hilbert
+tensor product of the two marginal spaces.  A crossed grid samples
+$\nu_{A_e}\otimes\nu_{A_e^c}$ rather than $\nu_x$ and may evaluate the model on combinations that
+never occur.  Consequently, a product-measure SVD is an off-distribution diagnostic, not a
+functional HSVD of the training problem.  Three replacements are available:
+\begin{enumerate}[label=(\alph*),nosep]
+\item the teacher-anchored joint-Gram projections~\eqref{eq:joint-error}, which require only
+      ordinary joint samples and are the default here;
+\item a finite Galerkin interaction operator
+      $B_e[f]=\E[f(X)\Phi^D(X_{A_e})\Psi^D(X_{A_e^c})^\top]$ in pre-specified marginal
+      dictionaries; its SVD describes task-weighted cross-dependence, but not an orthogonal
+      expansion of $f$;
+\item if a trustworthy conditional generator is available, conditional resampling from
+      $\nu(dx_{A_e^c}\mid x_{A_e})$ to estimate operators under the actual joint law.
+\end{enumerate}
+The second and third choices should be labelled explicitly; neither restores the Eckart--Young or
+nested-HSVD conclusions without additional assumptions.
+
+%----------------------------------------------------------------------
+\subsection{The tied repeated-input case}\label{sec:repeated-input}
+%----------------------------------------------------------------------
+
+The diagonal TTN is not a small perturbation of the independent-block setting.  Its formal leaves
+are perfectly correlated.  Let $\bar X=(1,X)$ for a polynomial network, and put
+$z_N(X)=\bar X^{\otimes N}$.  For two coefficient tensors $T$ and $T'$ define
+$f_T(x)=\langle T,z_N(x)\rangle$.  Then
+\begin{equation}\label{eq:moment-operator}
+ \langle f_T,f_{T'}\rangle_{L^2(\mu)}
+ =\vect(T)^\top\mathcal G_N\vect(T'),
+ \qquad
+ \mathcal G_N:=\E[z_N(X)z_N(X)^\top].
+\end{equation}
+The operator $\mathcal G_N$ contains moments up to order $2N$.  It is singular on the full tensor
+space because $z_N(X)$ is symmetric, and
+$f_T=f_{\Sym T}$.  Thus the population loss depends on the symmetrized polynomial coefficient,
+whereas the HSVD of the particular unrolled tensor $T$ can change when one changes the off-diagonal
+multilinear extension.
+
+This leads to a two-track comparison.
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{Function track.}  Compare the student and teacher in an orthonormal polynomial basis
+      for the actual input law.  For Gaussian inputs, Hermite tensors separate the Wiener-chaos
+      orders; for a general distribution, use an empirically orthonormalized polynomial dictionary
+      up to the required degree.  Coefficients, subspace projections and loss contributions in this
+      basis are function-level observables.
+\item \emph{Computation track.}  Track the bond singular values and subtree singular functions of
+      the fixed, architecture-induced tied TTN.  These quantities are gauge invariant for that
+      computation and can be compared with hidden states of the neural network, but they are not
+      invariants of the diagonal function.  The subtree of height $\ell$ equals the hidden state
+      $h_\ell(x)$ for the exact tied construction, so hidden-state subspaces and the computational
+      HSVD are the natural internal observables.
+\end{enumerate}
+For Gaussian $X$, the expectations in~\eqref{eq:moment-operator} are exactly computable by Wick
+contractions.  They do not reduce to products of leaf covariances, and deeper models require higher
+moments.  For general data, use Monte Carlo estimates on natural samples.  A crossed-grid estimator
+would instead probe an arbitrary off-diagonal extension and should not be used as a function-level
+metric.
+
+%----------------------------------------------------------------------
+\subsection{Representation observables}\label{sec:representation}
+%----------------------------------------------------------------------
+
+Let $h_\ell(x)\in\R^{d_\ell}$ be a student representation.  For any scalar teacher target
+$\zeta\in L^2(\nu_x)$ with nonzero variance, define the held-out linear acquisition score
+\begin{equation}\label{eq:probe}
+ R_h^2[\zeta]
+ :=1-\frac{\min_{w,b}\E[(\zeta(X)-w^\top h(X)-b)^2]}{\Var\zeta}
+ =\frac{\Cov(h,\zeta)^\top\Cov(h)^+\Cov(h,\zeta)}{\Var\zeta}.
+\end{equation}
+For a vector target $Z$, use the average squared canonical correlation
+\begin{equation}\label{eq:vector-probe}
+ R_h^2[Z]
+ :=\frac1{\rank\Cov(Z)}\operatorname{tr}
+ \big(\Cov(Z)^+\Cov(Z,h)\Cov(h)^+\Cov(h,Z)\big).
+\end{equation}
+These definitions require no independence.  They are invariant under invertible affine changes of
+hidden coordinates and, for vector targets, under changes of basis inside a degenerate teacher
+subspace.
+
+For a physical cut, probe for the left factors $\phi_{e,q}^\star$, the right factors
+$\psi_{e,q}^\star$, the block atoms $m_{e,B}^\star$, and, when identifiable, the simple products
+$\phi_{e,q}^\star\psi_{e,q}^\star$.  For a diagonal TTN, probe instead for teacher hidden-state
+subspaces, computational singular functions, and orthogonal polynomial output modes.
+
+\begin{remark}[Dependence creates a predictability confound]\label{rem:probe-meaning}
+When the blocks are dependent, a representation that only receives $X_{A_e}$ can predict a function
+of $X_{A_e^c}$ through statistical correlation.  A high score for a right factor therefore does not
+show that the representation computed information from the right side.  Report the best baseline
+from the raw available variables, such as $R^2_{X_{A_e}}[\psi_{e,q}^\star]$, and, when feasible,
+probe the conditional residual
+$\psi_{e,q}^\star-\E[\psi_{e,q}^\star\mid X_{A_e}]$.  More generally, compare teacher targets with
+matched-complexity control targets and with initialization.  Linear decodability establishes
+accessibility, not use or causal necessity.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Use and causal reliance}\label{sec:use}
+%----------------------------------------------------------------------
+
+Write $f_\theta=f_{>\ell}\circ h_\ell$ and whiten the current representation by
+$h_\ell^{\mathrm w}=(\Cov(h_\ell)^{1/2})^+(h_\ell-\E h_\ell)$.  For a represented target $\zeta$,
+let
+\[
+ u_\ell[\zeta]
+ :=\frac{\E[h_\ell^{\mathrm w}\zeta]}{\|\E[h_\ell^{\mathrm w}\zeta]\|}
+\]
+be its linear code direction.  The gradient of the output with respect to whitened coordinates is
+$\partial_\ell f=\Cov(h_\ell)^{1/2}\nabla f_{>\ell}(h_\ell)$.
+
+\begin{definition}[Downstream sensitivity]\label{def:sensitivity}
+Let $\mathrm{AGOP}_\ell=\E[\partial_\ell f\,\partial_\ell f^\top]$.  Define
+\[
+ \operatorname{sens}_\ell[\zeta]
+ :=u_\ell[\zeta]^\top\mathrm{AGOP}_\ell u_\ell[\zeta],
+ \qquad
+ \overline{\operatorname{sens}}_\ell[\zeta]
+ :=\frac{\operatorname{sens}_\ell[\zeta]}
+ {\operatorname{tr}(\mathrm{AGOP}_\ell)/\rank\Cov(h_\ell)}.
+\]
+For a target subspace with orthonormal code matrix $U$, use
+$\operatorname{tr}(U^\top\mathrm{AGOP}_\ell U)$.
+\end{definition}
+
+Sensitivity is local and unsigned.  A signed gain is obtained by injecting
+$h_\ell^{\mathrm w}(x)\mapsto h_\ell^{\mathrm w}(x)+\varepsilon\zeta(x)u$ and differentiating the
+chosen output coefficient or Gram-projected block acquisition at $\varepsilon=0$.  Under dependence,
+this derivative is still estimated on ordinary joint samples.
+
+\begin{definition}[Erasure and injection]\label{def:interventions}
+For a scalar or vector target with code subspace $U$, \emph{linear erasure} replaces
+$h_\ell^{\mathrm w}$ by $(I-UU^\top)h_\ell^{\mathrm w}$.  \emph{Injection} adds
+$\varepsilon\zeta(x)u$, or the corresponding vector-valued signal along an orthonormal family.
+The intervention may be applied once or maintained during subsequent training.
+\end{definition}
+
+The erasure removes all affine information about the target at the checkpoint, but nonlinear
+information can survive and the network can re-encode the feature later.  Measure both the immediate
+change in loss and output projections and the subsequent change in acquisition times.  Use
+random-direction, matched-norm and sham controls.  These interventions remain the strongest common
+observables across product, dependent and repeated-input regimes.
+
+%----------------------------------------------------------------------
+\subsection{What is exact for TTN students?}\label{sec:ttn-students}
+%----------------------------------------------------------------------
+
+The answer depends on the input law.
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{Physical TTN, independent leaves.}  Population inner products factor into Kronecker
+      products of leaf Gram matrices.  The student's functional HSVD is its data-weighted HSVD,
+      coupling matrices and loss decompositions are obtained by deterministic contractions, and
+      second-moment messages close on the tree.
+\item \emph{Physical TTN, dependent leaves.}  The algebraic cut factorization
+      $g_\vartheta=h_e(X_{A_e})^\top n_e(X_{A_e^c})$ still holds, but $h_e$ and $n_e$ are correlated.
+      A bond state may predict environment features through input correlations.  Exact population
+      quantities require the joint Gram $G_e$ or higher mixed moments and generally do not reduce
+      to leafwise second moments.  Monte Carlo evaluation of~\eqref{eq:joint-gram} remains unbiased;
+      exact message passing is available only when the data law itself has compatible tractable
+      structure.
+\item \emph{Tied diagonal TTN.}  Every subtree sees the same input, and the height-$\ell$ subtree
+      state is the hidden state of the corresponding monomial or polynomial network.  Shared-core
+      gradients are sums over all occurrences.  Function-space loss is governed by the moment
+      operator~\eqref{eq:moment-operator}; the computational HSVD can be contracted exactly from
+      the cores, but its singular values are not population energies unless this is separately
+      established.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{Acquisition times and estimation}\label{sec:compare-protocol}
+%----------------------------------------------------------------------
+
+If a block coefficient $\alpha_{e,B}(t)$ in~\eqref{eq:block-regression} is identifiable, define
+\begin{equation}\label{eq:acq-times}
+ \tau^{\mathrm{out}}_{e,B}(\delta)
+ :=\inf\{t:\alpha_{e,B}(s)\ge\delta\text{ for all }s\in[t,t+\Delta]\}.
+\end{equation}
+If it is not identifiable, define acquisition through a monotone subspace statistic, for example the
+fraction of teacher-mode energy captured by $P_{\mathcal A_e}f_t$, and report the conditioning of
+$H_e$.  Representation acquisition times are defined from the held-out probe scores in
+\eqref{eq:probe}--\eqref{eq:vector-probe}; use several thresholds and treat unobserved crossings as
+right-censored.
+
+A practical protocol is:
+\begin{enumerate}[label=\arabic*.,nosep,leftmargin=*]
+\item Fix the teacher, joint input law and natural audit distribution.  Pre-register the primary cuts,
+      blocks and repeated-input polynomial modes.
+\item Estimate all Gram matrices on data disjoint from training and testing.  Regularize small
+      eigenvalues and report effective rank and condition number; merge modes whose separation is
+      below estimation error.
+\item On a held-out joint audit set, estimate $b_e[f_t]$, $G_e$, the two terms of
+      \eqref{eq:joint-error}, and the three subspace errors in~\eqref{eq:three-space-decomposition}.
+      Use sample splitting for quadratic functionals.  Do not recombine marginals unless the product
+      law is part of the experiment.
+\item Fit representation probes on separate train, validation and test splits.  Under dependence,
+      include raw-side and conditional-predictability baselines.  For repeated inputs, include
+      polynomial/Hermite coefficient trajectories and teacher hidden-subspace probes.
+\item Measure sensitivity, erasure and injection responses at the same checkpoints.  Compare not
+      only unperturbed acquisition order but the shifts caused by the same teacher-feature
+      intervention in the TTN and DNN.
+\item Pair teacher instances, datasets and random seeds.  Report loss and feature trajectories in
+      the pre-specified time convention, together with initialization scale, optimizer and
+      parameterization; do not hide mismatches behind post hoc time warping.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{Summary: what survives without independence}\label{sec:compare-summary}
+%----------------------------------------------------------------------
+
+\begin{table}[t]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{p{0.23\textwidth}p{0.31\textwidth}p{0.36\textwidth}}
+\hline
+\raggedright Object & \raggedright Arbitrary joint inputs & \raggedright Extra conclusion under independent blocks \tabularnewline
+\hline
+\raggedright Loss and function distance
+& \raggedright Defined exactly in $L^2(\nu_x)$; sample estimates are immediate.
+& \raggedright Coefficient-space metric factorizes into leaf Gram matrices. \tabularnewline
+\raggedright Teacher cut targets
+& \raggedright Marginally weighted cut SVD; products require the joint Gram $G_e$ and may be non-identifiable.
+& \raggedright One nested data-weighted HSVD; product atoms are orthonormal and canonical in function space. \tabularnewline
+\raggedright Output acquisition
+& \raggedright Gram-corrected projections, block regressions and subspace errors.
+& \raggedright Raw coupling entries are orthogonal coordinates; additive per-atom loss and Eckart--Young truncation. \tabularnewline
+\raggedright Student modes
+& \raggedright Teacher-anchored projections or stated Galerkin/conditional operators.
+& \raggedright Genuine functional Schmidt decomposition and crossed-grid estimator. \tabularnewline
+\raggedright Representation and use
+& \raggedright Probes, AGOP sensitivity, erasure, injection and acquisition times all generalize; correlation baselines are required.
+& \raggedright A subtree state is independent of environment functions, simplifying interpretation. \tabularnewline
+\raggedright Exact TTN contractions
+& \raggedright Need joint mixed moments, Monte Carlo, or a tractable model of the data law.
+& \raggedright Second-moment message passing and exact leafwise contractions. \tabularnewline
+\raggedright Tied copies $x^{\otimes N}$
+& \raggedright Exact neural-network equivalence for structured tied cores; use the moment operator, symmetric/Hermite output modes, and computational HSVD as a computation diagnostic.
+& \raggedright Not an independent-block specialization: the formal leaves remain identical. \tabularnewline
+\hline
+\end{tabular}
+\caption{The independence assumption is a source of orthogonality and computational closure, not a prerequisite for comparing TTN and DNN training dynamics.}
+\label{tab:evidence}
+\end{table}
+
+The main methodological conclusion is therefore two-tiered.  Use independent blocks first when the
+goal is to validate the measurement apparatus and obtain a clean, additive decomposition of learning.
+Then keep the same probes, output projections and interventions while moving to dependent physical
+inputs and to the tied repeated-input endpoint.  At that endpoint, success should mean agreement in
+polynomial output modes, hidden/computational feature subspaces and intervention responses--not an
+unqualified identification of copy-cut singular values with canonical features of the input--output
+function.
