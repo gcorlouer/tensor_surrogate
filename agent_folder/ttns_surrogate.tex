@@ -1452,6 +1452,435 @@ The methodological conclusion is two-tiered. Experiments should start with the p
 
 %======================================================================
 \section{Experiments}\label{sec:experiments}
+%======================================================================
+
+\setlist[description]{font=\normalfont\itshape,leftmargin=0pt,labelindent=0pt,itemsep=2pt,topsep=3pt,parsep=0pt}
+
+The experiments have two goals. The first is to understand the training dynamics of TTNs: which dynamical regimes exist, what a TTN student acquires from a teacher, in what order and on what time scales, and which properties of the teacher, the data, the initialization and the optimizer control these. The second is to measure how far the training dynamics of DNNs is from that of TTNs, that is, to test Hypothesis~\ref{hyp:global} and, where it fails, to locate the failure. We pursue the two goals in parallel rather than one after the other. Experiments on TTNs are cheap, and they fix the vocabulary in which the comparison is phrased: regimes, canonical configurations, and laws for orders and time scales. Conversely, an early comparison on a few configurations keeps the study of TTNs focused on the regimes that DNNs actually visit.
+
+All experiments are teacher--student experiments with TTN teachers, in the setting of Section~\ref{sec:compare}, so that every student can be described in terms of the atoms of the teacher. Section~\ref{sec:exp-principles} states the principles of the design, and Section~\ref{sec:exp-setting} the common setting: teachers and data, students and their initialization, training protocols and observables. Sections~\ref{sec:exp-phase0}--\ref{sec:exp-phase4} describe the experiments in five phases: the validation of the measurements; the dynamics of TTNs; the comparison of TTNs and DNNs; optimizers, noise and finite samples; and deferred experiments. Each experiment states a question, its motivation, a design, a prediction when there is one, and what its outcome changes in the rest of the program. Section~\ref{sec:exp-organization} sets priorities and divides the work between two people, and Table~\ref{tab:exp-summary} lists the experiments.
+
+%----------------------------------------------------------------------
+\subsection{Principles}\label{sec:exp-principles}
+%----------------------------------------------------------------------
+
+\paragraph{Questions rather than knobs.}
+The list of things one could vary is long: the tree, size and spectra of the teacher, the leaf embeddings and the law of the data, the architecture, width and depth of the student, its initialization, the optimizer and its hyperparameters, the batch size, weight decay, label noise and the loss. A factorial design over these factors is out of reach, and most of its cells would be uninterpretable. Each experiment therefore starts from a question. Factors are varied one at a time around a base configuration (Table~\ref{tab:exp-base}), and interactions between factors are studied only where a question requires them.
+
+\paragraph{Exact before sampled.}
+Under the product law~\eqref{eq:independent-blocks}, the population loss of a TTN student on the teacher's tree, its gradient and all its output observables are computed exactly from the cores and the second moments of the leaf embeddings (Remark~\ref{rem:dw-compute} and Section~\ref{sec:ttn-students}). The population gradient flow of a TTN is therefore available without sampling error, and it is the reference dynamics. Gradient noise, finite samples and DNN students, for which population quantities must be estimated, are introduced one at a time, so that their effects are not confounded.
+
+\paragraph{One change at a time.}
+When two students disagree, we want to know why. Comparisons between architectures are organized on a grid in which neighbouring students differ in a single respect (Section~\ref{sec:exp-students}), and the comparison asks which change first breaks the agreement.
+
+\paragraph{Learnability is a controlled variable.}
+A teacher that no student learns within the budget says nothing about dynamics. As shown in Section~\ref{sec:exp-teachers}, the simplest TTN teachers are of this kind for every student, TTNs included. The difficulty of the teacher is therefore an explicit parameter, set to a learnable value in the base configuration and varied in a dedicated experiment.
+
+\paragraph{Validated measurements.}
+The observables of Section~\ref{sec:compare} are delicate: plug-in estimates of the error decomposition are biased, probes overfit, and singular subspaces are unstable near degeneracies. Every observable is checked on cases with a known answer, and the sample-based estimators are checked against exact values on TTN students, before any scientific comparison (Section~\ref{sec:exp-phase0}).
+
+\paragraph{Statistics.}
+We follow Section~\ref{sec:compare-protocol}: paired designs, five seeds for screening and at least twenty for confirmatory claims, primary bonds and atoms declared in advance, and acquisition times reported for several thresholds, and as right-censored when they are not observed. One rule is added for sequential dynamics. There, acquisition curves are close to step functions whose times vary across seeds, and their average over seeds is a smooth curve that no seed follows. Curves are therefore shown per seed, and aggregates are computed from event times, such as the distribution of $\tau^{\mathrm{out}}_{e,q}(\delta)$, or after aligning the curves on such times.
+
+%----------------------------------------------------------------------
+\subsection{Common setting}\label{sec:exp-setting}
+%----------------------------------------------------------------------
+
+\subsubsection{Teachers and data}\label{sec:exp-teachers}
+
+\paragraph{Sizes.}
+Teachers are TTNs on balanced binary trees, or on comb trees for staircases, with $N\in\{4,8,16\}$ leaves, leaf embeddings of dimension at most about ten, and ranks $r^\star_e\le8$. Three facts motivate these small sizes. First, cost: an internal core of a binary TTN with bond dimension $D$ has $D^3$ entries, so that bond dimensions of $10^3$ to $10^4$ give $10^9$ to $10^{12}$ entries per core, and students several times wider are out of reach. Second, the rank across a bond is bounded by the dimensions of its matricization (Definition~\ref{def:matricization}); at a leaf bond, $r_e\le d_a$, so that large ranks are only possible high in the tree. Third, exactness: with a suitable order of contraction, one step of exact population gradient descent for a student of bond dimension $D$, against a teacher of smaller bond dimension, costs $O(ND^4)$ operations, so that thousands of runs with $N\le16$ and $D\le64$ are cheap. Deep trees, such as a balanced tree of depth ten with $1024$ leaves, are not considered.
+
+\paragraph{Homogeneous teachers are hard for every student.}
+Suppose that the blocks are centred Gaussian vectors and that $\xi_a(z)=z$, the simplest instance of the setting of Section~\ref{sec:compare-setting}. The teacher~\eqref{eq:teacher} is then a homogeneous polynomial of degree $N$, linear in each block, and all its Hermite components of degree less than $N$ vanish. Equivalently, $\E[f^\star\mid X_A]=0$ for every proper subset $A\subsetneq[N]$ of the blocks: no function of fewer than $N$ blocks is correlated with the teacher. More generally, we call a teacher \emph{homogeneous} when $\E[f^\star\mid X_A]=\E f^\star$ for every proper subset $A$, i.e.\ when its ANOVA components (Section~\ref{sec:exp-observables}) involving between one and $N-1$ blocks vanish; the parity of $N$ bits is an example. Homogeneity has three consequences.
+\begin{enumerate}[label=(\roman*),nosep]
+\item For DNN students, the teacher has leap $N$ in the sense of \citet{abbe2023sgd}. Results on single- and multi-index models \citep{benarous2021online,abbe2023sgd} indicate that online SGD on two-layer networks then needs a number of samples that grows like $d_0^{N-1}$, where $d_0$ is the input dimension.
+\item For TTN students, the same obstruction appears as a high-order saddle. At the constant point of Section~\ref{sec:exp-students}, the TTN analogue of a standard initialization of a DNN, the gradient depends on the teacher only through its mean and its components involving a single block, and the latter vanish. For the parity of $N$ bits on a balanced tree, this rank-one point is a saddle of order at least $N/2$ \citep[Proposition~5.3]{furman2026benign} (Remark~\ref{rem:rank-critical}).
+\item For Gaussian blocks, a single product term $\prod_au_a^\top x^{(a)}$ with unit vectors $u_a$ has kurtosis $3^N$, which is $6561$ for $N=8$. Stochastic gradients and empirical losses are then dominated by rare samples.
+\end{enumerate}
+With $N=8$ leaves, such a teacher already makes every student look as if it learned nothing, for reasons unrelated to the differences between architectures that we want to measure. We therefore use leaf embeddings that contain the constant function, $\xi_a(z)=(1,z)$ or one-hot embeddings, and control the weight that the teacher gives to products of fewer than $N$ blocks.
+
+\paragraph{Spectra are measured, not prescribed.}
+It is tempting to specify a teacher by prescribing its hierarchical singular values at every bond, for instance as power laws. This is not possible in general. Under the product law, all bonds carry the same total energy, $\sum_q\sigma^{\star2}_{e,q}=\norm{f^\star}^2$ for every $e$ (Proposition~\ref{prop:atoms}), and the spectra at different bonds satisfy further compatibility conditions \citep{hackbusch2017interconnection}, so a prescribed family of spectra need not be realizable. The constructions that easily realize a prescribed spectrum, such as orthogonally decomposable teachers $T^\star=\sum_ks_k\bigotimes_au_{a,k}$ with orthonormal families $(u_{a,k})_k$ at every leaf, have the same spectrum $(s_k)$ at every bond. Every bond then sees the same atoms, there is no hierarchy, and with fixed leaf features the dynamics collapses to that of a diagonal DLN \citep[Proposition~4.1]{hfl_diagonal}. We therefore specify teachers through their cores, and always compute and report their data-weighted HSVD (Remark~\ref{rem:dw-compute}) rather than an intended one.
+
+\paragraph{Teacher families.}
+We use four families, each for a specific purpose.
+\begin{enumerate}[label=(T\arabic*),leftmargin=*]
+\item \emph{Gapped teachers}, with at most four modes per bond and ratios of at least two between consecutive singular values at the bonds of interest. They are drawn as orthonormal TTNs (Proposition~\ref{prop:nested}) in whitened coordinates (Proposition~\ref{prop:dw-product}), with prescribed singular values at the root bond, and draws whose measured gaps at the other bonds are too small are rejected; teachers with designed rank profiles are built explicitly (Experiment~E1.2). Gapped teachers resolve individual atoms and transitions: sequential dynamics and acquisition times are only defined when time scales are separated, and singular subspaces are only stable relative to their gaps (Remark~\ref{rem:stability}).
+\item \emph{Residual teachers} $T_\rho$, which control the difficulty. Every bond carries a constant channel in addition to $r$ feature channels. The leaf cores map the embedding to the constant and to centred features, the constant channel is propagated, and on the feature channels an internal vertex with children messages $h_L,h_R$ computes
+\[
+h=\rho\,(Uh_L+Vh_R)+\gamma\,B(h_L,h_R).
+\]
+This is the residual teacher of \citet[Section~6.3]{hfl_surrogate}, written as a TTN on augmented bonds. For $\rho=0$, only the full product survives, and $T_0$ is as hard as the homogeneous teachers above. As $\rho$ grows, components involving fewer blocks gain weight, from a staircase in which every interaction order is present to a teacher dominated by its additive part. On a comb tree, $T_\rho$ contains the staircase teachers of \citet[Section~5]{hfl_diagonal} and \citet[Section~6.2]{hfl_surrogate}.
+\item \emph{Power-law teachers}, with many modes and singular values close to $q^{-\nu}$ at the root bond. They are used for scaling laws in time (Experiment~E1.3), not for individual atoms: the gaps between consecutive singular values shrink like $q^{-\nu-1}$, and neighbouring transitions overlap.
+\item \emph{Parity and read-once formulas} on $\pm1$ leaves, as hard controls. The parity of $N$ bits is realized on the balanced tree with bond dimension two and has the high-order saddles of \citet{furman2026benign} (Remark~\ref{rem:rank-critical}).
+\end{enumerate}
+
+\paragraph{Input laws.}
+Phases~1 to~3 use the product law~\eqref{eq:independent-blocks}, under which the population quantities of TTN students are exact and the data-weighted HSVD is the Schmidt decomposition in the geometry of the loss (Proposition~\ref{prop:dw-hsvd}(iv)). The leaves are uniform one-hot variables over $q$ symbols, which is the setting of \citet{furman2026benign}, $\pm1$ variables, or Gaussian blocks $x^{(a)}\sim\mathcal N(0,\Sigma_a)$ in $\R^b$ with $\xi_a(z)=(1,z)$. Discrete leaves have bounded embeddings and avoid the heavy tails of products of Gaussian variables; Gaussian blocks connect with the theory of SGD on Hermite expansions, and are used with $N\le8$. Leaf covariances are isotropic, except in Experiment~E1.3, which needs anisotropic ones. A full covariance $\Sigma_x$ with correlations across blocks would put us in the dependent-block regime of Section~\ref{sec:compare}, where exact computations are lost and the observables need Gram corrections; it is deferred to Phase~4. Singular leaf covariances are handled by the pseudoinverses of Definition~\ref{def:dw-hsvd}, but add nothing at this stage.
+
+\begin{table}[tbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.15\textwidth}p{0.57\textwidth}p{0.17\textwidth}}
+\hline
+\raggedright Component & \raggedright Base configuration & \raggedright Varied in \tabularnewline
+\hline
+\raggedright Tree & \raggedright balanced binary tree with $N=8$ leaves, hence $|V|=15$ cores & \raggedright E1.4, E1.5 \tabularnewline
+\raggedright Data & \raggedright product law; uniform one-hot leaves over $q=4$ symbols & \raggedright E1.3, E1.4, E2.3 \tabularnewline
+\raggedright Teacher & \raggedright residual teacher $T_\rho$ with $\rho=0.3$, $\gamma=1$ and two feature channels (bond dimension three); gapped teachers with $r^\star_e\le4$ & \raggedright E1.2--E1.6, E2.4 \tabularnewline
+\raggedright TTN student & \raggedright teacher's tree and leaf embeddings; $D=2\max_er^\star_e$ & \raggedright E1.5 \tabularnewline
+\raggedright Initialization & \raggedright canonical configurations of E1.1 & \raggedright E1.1 \tabularnewline
+\raggedright Training & \raggedright square loss; population gradient flow (P0) for TTN students and online SGD with $B=4096$ (P1) for the other students; no weight decay and no label noise; learning rates from pilot runs, with $\eta\lambda_{\max}\le1$ & \raggedright Phase~3 \tabularnewline
+\raggedright Seeds & \raggedright five for screening, twenty for confirmatory claims & \raggedright -- \tabularnewline
+\hline
+\end{tabular}
+\caption{Base configuration. Every experiment departs from it only in the factors that it varies.}
+\label{tab:exp-base}
+\end{table}
+
+\subsubsection{Students and their initialization}\label{sec:exp-students}
+
+\paragraph{Initializations of TTNs.}
+For a DNN with a given parameterization, the rich, intermediate and lazy regimes are reached by changing a single scale. For a TTN, a single scale does not determine the regime, for four reasons.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \emph{The order of the saddle at the origin grows with the tree.} The predictor $g_\vartheta$ is multilinear in the $|V|$ cores, so all derivatives of the loss of order less than $|V|$ vanish at $\vartheta=0$. From cores of scale $\varsigma$, the time needed to leave the origin grows like $\varsigma^{-(|V|-2)}$, as computed by \citet[eq.~(4.7)]{hfl_diagonal} in the diagonal case. A balanced binary tree with $N=8$ leaves has $|V|=15$ cores. The range of scales in which the dynamics is sequential and still completes within a budget is therefore narrow, and it shrinks as the tree grows.
+\item \emph{Balance is conserved.} By Proposition~\ref{prop:gauge}, the loss is invariant under $C_u\mapsto C_u\times_eX$, $C_v\mapsto C_v\times_eX^{-\top}$, where $C_u$ and $C_v$ are the two cores incident to a bond $e$. Write $(C)_{(e)}$ for the matricization of a core whose columns are indexed by the mode of $e$. Differentiating the invariance at $X=I$ gives $(C_u)_{(e)}^\top\nabla_{(C_u)_{(e)}}\mathcal L=\big(\nabla_{(C_v)_{(e)}}\mathcal L\big)^\top(C_v)_{(e)}$, and hence, along gradient flow,
+\begin{equation}\label{eq:conserved}
+Q_e:=(C_u)_{(e)}^\top(C_u)_{(e)}-(C_v)_{(e)}^\top(C_v)_{(e)}\in\R^{D_e\times D_e}
+\end{equation}
+is constant; with weight decay of strength $\lambda$, $\dot Q_e=-2\lambda Q_e$ \citep[cf.][]{du2018algorithmic}, \citep[Appendix~F]{furman2026benign}. How the initial scale is distributed over the cores is therefore a conserved property of the trajectory, not a detail, and unbalanced initializations are known to change the regime of DLNs and two-layer networks \citep{kunin2024get}.
+\item \emph{Laziness requires centring.} A large initialization gives lazy training only if the initial predictor is controlled, as in the scaling $\alpha(g_\vartheta-g_{\vartheta(0)})$ with $\alpha\to\infty$ of \citet{chizat2019lazy}. The centred model is again a TTN: the difference of two TTNs on the same tree is a TTN with block-diagonal cores and twice the bond dimensions, initialized with equal blocks.
+\item \emph{Isotropic initializations lack the low-degree bias of DNNs.} A DNN at a standard initialization computes a function dominated by components of low degree, and its gradient has access to the low-degree components of the teacher. A TTN with isotropic Gaussian cores does neither. With $\xi_a(z)=(1,z)$ and whitened $z$, or with uniform one-hot leaves, each leaf message puts a fraction $1/d$ of its expected energy on the constant ($d=d_a$), and these fractions multiply along the tree. The expected fraction of the energy of the initial predictor carried by the ANOVA components that involve $k$ blocks (Section~\ref{sec:exp-observables}) is therefore $\binom Nk(1-1/d)^kd^{-(N-k)}$: the initial predictor is dominated by interactions of order about $N(1-1/d)$. Moreover, the gradient with respect to a leaf core contracts the residual with the message sent by the rest of the tree, which spans a random $D$-dimensional subspace of the functions of the other $N-1$ blocks; for a generic teacher, the part of the residual that it sees has a relative size of about $(D/d^{N-1})^{1/2}$.
+\end{enumerate}
+We therefore consider three families of initializations, each with a balance profile, i.e.\ a distribution of the scales over the heights of the tree, and a bond dimension $D$.
+\begin{itemize}[leftmargin=2.8em]
+\item[(Z)] \emph{Near zero}: all cores of scale $\varsigma$. This is the analogue of the small initializations of DLNs, with a saddle of order $|V|$ at the origin.
+\item[(I)] \emph{Isotropic}: cores with independent entries of variance $1/\text{fan-in}$, so that the bond messages have unit second moments, and an output multiplier $\alpha$. With centring, $\alpha\to\infty$ is the lazy limit.
+\item[(C)] \emph{Near the constant}: cores that propagate a constant channel, so that $T(\vartheta_0)=c\bigotimes_a\hat e_a$, where $\langle\hat e_a,\xi_a\rangle=1$, plus a perturbation of scale $\varsigma$. The initial predictor is the constant $c$, at a rank-one point where the gradient depends on the teacher only through $\E f^\star$ and the components $\E[f^\star\mid X_a]$ involving a single block; components involving $k\ge2$ blocks enter only through derivatives of higher order. This family is the TTN counterpart of the low-degree bias of DNNs, and of residual networks initialized near the identity.
+\end{itemize}
+Bond dimension plays the role of width. How $\alpha$, $\varsigma$ and the learning rates must scale with $D$ for a regime to persist as $D$ grows, as the neural-tangent and maximal-update parameterizations do for DNNs \citep{yang2021tensor}, is not known for TTNs; Experiment~E1.1 determines it empirically, so that results obtained at one bond dimension transfer to others.
+
+\paragraph{The grid of students.}
+A TTN on the teacher's tree differs from a DNN in two respects: its \emph{connectivity}, which is the teacher's tree, so that locality is built in rather than discovered; and its \emph{node map}, which is multilinear. If the two disagree, the disagreement cannot be attributed to either respect. We therefore arrange the students on the grid of Table~\ref{tab:exp-grid}, in which neighbouring students differ in a single respect, and ask which change first breaks the agreement with the TTN on the teacher's tree. In the language of Section~\ref{sec:dpn}, the first row contains TTNs without copies of the input, and the third row TTNs with copies.
+
+\begin{table}[tbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.15\textwidth}p{0.17\textwidth}p{0.16\textwidth}p{0.17\textwidth}p{0.18\textwidth}}
+\hline
+\raggedright Connectivity & \raggedright Free multilinear core & \raggedright Bilinear core & \raggedright Quadratic node & \raggedright SiLU or ReLU node \tabularnewline
+\hline
+\raggedright Teacher's tree & \raggedright \textbf{TTN} (reference) & \raggedright bilinear tree network & \raggedright \textbf{quadratic tree network} & \raggedright \textbf{SiLU tree network} \tabularnewline
+\raggedright Other tree & \raggedright \textbf{wrong-tree TTN}; tensor train & & & \tabularnewline
+\raggedright Dense (copies of the input) & \raggedright \textbf{untied copy-TTN} & \raggedright bilinear MLP & \raggedright \textbf{quadratic MLP} & \raggedright \textbf{MLP}; residual MLP \tabularnewline
+\hline
+\end{tabular}
+\caption{The grid of students: connectivity in rows, node map in columns. Neighbouring students differ in a single respect. The core students, in bold, are run in every comparison; the others are run when a comparison between neighbours requires them.}
+\label{tab:exp-grid}
+\end{table}
+
+A bilinear node computes $W[(Ah_L)\odot(Bh_R)]$ from the messages $h_L,h_R$ of its children: it is a TTN core whose CP rank is at most the width \citep{pearce2024bilinear}. A quadratic or SiLU node computes $\sigma(W[h_L;h_R]+b)$. Besides the bilinear cross terms, the quadratic node contains the self-interactions of $h_L$ and of $h_R$ and terms of lower degree, and it is a tied TTN vertex acting on copies of the augmented messages of its children (Theorem~\ref{thm:dpn-ttn}). Tree networks are locally connected networks without weight sharing, i.e.\ one-dimensional convolutional networks with kernel size and stride two and untied filters. In the dense row, every student receives the whole input. The untied copy-TTN is a binary TTN with $N$ leaves, all of which receive $\xb=(1,x)$, with free cores; the quadratic MLP is a deep polynomial network with $K=2$, i.e.\ the tied TTN of Theorem~\ref{thm:dpn-ttn}; the bilinear MLP has layers $(Ah)\odot(Bh)$.
+
+The grid is read as follows. If the TTN agrees with the tree networks but not with the dense students, the gap lies in the discovery of locality, and the copy-TTN or the tied TTN, rather than the TTN on the teacher's tree, is the appropriate surrogate of a dense network. If the TTN already disagrees with the SiLU tree network, the gap lies in the node map, and the quadratic tree network tells whether polynomial nodes suffice to reproduce the SiLU node, which is the premise of the polynomial surrogates of Section~\ref{sec:surrogate}. The wrong-tree TTN measures how much of the behaviour of the TTN is due to the alignment of its tree with the teacher's.
+
+\subsubsection{Training protocols and observables}\label{sec:exp-observables}
+
+\paragraph{Training protocols.}
+We distinguish four protocols:
+\begin{enumerate}[label=(P\arabic*),start=0,leftmargin=*,nosep]
+\item population gradient flow, integrated by gradient descent with a small step on the exact population loss; it is available for TTN students under the product law;
+\item online SGD, with fresh samples at every step and batch size $B$; with large $B$ and small $\eta$, it is the closest approximation of (P0) available for DNN students;
+\item training on a fixed sample of size $n$, by full-batch gradient descent or multi-epoch SGD;
+\item Adam, AdamW or Muon in place of SGD in (P1) or (P2).
+\end{enumerate}
+Protocols (P0) and (P1) separate optimization from generalization, (P2) adds the effects of a finite sample, and (P3) changes the geometry of the updates. Unless stated otherwise, the learning rate is the largest value on a predeclared grid for which $\eta\lambda_{\max}\le1$ along the whole trajectory, where $\lambda_{\max}$ is the largest eigenvalue of the Hessian of the loss. The time $t=\sum_n\eta_n$ of Hypothesis~\ref{hyp:global} is then the time of an approximate gradient flow, and the edge-of-stability regime \citep{cohen2021gradient} is avoided until it is studied on purpose. Learning rates and widths are fixed on pilot teachers with separate seeds, before the main runs (Section~\ref{sec:compare-setting}). Small initializations of TTNs require double precision, since the gradients scale like $\varsigma^{|V|-1}$.
+
+\paragraph{Observables.}
+At every checkpoint we record:
+\begin{enumerate}[label=(O\arabic*),leftmargin=*]
+\item \emph{Output observables} (Section~\ref{sec:output-obs}): the loss, the coupling matrices $C_e[f_t]$, the acquisition coefficients $a_{e,q}(t)$ and the four terms of~\eqref{eq:error-decomposition} at every bond, and the acquisition times of Definition~\ref{def:acq-times} for $\delta\in\{0.1,0.25,0.5\}$.
+\item \emph{Decompositions}: the data-weighted HSVD of TTN students on the teacher's tree, computed exactly, and the functional HSVD of every student, estimated on crossed grids~\eqref{eq:crossed-grid}; their singular values, the alignments $\mathrm{Al}_{e,r}(t)$ at gaps, participation ratios, and the rank profile $(r_e(t))_e$, where $r_e(t)$ is the number of singular values at $e$ above $10^{-3}\norm{f_t}$.
+\item \emph{ANOVA observables}. Under the product law, every $f\in L^2(\nu_x)$ has a Hoeffding, or ANOVA, decomposition $f=\sum_{S\subseteq[N]}f_S$ into mutually orthogonal components, where $f_S$ depends only on $x_S$ and $\E[f_S\mid X_A]=0$ unless $S\subseteq A$ \citep{hoeffding1948class,efron1981jackknife}. We record the closed subtree energies $V_{A_e}(f):=\norm{\E[f\mid X_{A_e}]}^2=\sum_{S\subseteq A_e}\norm{f_S}^2$ at every bond, and the noise-stability curve
+\[
+\operatorname{Stab}_f(\omega):=\E\big[f(X)\,f(Y_\omega)\big]=\sum_{k=0}^N\omega^kE_k(f),\qquad E_k(f):=\sum_{|S|=k}\norm{f_S}^2,\qquad\omega\in[0,1],
+\]
+where $Y_\omega$ is obtained from $X$ by resampling each block independently with probability $1-\omega$, and $(E_k(f))_k$ is the degree profile of $f$ \citep[cf.][Chapter~2]{odonnell2014analysis}. For TTN students, both are computed exactly by the moment recursion of Remark~\ref{rem:dw-compute}, with the leaf Gram matrices $\Sigma_a$ replaced by $m_am_a^\top$ for the leaves outside $A_e$, respectively by $m_am_a^\top+\omega(\Sigma_a-m_am_a^\top)$ for all leaves, where $m_a:=\E\xi_a(X^{(a)})$. For the other students, they are estimated by Monte Carlo with one additional evaluation per sample \citep{sobol2001global}; the coefficients $E_k$ are fitted from the curve only for small $N$. These observables are architecture-free and only need evaluations of the predictor, and they measure the structure that controls difficulty (Section~\ref{sec:exp-teachers}). Unlike the HSVD, which decomposes the predictor across one cut at a time, they say how much of it is explained by each subtree alone, and how its energy is distributed over interaction orders.
+\item \emph{Dynamical diagnostics}: the kernel movement $\Delta_K(t):=\norm{K_t-K_0}_F/\norm{K_0}_F$ of the empirical tangent kernel on an audit set (Remark~\ref{rem:kernel}), the sharpness $\lambda_{\max}$, estimated with Hessian--vector products, the norms of the cores and, for TTN students, the conserved quantities~\eqref{eq:conserved}, whose drift measures the departure from gradient flow.
+\end{enumerate}
+Representation and use observables (Sections~\ref{sec:representation} and~\ref{sec:use}) are deferred to Phase~4, with the exception of interventions on the teacher, which require no probe.
+
+%----------------------------------------------------------------------
+\subsection{Phase 0: validation}\label{sec:exp-phase0}
+%----------------------------------------------------------------------
+
+The observables involve whitenings, pseudoinverses, projections, crossed grids and sample splitting, and the simulators involve exponentially large tensors that are never formed. An error in any of them would be indistinguishable from a scientific finding. Phase~0 therefore checks them on cases with known answers, before any comparison.
+
+\subsubsection*{E0.1\quad Algebra of the tied TTN}
+\begin{description}
+\item[Question.] Do the polynomial recurrence, the tied-tree contraction and the explicit coefficient tensor of a deep polynomial network agree, in values and in gradients?
+\item[Design.] On a tiny network in double precision, with widths $(3,4,2)$ and quadratic activations, compare the three computations of Theorem~\ref{thm:dpn-ttn}, and their gradients with respect to all weights, biases and the readout (suggested tolerances: $10^{-10}$ for values and $10^{-8}$ for gradients, relative). An exactly polynomial activation, such as $\sigma(z)=z+z^2$, must give the same polynomial for every centre, and untying the cores, or averaging instead of summing the gradients of repeated occurrences, must break the agreement of gradients \citep[Section~8.1]{hfl_surrogate}.
+\item[Outcome.] Required before quadratic MLPs, polynomial proxies or local surrogates are used.
+\end{description}
+
+\subsubsection*{E0.2\quad Known answers}
+\begin{description}
+\item[Question.] Do the observables and the simulators reproduce results that are known exactly?
+\item[Design.] Observables: for a TTN student equal to the teacher, all acquisition coefficients equal one and the four terms of~\eqref{eq:error-decomposition} vanish; for the truncation of the teacher at a bond $e$ to its $k$ leading modes, $a_{e,q}=1$ for $q\le k$ and $a_{e,q}=0$ otherwise; for a student whose coupling block at a degenerate block $B$ is $\sigma^\star_BR$, with an orthogonal $R\ne I$, the four terms take the values of Proposition~\ref{prop:error-decomposition}(iv), in particular $a_{e,B}=\operatorname{tr}R/|B|$; for parity, the whole energy of the ANOVA decomposition is at order $N$. Dynamics: the exact amplitude dynamics of homogeneous diagonal TTNs and its acquisition times \citep[Section~4]{hfl_diagonal}, and the acceleration factor of the three-leaf residual TTN \citep[Proposition~6.1]{hfl_diagonal}.
+\item[Outcome.] Tolerances for every observable, used to flag numerical problems in later runs.
+\end{description}
+
+\subsubsection*{E0.3\quad Exact against sampled}
+\begin{description}
+\item[Question.] Do the sample-based estimators, which are the only ones available for DNN students, agree with the exact values?
+\item[Design.] Apply every sample-based estimator (audit-set coefficients with sample splitting, crossed-grid functional HSVDs, Monte Carlo ANOVA energies and noise-stability curves) to TTN students along training trajectories, and compare with the exact values of Section~\ref{sec:ttn-students}.
+\item[Outcome.] Agreement within the estimated error bars is required. Since the exact and the sampled estimators are implemented by different people (Section~\ref{sec:exp-organization}), this experiment is also the integration test of the two code bases.
+\end{description}
+
+%----------------------------------------------------------------------
+\subsection{Phase 1: the dynamics of TTNs}\label{sec:exp-phase1}
+%----------------------------------------------------------------------
+
+Phase~1 uses TTN students on the teacher's tree under population gradient flow (P0), unless stated otherwise. Its runs are cheap, so it can afford dense sweeps and twenty seeds per configuration.
+
+\subsubsection*{E1.1\quad Regime map}
+\begin{description}
+\item[Question.] Which dynamical regimes does a TTN student exhibit, as a function of its initialization family, scale, balance profile and bond dimension, and which measurable order parameters distinguish them?
+\item[Motivation.] Every later experiment must state its regime, and Section~\ref{sec:exp-students} shows that a single initialization scale does not determine it. For DNNs, the regime depends on the scale, on the balance between layers, and on how the parameterization scales with width \citep{chizat2019lazy,woodworth2020kernel,yang2021tensor,kunin2024get}; for TTNs, the presence or absence of a low-degree bias adds a further axis.
+\item[Design.] Gapped teachers and $T_\rho$ with $\rho\in\{0.3,1\}$, with $N\in\{4,8\}$. Families (Z), (I) and (C); scales $\varsigma$ and multipliers $\alpha$ on logarithmic grids; three balance profiles (larger leaves, balanced, larger root); $D\in\{8,16,32,64\}$; five seeds per cell. Order parameters: the kernel movement $\Delta_K$ at the end of training; the sequentiality $\mathrm{Seq}$, i.e.\ the fraction of pairs of atoms whose acquisition windows $[\tau^{\mathrm{out}}(0.1),\tau^{\mathrm{out}}(0.9)]$ are disjoint; the number of plateaus of the loss; the degree profile at initialization and its evolution; the final alignments.
+\item[Predictions.] Family (Z) at small $\varsigma$: sequential acquisition, $\mathrm{Seq}\approx1$, and plateaus whose lengths scale like $\varsigma^{-(k-2)}$ for saddles of order $k$. Family (C): acquisition by increasing interaction order, starting with the components that involve a single block. Family (I): for $N=8$ and moderate $D$, slow learning of every teacher (Section~\ref{sec:exp-students}, item (iv)); with centring and large $\alpha$, $\Delta_K\to0$, but the student only fits the projection of the teacher onto the tangent space at initialization, which is small unless $D$ is large, so that the lazy regime is a control rather than a candidate surrogate. How unbalanced profiles and growing $D$ move these boundaries is part of the question.
+\item[Outcome.] A phase diagram; a scaling of the parameterization with $D$ under which it is stable; and two or three \emph{canonical configurations}, a sequential one, an intermediate one and, as a control, a lazy one, which are used in all later experiments.
+\end{description}
+
+\subsubsection*{E1.2\quad Anatomy of saddle-to-saddle dynamics}
+\begin{description}
+\item[Question.] In the sequential regime, which saddles does a TTN student visit, how long does it stay near each, and in what order does its rank profile grow?
+\item[Motivation.] In DLNs, small initializations lead to the visit of saddles of increasing rank, as for a greedy low-rank algorithm \citep{saxe2014exact,jacot2021saddle}, and hierarchical tensor factorizations have an incremental bias towards low hierarchical rank \citep{razin2022implicit}. In the setting of \citet[Theorem~5.2]{furman2026benign}, all critical points that are not global minima are rank deficient (Remark~\ref{rem:rank-critical}). Two features of TTNs have no counterpart in DLNs.
+First, the rank is a profile over the bonds, and it cannot grow at a single bond. By Proposition~\ref{prop:rank-comparison}(ii), applied with every vertex as the root, each of the three bond ranks at an internal vertex is at most the product of the other two. Hence the bonds of rank at least two meet every internal vertex in zero, two or three bonds, and they form a union of paths between leaves. Starting from rank one, the smallest increment is a single path between two leaves $a$ and $b$, which adds a pairwise interaction, as in $s_1\bigotimes_cu_c+s_2\,(w_a\otimes w_b)\otimes\bigotimes_{c\ne a,b}u_c$; the largest adds a new product term and raises the rank at every bond.
+Second, near a rank-one point, an increment along a path $P$ requires the $k_P$ cores along $P$ to grow together. Heuristically, the plateau that precedes it then scales like $\varsigma^{-(k_P-2)}/\sigma_P$, where $\sigma_P$ is the strength of the corresponding mode of the teacher. At small $\varsigma$, paths between nearby leaves would then be favoured over long paths, and the order of acquisition would depend on the tree, not only on the singular values.
+Finally, the first escape from the origin plausibly targets a best rank-one approximation of the teacher, which is a nonconvex problem for tensors \citep{hillar2013most}. Unlike in DLNs, the first saddle may then depend on the initialization.
+\item[Design.] The sequential configurations of families (Z) and (C), on gapped teachers with designed rank profiles: (a) rank two along the path between two siblings; (b) rank two along a path through the root; (c) two product terms, with rank two at every bond; (d) a competition between a weak short path and a strong long path. We measure the plateau lengths as functions of $\varsigma$ on logarithmic axes, whose slopes give the orders of the saddles. At each plateau, we record the gradient norm, the rank profile, and the loss of the best TTN with that rank profile, estimated by restarts of alternating least squares from the HSVD truncation, to test whether the plateau is a critical point of the rank-restricted problem. Finally, we compare the sequence of rank increments with two greedy algorithms, which add the best path increment or the best product term, and record the distribution of these sequences over twenty seeds.
+\item[Predictions.] Rank increments along paths between leaves; plateau orders $k_P$; in design (d), a crossover from the short to the long path as $\varsigma$ grows, at $\sigma_{\mathrm{long}}/\sigma_{\mathrm{short}}\approx\varsigma^{-(k_{\mathrm{long}}-k_{\mathrm{short}})}$.
+\item[Outcome.] A combinatorial description of the saddle-to-saddle path of TTNs, with plateau lengths predicted from the teacher and the tree, or a precise list of departures from it. In both cases, it is the reference against which DNN students are compared in Phase~2.
+\end{description}
+
+\subsubsection*{E1.3\quad What sets the order and the time scales}
+\begin{description}
+\item[Question.] Which spectrum of the teacher determines the order in which atoms are acquired and their acquisition times, and how does the loss decay when the teacher has many modes?
+\item[Motivation.] At a bond $e$, three spectra of the teacher are candidates: the Euclidean one, of $M^\star_e$ (Definition~\ref{def:hsvd}); the data-weighted one, of $\Sigma_{A_e}^{1/2}M^\star_e\Sigma_{A_e^c}^{1/2}$, which gives the energy that each atom carries in the loss (Proposition~\ref{prop:atoms}); and the spectrum of the moment matrix $\Sigma_{A_e}M^\star_e\Sigma_{A_e^c}$, the matricization of $\E[y\,\Xi_{[N]}(X)]$, which drives the gradient near the origin (cf.\ Proposition~\ref{prop:sv-dynamics}). The three coincide for whitened leaves and differ otherwise. Example~\ref{ex:dw} conjectures that the data-weighted spectrum decides which atoms are acquired first, but a two-leaf computation points to the moment spectrum.
+With two leaves and one bond, $g_\vartheta(x)=x^{(1)\top}C_1C_2^\top x^{(2)}$ and $\mathcal L=\tfrac12\norm{\Sigma_1^{1/2}(C_1C_2^\top-M^\star)\Sigma_2^{1/2}}_F^2$. Suppose that $\Sigma_1$, $\Sigma_2$ and $M^\star$ are diagonal, with entries $\lambda_{1,q}$, $\lambda_{2,q}$ and $m_q$, and that the initialization is small, balanced and aligned. Then the modes decouple, and the product $w_q$ of the two factors of mode $q$ follows $\dot w_q=2\lambda_{1,q}\lambda_{2,q}(m_q-w_q)w_q$, the dynamics of \citet{saxe2014exact}. Its acquisition time is inversely proportional, up to a logarithm, to the moment singular value $\lambda_{1,q}m_q\lambda_{2,q}$. The decrease of the loss when it is acquired, $\tfrac12\lambda_{1,q}\lambda_{2,q}m_q^2$, is set by the data-weighted singular value instead.
+For the time scales, the theory of DLNs gives $\tau\propto1/\sigma$ up to logarithms at fixed depth \citep{saxe2014exact}, \citep[eq.~(4.7)]{hfl_diagonal}, while E1.2 suggests an additional dependence on the tree. With many modes, if mode $q$ is acquired at a time $\tau_q\propto1/\sigma_q$ and $\sigma_q\propto q^{-\nu}$ with $\nu>1/2$, the modes acquired by time $t$ are those with $q\lesssim t^{1/\nu}$, and the loss decays like $\sum_{q>t^{1/\nu}}\sigma_q^2\propto t^{-(2-1/\nu)}$. This links TTNs to dynamical models of neural scaling laws \citep{michaud2023quantization,bordelon2024dynamical}, and an exponent different from $2-1/\nu$ would indicate that the tree changes the time scales. Near-degenerate atoms may be acquired as a block before being resolved, as in the symmetric plateaus of soft committee machines \citep{saad1995online}; the block observables of Remark~\ref{rem:degenerate} are designed for this case.
+\item[Design.] (a) Two and four Gaussian leaves with diagonal, then non-diagonal, covariances, and teachers for which the three spectra order the modes differently. The leading singular functions of the student at the end of each plateau are compared with the three candidates. (b) Gapped teachers with planted singular values at bonds of different heights. We measure $\tau^{\mathrm{out}}_{e,q}$ as a function of $\sigma^\star_{e,q}$, of the height of $e$, and of $N$, $D$ and $\varsigma$. (c) Power-law teachers with $\nu\in\{0.75,1,1.5,2\}$, in the sequential and intermediate configurations, and the exponent of the loss as a function of $\nu$.
+\item[Predictions.] (a) The moment spectrum sets the order, and the data-weighted spectrum the decrease of the loss at each acquisition. (b) $\tau^{\mathrm{out}}_{e,q}\propto1/\sigma^\star_{e,q}$ among atoms that require the same cores to grow, with corrections that depend on the tree. (c) Exponents close to $2-1/\nu$ in the sequential configuration.
+\item[Outcome.] A law for orders and time scales in terms of a single spectrum of the teacher and of the tree. Run on DNN students in Phase~2, design (a) also tests whether the early dynamics of a DNN is driven by the same moment tensor, as one expects for any gradient method.
+\end{description}
+
+\subsubsection*{E1.4\quad Difficulty: interaction order, leaf dimension and parity}
+\begin{description}
+\item[Question.] How does the time needed to learn a teacher depend on the weight of its low-order interactions, on the leaf dimension and on $N$?
+\item[Motivation.] Section~\ref{sec:exp-teachers} argued that homogeneous teachers are hard for every student: for DNNs because of their leap \citep{benarous2021online,abbe2023sgd}, for TTNs because of high-order saddles \citep{furman2026benign}. If the two obstructions are one mechanism, TTNs and DNNs should depend on $\rho$, on the leaf dimension and on $N$ in the same way (Experiment~E2.4); if they are not, the difference measures the advantage that a TTN draws from its built-in tree. This experiment provides the TTN side.
+\item[Design.] $T_\rho$ with $\rho\in\{0,0.1,0.3,1\}$, and parity, on discrete leaves with $N\in\{4,8,16\}$. To vary the leaf dimension: $T_\rho$ on Gaussian blocks of dimension $b\in\{2,4,8,16\}$ with $N\le8$, and the parity of one coordinate per block on blocks of $b$ independent $\pm1$ coordinates, which is a sparse parity of $N$ out of $Nb$ bits. Families (I) and (C). We measure the times needed to reach relative errors $0.5$ and $0.1$, right-censored at the budget, the plateau lengths, and the degree profile $E_k(f_t)$ of the student over time.
+\item[Predictions.] From family (C): for $\rho=0$ and for parity, plateaus that grow quickly with $N$, consistently with saddles of order at least $N/2$ at the constant point \citep[Proposition~5.3]{furman2026benign}; for $\rho>0$, a degree profile that fills from low to high orders, with much shorter plateaus. From family (I): slow learning for every $\rho$ when $D\ll d^{N-1}$.
+\end{description}
+
+\subsubsection*{E1.5\quad Capacity and depth}
+\begin{description}
+\item[Question.] What does a TTN student learn when it cannot represent the teacher, how does extra bond dimension change its dynamics, and how do the depth of the tree and the number of factors along its bonds differ?
+\item[Motivation.] (a) For an under-parameterized student, with $D<r^\star_e$ at some bonds, the HSVD truncation is quasi-optimal (Proposition~\ref{prop:truncation}). In DLNs, gradient flow from small initializations reaches the best approximation of the given rank, but for TTNs the rank-restricted landscape is not known to be benign, so whether training reaches the truncation or a worse point is open. Real networks are under-parameterized with respect to real tasks, so this regime matters for the surrogate hypothesis. (b) Extra bond dimension adds directions and changes plateaus and implicit biases, as width does for DNNs. (c) ``Depth'' has two meanings for a TTN. The depth of the tree changes the function class and the bonds, and requires a new teacher. Replacing every bond by a chain of $m$ square matrices instead leaves the function class and the bipartitions unchanged, but multiplies the number of factors, hence the orders of the saddles: it is the analogue of the depth of a DLN. Varying the two separately distinguishes the effect of hierarchical structure from that of multiplicative depth.
+\item[Design.] (a) $D\in\{1,\dots,r^\star-1\}$ on gapped and power-law teachers; the final loss is compared with that of the HSVD truncation and with the best of twenty restarts of alternating least squares. (b) $D/r^\star\in\{1,2,4,8\}$. (c) Chains of $m\in\{1,2,4\}$ factors per bond on a fixed tree, and trees with $N\in\{4,8,16\}$ for teachers with matched spectra at the root bond.
+\item[Predictions.] (c) Longer plateaus and sharper transitions as $m$ grows, as for the depth of DLNs \citep[eq.~(4.7)]{hfl_diagonal}.
+\end{description}
+
+\subsubsection*{E1.6\quad Acceleration and gating}
+\begin{description}
+\item[Question.] Does learning a feature accelerate the learning of the features built on it (Definition~\ref{def:acceleration}), and how does the effect depend on the residual strength $\rho$?
+\item[Motivation.] Soft hierarchical learning is one of the reasons for studying TTNs. In a three-leaf channelwise residual TTN, learning the lower core divides the acquisition time of the upper one by $1+\gamma^2\alpha^2/(2\rho^2)$ \citep[Proposition~6.1]{hfl_diagonal}, and staircases produce hard gating \citep[Section~5]{hfl_diagonal}. These results concern diagonal TTNs with fixed leaf features. Whether they survive with free cores, learned leaf directions and bond dimensions larger than one is not known, and it must be established before acceleration is compared between TTNs and DNNs (Experiment~E2.5). In TTNs, the interventions of Definition~\ref{def:acceleration} are implemented exactly, by clamping the cores that compute a feature.
+\item[Design.] $T_\rho$ on comb and balanced trees, with $\rho\in\{0,0.1,0.3,1\}$ and $\gamma$ fixed. For pairs $(A,B)$ declared in advance, with $B$ an atom at a bond above that of $A$, we measure $\tau_B$ with the cores that compute $A$ clamped to the teacher's values (learned) and to their initial values (blocked). As controls, $A$ is replaced by an atom of equal strength that $B$ does not use. We also apply the teacher-strength intervention of Section~\ref{sec:use}, which replaces $f^\star$ by $f^\star-\tfrac12\sigma^\star_A\chi^\star_A$ (Experiment~E2.5).
+\item[Predictions.] Hard gating, $\tau_B=\infty$ when $A$ is blocked, at $\rho=0$; finite acceleration for $\rho>0$, close to the factor above in the setting of \citet[Proposition~6.1]{hfl_diagonal}; no effect in the controls.
+\end{description}
+
+%----------------------------------------------------------------------
+\subsection{Phase 2: TTNs and DNNs}\label{sec:exp-phase2}
+%----------------------------------------------------------------------
+
+Phase~2 compares the students of Table~\ref{tab:exp-grid} on the same teachers and data, in the canonical configurations of E1.1. It starts as soon as these configurations are fixed, so that its first results can steer the rest of Phase~1.
+
+\subsubsection*{E2.1\quad Realizability, capacity and calibration}
+\begin{description}
+\item[Question.] For each student and each canonical teacher, which widths fit the teacher, which learning rates are stable, and how are the time scales of different students related?
+\item[Motivation.] An underfitting student says nothing about dynamics; there is no single notion of equal capacity for a TTN and a DNN; and the conventions for time must be fixed before any feature curve is examined, since feature-specific or post hoc time warps would make Hypothesis~\ref{hyp:global} unfalsifiable (Section~\ref{sec:compare-setting}). The widths needed by tree and dense networks are not given by the bond dimensions of the teacher. By polarization, $u^\top h_L\,v^\top h_R=\tfrac14\big[(u^\top h_L+v^\top h_R)^2-(u^\top h_L-v^\top h_R)^2\big]$, so a quadratic node needs two units per bilinear term, and a quadratic network without biases cannot pass a feature unchanged through a layer.
+\item[Design.] For every student and canonical teacher: a width sweep and a fit check, i.e.\ a predeclared relative test error under a generous budget, which gives the smallest width that fits; a capacity bracket, with parameter counts below, near and above that of the TTN \citep[Section~6.7]{hfl_surrogate}; learning rates chosen on pilot teachers with separate seeds; for TTN students, the initialization family whose initial degree profile is closest to that of the DNN students, as a predeclared calibration, with the other families as controls; and a single time calibration per student, fixed in advance, which matches the initial function-space speed $\norm{\partial_tf_t}$ at $t=0$ (Section~\ref{sec:compare-setting}).
+\item[Outcome.] Configurations for all students, frozen and recorded before E2.2.
+\end{description}
+
+\subsubsection*{E2.2\quad Comparison on the grid of students}
+\begin{description}
+\item[Question.] In the canonical configurations, do the students of the grid acquire the same atoms, in the same order and on comparable time scales, and which change of connectivity or node map first breaks the agreement with the TTN on the teacher's tree?
+\item[Motivation.] This is the direct test of Hypothesis~\ref{hyp:global}, organized so that a failure can be attributed (Section~\ref{sec:exp-students}). The predictions of Phase~1 give it specific targets. For instance, if the dependence on the length of paths found in E1.2 holds for TTNs, it is a concrete point at which tree-structured and dense students should differ, since a dense network has no notion of distance between blocks.
+\item[Design.] Two canonical teachers (a gapped teacher, and $T_\rho$ with $\rho>0$), the sequential and intermediate configurations (the lazy one as a control), and the core students of Table~\ref{tab:exp-grid}, with twenty paired seeds: same teacher, same data stream and, where meaningful, same initialization seed. Observables (O1)--(O4), and the comparisons of Section~\ref{sec:compare-protocol}: distances between the trajectories of acquisition coefficients, rank correlations of acquisition times, delays, the four terms of~\eqref{eq:error-decomposition} over time, noise-stability curves, and the alignment of tangent kernels.
+\item[Decision.] Tolerances are declared before the runs, and revised only on pilots. Initially, the root-mean-square difference of the acquisition coefficients over atoms and time is at most $0.1$, and the Spearman correlation of acquisition times is at least $0.8$, both for the median over paired seeds. The first student of the grid that violates them locates the gap, and determines which students are used in Phases~3 and~4.
+\end{description}
+
+\subsubsection*{E2.3\quad What a TTN cannot see}
+\begin{description}
+\item[Question.] Does the dynamics of DNN students depend on properties of the input law that the dynamics of TTN students provably ignores?
+\item[Motivation.] Under the product law, the population loss of a TTN student, and hence its population gradient flow, depends on the data only through the first and second moments of the leaf embeddings (Remark~\ref{rem:second-moments}). Changing the law of the leaves at fixed moments leaves every TTN trajectory unchanged, whereas a DNN sees all the moments. Any change of the DNN trajectories under such a change is a direction in which no TTN with these leaf embeddings can be a global surrogate. Conversely, invariance would show that, in this regime, the DNN is driven by the same second-moment structure. The experiment is cheap, since its TTN side is known exactly in advance.
+\item[Design.] A canonical $T_\rho$ teacher with Gaussian blocks and $N\in\{4,8\}$, and leaf laws with the same mean and covariance: Gaussian, independent Rademacher coordinates, uniform on the sphere of radius $\sqrt b$, and a heavy-tailed law (Student-$t$ with five degrees of freedom, rescaled to unit variance). TTN students under (P0), as a numerical check, and under SGD, where fourth moments enter through the noise; DNN students of the grid. We measure the shifts of acquisition times and trajectories relative to the Gaussian law.
+\item[Predictions.] For TTN students, no change under (P0), and under SGD changes that grow with the kurtosis of the leaves. For DNN students we make no prediction: this is a measurement.
+\end{description}
+
+\subsubsection*{E2.4\quad Difficulty across students}
+\begin{description}
+\item[Question.] Do DNN students depend on the interaction order, the leaf dimension and $N$ as TTN students do (Experiment~E1.4)?
+\item[Motivation.] The leap of a teacher and the order of the saddles of a TTN are two descriptions of difficulty. Agreement between the scaling exponents would indicate a shared mechanism, which is the strongest form of the surrogate hypothesis that does not require individual trajectories to match. For parities, the DNN side is partly known: SGD learns sparse parities of $k$ out of $n$ bits in a number of steps of order $n^{O(k)}$ \citep{barak2022hidden}.
+\item[Design.] The teachers and sweeps of E1.4, on the core DNN students, with online SGD; the same observables, in particular the degree profiles $E_k(f_t)$, estimated from noise-stability curves.
+\item[Outcome.] For each student, the exponents of the time needed to reach a given error as functions of $b$ and $N$, and their dependence on $\rho$, compared with those of E1.4.
+\end{description}
+
+\subsubsection*{E2.5\quad Acceleration across students}
+\begin{description}
+\item[Question.] Does weakening a prerequisite atom delay the atoms above it by comparable amounts in TTN and DNN students?
+\item[Motivation.] Agreement of unperturbed trajectories does not show that the same mechanism produces them, whereas agreement of the responses to interventions does \citep[Section~7.6]{hfl_surrogate}. Interventions on the teacher need neither probes nor code directions (Section~\ref{sec:use}), so they can be applied to every student from the start of Phase~2; erasures and injections of internal codes are deferred to Phase~4. Controls separate dependence from staging, since atoms of different strengths are acquired at different times even when they are independent (Section~\ref{sec:use}).
+\item[Design.] Canonical teachers. For atoms $(e,q)$ declared in advance, replace $f^\star$ by $f^\star-\tfrac12\sigma^\star_{e,q}\chi^\star_{e,q}$. In an orthonormal form of the data-weighted teacher whose orthogonality centre is the bond $e$ (Propositions~\ref{prop:nested} and~\ref{prop:dw-product}), this only halves one entry of the centre, and keeps the tree and the bond dimensions. Then recompute the atoms of the modified teacher, and measure the shifts of the acquisition times of the atoms at the bonds above $e$. As a control, weaken an atom of equal strength at a bond that is not below them. Twenty paired seeds.
+\item[Outcome.] For each student and each pair of atoms, the shift, and its ratio to the shift in the TTN on the teacher's tree.
+\end{description}
+
+%----------------------------------------------------------------------
+\subsection{Phase 3: optimizers, noise and finite samples}\label{sec:exp-phase3}
+%----------------------------------------------------------------------
+
+Phase~3 changes the training protocol. It is run first on TTN students, where it is cheap and its effects can be compared with the exact population dynamics, and then, with the same protocol, on the students selected by E2.2.
+
+\subsubsection*{E3.1\quad Gradient noise and learning rate}
+\begin{description}
+\item[Question.] How do gradient noise and large learning rates change plateau lengths, rank paths and regimes, and are the effects the same for TTN and DNN students?
+\item[Motivation.] In the stochastic differential equation that approximates SGD \citep{li2017stochastic}, the drift is the population gradient and the noise covariance scales like $\eta/B$; at fixed $\eta$, changing $B$ changes only the noise. Near high-order saddles, where the drift is very small, fluctuations may dominate the escape and select among the paths of E1.2. Label noise does not change the population dynamics, since it only adds a constant to the population loss. It does change the noise of SGD, which then acquires an implicit bias towards flat minimizers \citep{damian2021label}, so it is only studied together with SGD. Beyond the gradient-flow regime, large learning rates lead to the edge of stability \citep{cohen2021gradient}, which may interact with plateaus.
+\item[Design.] The canonical sequential configuration with discrete leaves, whose bounded embeddings keep the noise moderate. At fixed $\eta$, online SGD with $B\in\{\infty,4096,512,64,8\}$, where $B=\infty$ is population gradient descent; the pairs $(\eta,B)$ and $(2\eta,2B)$, which coincide in the SDE approximation; label noise with standard deviation $0$, $0.1\norm{f^\star}$ and $0.5\norm{f^\star}$; and learning rates up to and beyond $\eta\lambda_{\max}=2$, with the sharpness tracked.
+\item[Predictions.] Shorter plateaus and more variable paths as $B$ decreases, with larger effects for saddles of higher order; agreement between $(\eta,B)$ and $(2\eta,2B)$ at small $\eta$.
+\end{description}
+
+\subsubsection*{E3.2\quad Adaptive and orthogonalized optimizers}
+\begin{description}
+\item[Question.] Do Adam, AdamW and Muon change what is learned and in what order, and do they affect TTN and DNN students in the same way?
+\item[Motivation.] The three optimizers transform differently under the symmetries of a TTN. Gradient descent is equivariant under orthogonal gauge transformations, i.e.\ $X\in\mathrm O(D_e)$ in Proposition~\ref{prop:gauge}, which are isometries of the parameter space that leave the loss invariant: gauge-equivalent initializations give the same function-space trajectory. Adam \citep{kingma2015adam,loshchilov2019decoupled} acts coordinate by coordinate and is equivariant only under permutations and changes of sign. Its trajectory therefore depends on the gauge of the initialization, and on the orientation of the teacher's features relative to the coordinate axes. Muon \citep{jordan2024muon} replaces the update of a matrix by the orthogonal factor of the polar decomposition of its momentum, i.e.\ it performs steepest descent in the spectral norm \citep{bernstein2024old}. It is equivariant under orthogonal transformations on both sides of the matrix, hence under orthogonal gauge, but an order-three core must first be matricized, and each matricization (the two children against the parent, or one child against the other child and the parent) defines a different optimizer. Since the polar factor gives the same step to all singular directions of the gradient, we expect Muon to weaken the separation of time scales responsible for sequential learning.
+\item[Design.] (a) A random orthogonal gauge transformation applied at initialization: function-space trajectories under GD, Adam and Muon are compared with the untransformed ones. (b) Teachers whose leaf features are aligned with the coordinate axes or rotated at random, with rotation-invariant leaf laws, so that the dynamics of GD does not change. (c) The sequentiality $\mathrm{Seq}$ and the order of acquisition under the three optimizers in the canonical sequential configuration, with both matricizations for Muon. Each optimizer is tuned on pilot teachers with the same budget \citep{schmidt2021descending}. Adaptive optimizers have no integrated learning rate, so trajectories are compared against the number of steps and, as secondary diagnostics, against the loss and the arc length in function space \citep[Section~8.5]{hfl_surrogate}.
+\item[Predictions.] (a) No change for GD and Muon, a change for Adam. (b) Faster acquisition of axis-aligned features by Adam. (c) A lower sequentiality under Muon.
+\end{description}
+
+\subsubsection*{E3.3\quad Weight decay}
+\begin{description}
+\item[Question.] Which rank profile does training reach under weight decay, and which atoms does it keep?
+\item[Motivation.] By~\eqref{eq:conserved}, weight decay drives the conserved quantities to zero, $Q_e(t)=e^{-2\lambda t}Q_e(0)$, i.e.\ towards balanced parameters. At balanced parameters, the penalty $\sum_v\norm{C_v}_F^2$ becomes a function of the represented tensor that penalizes hierarchical rank, as weight decay on the $L$ factors of a DLN penalizes the Schatten quasi-norm of order $2/L$ of their product. Weight decay is therefore a rank-selection mechanism that competes with the fit, and it decides which atoms are kept when the data are noisy or finite.
+\item[Design.] $\lambda$ on a logarithmic grid, in the canonical configurations, under (P0) and under SGD with label noise. We record the final rank profile, the final acquisition coefficients and the decay of $Q_e$, as functions of $\lambda$ and of $\sigma^\star_{e,q}$.
+\item[Predictions.] A threshold strength, increasing with $\lambda$, below which atoms are not acquired or are lost after acquisition.
+\end{description}
+
+\subsubsection*{E3.4\quad Implicit bias on the computation}
+\begin{description}
+\item[Question.] When several computations realize the same function, which one does training select, and does the selection depend on the optimizer?
+\item[Motivation.] Under the product law and on the teacher's tree, the data-weighted HSVD of a student that fits the teacher is that of the teacher (Proposition~\ref{prop:dw-hsvd}(iv)), so optimizers can only differ during training. For repeated inputs this is false: the computational HSVD is an invariant of the computation, not of the function (Remark~\ref{rem:which-tensor}), and Example~\ref{ex:same-function} gives two exact realizations of $x_1^2x_2^2$ with hierarchical ranks one and two. If different optimizers select different computational ranks at equal loss, the computational HSVD reflects the optimizer as much as the task, which bears directly on its use for interpretability (Question~\ref{q:interpretability}).
+\item[Design.] Deep quadratic networks with two layers, trained to zero loss on $x_1^2x_2^2$ and on small polynomial teachers with several exact realizations, with GD from small and standard initializations, Adam, Muon and weight decay. At convergence, we record the computational rank profile (Definition~\ref{def:capacity}) and the data-weighted computational HSVD (Proposition~\ref{prop:dpn-agop}), over twenty seeds.
+\item[Predictions.] By analogy with the incremental rank bias of hierarchical tensor factorizations \citep{razin2022implicit}, GD from small initializations selects the realization of smallest computational rank. For the other optimizers, we make no prediction.
+\end{description}
+
+\subsubsection*{E3.5\quad Finite samples}
+\begin{description}
+\item[Question.] How many samples does each atom require, and what does training on a fixed sample change in the dynamics?
+\item[Motivation.] The previous experiments use fresh samples, which separates optimization from generalization. Real training reuses a finite sample: some directions are then not determined by the data, the training and test trajectories separate, and, with one-hot leaves, learning becomes a tensor-completion problem. With weight decay, generalization can occur long after the training set is fitted \citep{power2022grokking}, which connects this setting with modular arithmetic (Example~\ref{ex:modular}).
+\item[Design.] Sample sizes $n$ on a logarithmic grid; full-batch gradient descent and multi-epoch SGD, with and without weight decay; acquisition coefficients on training and test data; for each atom, the smallest $n$ at which it is acquired on test data. TTN students and the students selected by E2.2.
+\item[Predictions.] Stronger atoms need fewer samples; with one-hot leaves and weight decay, delayed generalization at intermediate $n$.
+\end{description}
+
+%----------------------------------------------------------------------
+\subsection{Phase 4: deferred experiments}\label{sec:exp-phase4}
+%----------------------------------------------------------------------
+
+The following experiments are deferred, either because they are only well posed once Phases~1--3 have been run, or because they are more expensive and should be run only on the students and configurations that Phase~2 selects.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \emph{Internal mechanisms}: probes, sensitivities, erasures and injections (Sections~\ref{sec:representation} and~\ref{sec:use}), and the layer--bond correspondence (Hypothesis~\ref{hyp:layer-bond}), for the students that agree with TTNs at the level of outputs. They explain the agreements and disagreements found in Phase~2.
+\item \emph{Dependent blocks}, with correlated Gaussian blocks or finite mixtures of product laws, which keep exact computations (Remark~\ref{rem:dw-compute}), and the Gram-corrected observables of Section~\ref{sec:output-obs}.
+\item \emph{Teachers with repeated inputs}, such as deep polynomial networks, with the function and computation tracks of Section~\ref{sec:repeated-input}.
+\item \emph{Local surrogates} (Hypothesis~\ref{hyp:local}): checkpoint approximation, blind local rollouts and chart refreshes \citep[Sections~8.2--8.4]{hfl_surrogate}, at checkpoints of the DNN students of E2.2. They require E0.1.
+\item \emph{Other losses}, such as logistic and cross-entropy losses, for which separable data drive the norms of the parameters to infinity, so that acquisition must be defined from normalized predictors.
+\item \emph{Attention and sequences}, with tokens as leaves, and discrete hierarchical data such as the random hierarchy model of \citet{cagnetta2024deep}, whose generative tree plays the role of the teacher's tree; attention without softmax is polynomial in its input and fits the framework of Section~\ref{sec:dpn}.
+\item \emph{Interpretability}: the modular-addition experiment of Question~\ref{q:interpretability} and Example~\ref{ex:modular}.
+\item \emph{Real data}, following the ladder of \citet[Section~8.8]{hfl_surrogate}.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{Priorities and organization}\label{sec:exp-organization}
+%----------------------------------------------------------------------
+
+\paragraph{Priorities.}
+Phase~0 blocks everything else. Within Phase~1, E1.1 comes first, since it fixes the canonical configurations; E1.2 and E1.3 follow, since they describe the dynamics in the sequential regime; and E1.4--E1.6 can run in parallel. Phase~2 starts as soon as the canonical configurations are fixed, with E2.1 and the cheap E2.3, so that the comparison steers the rest of Phase~1. Phase~3 follows the decision of E2.2, and the choice of Phase~4 experiments depends on the results of Phases~2 and~3.
+
+\paragraph{Division of the work.}
+Two people work full time on the program. Dividing the work by phenomenon (initialization, optimizers, data) would require both of them to implement every student and every observable. We divide it instead by code ownership: person~A owns the TTN side, person~B the other students and the comparison (Tables~\ref{tab:exp-summary} and~\ref{tab:exp-plan}).
+\begin{itemize}[nosep]
+\item Person~A owns the teacher generator, for all families and leaf laws; the exact population engine for TTN students (loss, gradients and moment recursion, in double precision); and the exact observables (data-weighted HSVDs, coupling matrices, error decompositions, ANOVA energies and noise-stability curves, conserved quantities). A runs E0.2, Phase~1, and the TTN side of E3.1--E3.3.
+\item Person~B owns the other students of Table~\ref{tab:exp-grid}; the generic training harness (optimizers, schedules, checkpoints) and the run registry; and the sample-based observables (audit-set coefficients with sample splitting, crossed grids, Monte Carlo ANOVA energies and noise stability, empirical tangent kernels, sharpness). B runs E0.1, E0.3, Phase~2, the other side of E3.1--E3.3, E3.4 and E3.5.
+\end{itemize}
+Four rules prevent overlap. Every module and every experiment has a single owner, even when it uses the other person's code, and the other person reviews it. Runs are stored in a shared registry, keyed by teacher, data, student, optimizer, initialization and seed, and no key is run twice; in particular, A provides the TTN trajectories used in Phase~2. Every observable is implemented once, either exactly by A or by sampling by B, and E0.3 tests each implementation against the other. Finally, the decisions at the end of each stage of Table~\ref{tab:exp-plan} are taken jointly. The two workloads differ in kind: B carries more engineering, A more open-ended exploration.
+
+\paragraph{Expected outputs.}
+The program should produce: a phase diagram of the training regimes of TTNs, with measurable order parameters (E1.1); a description of the saddle-to-saddle path of TTNs, with laws for the order and the time scales of acquisition in terms of a spectrum of the teacher and of the tree (E1.2, E1.3); a map of where the dynamics of TTNs and DNNs agree along the grid of students (E2.2), together with the properties of the data and of the teacher that separate them (E2.3--E2.5); the effects of optimizers, noise and finite samples on both (Phase~3); and, if the global hypothesis fails, a list of measurable reasons, in the spirit of the failure taxonomy of \citet[Section~11]{hfl_surrogate}.
+
+\begin{table}[tbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{p{0.06\textwidth}p{0.6\textwidth}p{0.08\textwidth}p{0.14\textwidth}}
+\hline
+\raggedright ID & \raggedright Question & \raggedright Owner & \raggedright Requires \tabularnewline
+\hline
+\raggedright E0.1 & \raggedright Do the recurrence, the tied tree and the coefficient tensor of a deep polynomial network agree in values and gradients? & \raggedright B & \raggedright -- \tabularnewline
+\raggedright E0.2 & \raggedright Do the observables and the simulators reproduce known answers? & \raggedright A & \raggedright -- \tabularnewline
+\raggedright E0.3 & \raggedright Do the sampled estimators agree with the exact values on TTN students? & \raggedright B & \raggedright E0.2 \tabularnewline
+\raggedright E1.1 & \raggedright Which regimes exist, and which order parameters distinguish them? & \raggedright A & \raggedright E0.2 \tabularnewline
+\raggedright E1.2 & \raggedright Which saddles are visited, for how long, and how does the rank profile grow? & \raggedright A & \raggedright E1.1 \tabularnewline
+\raggedright E1.3 & \raggedright Which spectrum sets the order and the time scales, and how does the loss decay? & \raggedright A & \raggedright E1.1 \tabularnewline
+\raggedright E1.4 & \raggedright How does difficulty depend on interaction order, leaf dimension and $N$? & \raggedright A & \raggedright E1.1 \tabularnewline
+\raggedright E1.5 & \raggedright What happens below and above the teacher's ranks, and with more factors per bond? & \raggedright A & \raggedright E1.1 \tabularnewline
+\raggedright E1.6 & \raggedright Does learning a feature accelerate the features built on it? & \raggedright A & \raggedright E1.1 \tabularnewline
+\raggedright E2.1 & \raggedright Which widths fit, which learning rates are stable, which time calibration? & \raggedright B & \raggedright E0.3, E1.1 \tabularnewline
+\raggedright E2.2 & \raggedright Which change of connectivity or node map first breaks the agreement? & \raggedright B & \raggedright E2.1 \tabularnewline
+\raggedright E2.3 & \raggedright Do DNNs depend on properties of the data that TTNs provably ignore? & \raggedright B & \raggedright E2.1 \tabularnewline
+\raggedright E2.4 & \raggedright Do DNNs depend on difficulty as TTNs do? & \raggedright B & \raggedright E1.4, E2.1 \tabularnewline
+\raggedright E2.5 & \raggedright Do interventions on the teacher shift acquisition times equally? & \raggedright B & \raggedright E1.6, E2.1 \tabularnewline
+\raggedright E3.1 & \raggedright How do gradient noise and large learning rates change plateaus, paths and regimes? & \raggedright A, B & \raggedright E2.2 \tabularnewline
+\raggedright E3.2 & \raggedright How do Adam and Muon change orders and paths? & \raggedright A, B & \raggedright E2.2 \tabularnewline
+\raggedright E3.3 & \raggedright Which atoms and ranks survive weight decay? & \raggedright A, B & \raggedright E2.2 \tabularnewline
+\raggedright E3.4 & \raggedright Which computation does training select among equivalent ones? & \raggedright B & \raggedright E0.1 \tabularnewline
+\raggedright E3.5 & \raggedright How many samples does each atom need? & \raggedright B & \raggedright E2.2 \tabularnewline
+\hline
+\end{tabular}
+\caption{Summary of the experiments. Person~A owns the TTN side and person~B the other students and the comparison (Section~\ref{sec:exp-organization}); in E3.1--E3.3, each person runs the experiment on their own students.}
+\label{tab:exp-summary}
+\end{table}
+
+\begin{table}[tbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.07\textwidth}p{0.27\textwidth}p{0.32\textwidth}p{0.22\textwidth}}
+\hline
+\raggedright Weeks & \raggedright Person~A (TTN side) & \raggedright Person~B (other students and comparison) & \raggedright Decision at the end \tabularnewline
+\hline
+\raggedright 1--2 & \raggedright teacher generator; exact population engine and exact observables; E0.2 & \raggedright students of Table~\ref{tab:exp-grid}; training harness and run registry; sampled observables; E0.1 & \raggedright E0.3 passed \tabularnewline
+\raggedright 3--5 & \raggedright E1.1; E1.3(a); start of E1.2 & \raggedright E2.1 on A's teachers; E2.3; pilot of E2.2 & \raggedright canonical configurations and student settings frozen \tabularnewline
+\raggedright 6--9 & \raggedright E1.2; E1.3(b, c); E1.4--E1.6 & \raggedright E2.2 with twenty seeds; E2.4; E2.5 & \raggedright first student that breaks the agreement; students for Phases~3 and~4 \tabularnewline
+\raggedright 10--12 & \raggedright E3.1--E3.3 on TTN students & \raggedright E3.1--E3.3 on the selected students; E3.4; E3.5 & \raggedright choice of Phase~4 experiments \tabularnewline
+\hline
+\end{tabular}
+\caption{Indicative schedule for two people working full time.}
+\label{tab:exp-plan}
+\end{table}
+
+%======================================================================
+\section{Experiments (old)}\label{sec:experiments-old}
+%======================================================================
 The first order of buisness should be to have a much better understanding of the training dynamics of TTNs empirically and be systematic about it. Furthermore to understand the gap between TTNs and DNNs we should also compare their training dynamics in a range of setups. 
 
 We are going to work in teacher-student setups with a known ground truth coming from the teacher. We want to investigate different architectures, initiatialisations, data structure, optimizers, and eventually loss functions.
@@ -1474,7 +1903,7 @@ For a given architecture vary the optimizer: SGD with large batch size, small ba
 
 
 %======================================================================
-\section{Experiments (slop)}\label{sec:experiments}
+\section{Experiments (slop)}\label{sec:experiments-slop}
 %======================================================================
 
 % Outline compiled from the experiments suggested in Sections 1-2; to be completed.
@@ -1493,6 +1922,11 @@ This section is to be completed. For reference, the experiments suggested in the
 %======================================================================
 \small
 
+\bibitem[Abbe et~al.(2023)]{abbe2023sgd}
+E.~Abbe, E.~Boix-Adser\`a, and T.~Misiakiewicz.
+\newblock {SGD} learning on neural networks: leap complexity and saddle-to-saddle dynamics.
+\newblock In \emph{Conference on Learning Theory (COLT)}, PMLR 195, 2023.
+
 \bibitem[Alain and Bengio(2016)]{alain2016understanding}
 G.~Alain and Y.~Bengio.
 \newblock Understanding intermediate layers using linear classifier probes.
@@ -1503,15 +1937,55 @@ Y.~Bai, B.~Krause, H.~Wang, C.~Xiong, and R.~Socher.
 \newblock Taylorized training: towards better approximation of neural network training at finite width.
 \newblock arXiv:2002.04010, 2020.
 
+\bibitem[Barak et~al.(2022)]{barak2022hidden}
+B.~Barak, B.~L. Edelman, S.~Goel, S.~Kakade, E.~Malach, and C.~Zhang.
+\newblock Hidden progress in deep learning: {SGD} learns parities near the computational limit.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~35, 2022.
+
 \bibitem[Belrose et~al.(2023)]{belrose2023leace}
 N.~Belrose, D.~Schneider-Joseph, S.~Ravfogel, R.~Cotterell, E.~Raff, and S.~Biderman.
 \newblock {LEACE}: perfect linear concept erasure in closed form.
 \newblock In \emph{Advances in Neural Information Processing Systems}, volume~36, 2023.
 
+\bibitem[Ben~Arous et~al.(2021)]{benarous2021online}
+G.~Ben~Arous, R.~Gheissari, and A.~Jagannath.
+\newblock Online stochastic gradient descent on non-convex losses from high-dimensional inference.
+\newblock \emph{Journal of Machine Learning Research}, 22(106):1--51, 2021.
+
+\bibitem[Bernstein and Newhouse(2024)]{bernstein2024old}
+J.~Bernstein and L.~Newhouse.
+\newblock Old optimizer, new norm: an anthology.
+\newblock arXiv:2409.20325, 2024.
+
+\bibitem[Bordelon et~al.(2024)]{bordelon2024dynamical}
+B.~Bordelon, A.~Atanasov, and C.~Pehlevan.
+\newblock A dynamical model of neural scaling laws.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 235, 2024.
+
+\bibitem[Cagnetta et~al.(2024)]{cagnetta2024deep}
+F.~Cagnetta, L.~Petrini, U.~M. Tomasini, A.~Favero, and M.~Wyart.
+\newblock How deep neural networks learn compositional data: the random hierarchy model.
+\newblock \emph{Physical Review X}, 14:031001, 2024.
+
+\bibitem[Chizat et~al.(2019)]{chizat2019lazy}
+L.~Chizat, E.~Oyallon, and F.~Bach.
+\newblock On lazy training in differentiable programming.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~32, 2019.
+
 \bibitem[Cohen et~al.(2016)]{cohen2016expressive}
 N.~Cohen, O.~Sharir, and A.~Shashua.
 \newblock On the expressive power of deep learning: a tensor analysis.
 \newblock In \emph{Conference on Learning Theory (COLT)}, PMLR 49:698--728, 2016.
+
+\bibitem[Cohen et~al.(2021)]{cohen2021gradient}
+J.~M. Cohen, S.~Kaur, Y.~Li, J.~Z. Kolter, and A.~Talwalkar.
+\newblock Gradient descent on neural networks typically occurs at the edge of stability.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem[Damian et~al.(2021)]{damian2021label}
+A.~Damian, T.~Ma, and J.~D. Lee.
+\newblock Label noise {SGD} provably prefers flat global minimizers.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~34, 2021.
 
 \bibitem[Davis and Kahan(1970)]{davis1970rotation}
 C.~Davis and W.~M. Kahan.
@@ -1543,10 +2017,20 @@ S.~S. Du and J.~D. Lee.
 \newblock On the power of over-parametrization in neural networks with quadratic activation.
 \newblock In \emph{International Conference on Machine Learning (ICML)}, 2018.
 
+\bibitem[Du et~al.(2018)]{du2018algorithmic}
+S.~S. Du, W.~Hu, and J.~D. Lee.
+\newblock Algorithmic regularization in learning deep homogeneous models: layers are automatically balanced.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~31, 2018.
+
 \bibitem[Eckart and Young(1936)]{eckart1936approximation}
 C.~Eckart and G.~Young.
 \newblock The approximation of one matrix by another of lower rank.
 \newblock \emph{Psychometrika}, 1(3):211--218, 1936.
+
+\bibitem[Efron and Stein(1981)]{efron1981jackknife}
+B.~Efron and C.~Stein.
+\newblock The jackknife estimate of variance.
+\newblock \emph{The Annals of Statistics}, 9(3):586--596, 1981.
 
 \bibitem[Furman et~al.(2026)]{furman2026benign}
 Z.~Furman, S.~W\"aldchen, Y.~Bei, and L.~Hodgkinson.
@@ -1578,6 +2062,11 @@ W.~Hackbusch and S.~K\"uhn.
 \newblock A new scheme for the tensor representation.
 \newblock \emph{Journal of Fourier Analysis and Applications}, 15(5):706--722, 2009.
 
+\bibitem[Hackbusch and Uschmajew(2017)]{hackbusch2017interconnection}
+W.~Hackbusch and A.~Uschmajew.
+\newblock On the interconnection between the higher-order singular values of real tensors.
+\newblock \emph{Numerische Mathematik}, 135, 2017.
+
 \bibitem[H{\aa}stad(1990)]{hastad1990tensor}
 J.~H{\aa}stad.
 \newblock Tensor rank is {NP}-complete.
@@ -1597,6 +2086,11 @@ C.~J. Hillar and L.-H. Lim.
 F.~L. Hitchcock.
 \newblock The expression of a tensor or a polyadic as a sum of products.
 \newblock \emph{Journal of Mathematics and Physics}, 6:164--189, 1927.
+
+\bibitem[Hoeffding(1948)]{hoeffding1948class}
+W.~Hoeffding.
+\newblock A class of statistics with asymptotically normal distribution.
+\newblock \emph{The Annals of Mathematical Statistics}, 19(3):293--325, 1948.
 
 \bibitem[Holtz et~al.(2012)]{holtz2012manifolds}
 S.~Holtz, T.~Rohwedder, and R.~Schneider.
@@ -1628,6 +2122,16 @@ S.~Janson.
 \newblock \emph{Gaussian Hilbert Spaces}.
 \newblock Cambridge Tracts in Mathematics 129. Cambridge University Press, 1997.
 
+\bibitem[Jordan et~al.(2024)]{jordan2024muon}
+K.~Jordan, Y.~Jin, V.~Boza, J.~You, F.~Cesista, L.~Newhouse, and J.~Bernstein.
+\newblock Muon: an optimizer for hidden layers in neural networks.
+\newblock Blog post, 2024.
+
+\bibitem[Kingma and Ba(2015)]{kingma2015adam}
+D.~P. Kingma and J.~Ba.
+\newblock Adam: a method for stochastic optimization.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2015.
+
 \bibitem[Kolda and Bader(2009)]{kolda2009tensor}
 T.~G. Kolda and B.~W. Bader.
 \newblock Tensor decompositions and applications.
@@ -1638,10 +2142,20 @@ V.~Koltchinskii and E.~Gin\'e.
 \newblock Random matrix approximation of spectra of integral operators.
 \newblock \emph{Bernoulli}, 6(1):113--167, 2000.
 
+\bibitem[Kunin et~al.(2024)]{kunin2024get}
+D.~Kunin, A.~Ravent\'os, C.~Domin\'e, F.~Chen, D.~Klindt, A.~Saxe, and S.~Ganguli.
+\newblock Get rich quick: exact solutions reveal how unbalanced initializations promote rapid feature learning.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~37, 2024.
+
 \bibitem[Landsberg et~al.(2012)]{landsberg2012geometry}
 J.~M. Landsberg, Y.~Qi, and K.~Ye.
 \newblock On the geometry of tensor network states.
 \newblock \emph{Quantum Information and Computation}, 12(3--4):346--354, 2012.
+
+\bibitem[Li et~al.(2017)]{li2017stochastic}
+Q.~Li, C.~Tai, and W.~E.
+\newblock Stochastic modified equations and adaptive stochastic gradient algorithms.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 70, 2017.
 
 \bibitem[Lim(2021)]{lim2021tensors}
 L.-H. Lim.
@@ -1658,6 +2172,16 @@ Hierarchical Feature Learning Project.
 \newblock Local polynomial tensor networks for deep neural network training: exact tree representations, controlled changes of local model, and a teacher--student experimental protocol.
 \newblock Internal research note, 1 October 2026.
 
+\bibitem[Loshchilov and Hutter(2019)]{loshchilov2019decoupled}
+I.~Loshchilov and F.~Hutter.
+\newblock Decoupled weight decay regularization.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2019.
+
+\bibitem[Michaud et~al.(2023)]{michaud2023quantization}
+E.~J. Michaud, Z.~Liu, U.~Girit, and M.~Tegmark.
+\newblock The quantization model of neural scaling.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~36, 2023.
+
 \bibitem[Morala et~al.(2025)]{morala2025nn2poly}
 P.~Morala, J.~A. Cifuentes, R.~E. Lillo, and I.~Ucar.
 \newblock {NN2Poly}: a polynomial representation for deep feed-forward artificial neural networks.
@@ -1667,6 +2191,11 @@ P.~Morala, J.~A. Cifuentes, R.~E. Lillo, and I.~Ucar.
 N.~Nanda, L.~Chan, T.~Lieberum, J.~Smith, and J.~Steinhardt.
 \newblock Progress measures for grokking via mechanistic interpretability.
 \newblock In \emph{International Conference on Learning Representations (ICLR)}, 2023. arXiv:2301.05217.
+
+\bibitem[O'Donnell(2014)]{odonnell2014analysis}
+R.~O'Donnell.
+\newblock \emph{Analysis of Boolean Functions}.
+\newblock Cambridge University Press, 2014.
 
 \bibitem[Oseledets(2011)]{oseledets2011tensor}
 I.~V. Oseledets.
@@ -1708,6 +2237,11 @@ O.~Roy and M.~Vetterli.
 \newblock The effective rank: a measure of effective dimensionality.
 \newblock In \emph{European Signal Processing Conference (EUSIPCO)}, pages 606--610, 2007.
 
+\bibitem[Saad and Solla(1995)]{saad1995online}
+D.~Saad and S.~A. Solla.
+\newblock On-line learning in soft committee machines.
+\newblock \emph{Physical Review E}, 52(4):4225--4243, 1995.
+
 \bibitem[Sarao~Mannelli et~al.(2020)]{sarao2020optimization}
 S.~Sarao~Mannelli, E.~Vanden-Eijnden, and L.~Zdeborov\'a.
 \newblock Optimization and generalization of shallow neural networks with quadratic activation functions.
@@ -1723,10 +2257,20 @@ A.~M. Saxe, J.~L. McClelland, and S.~Ganguli.
 \newblock A mathematical theory of semantic development in deep neural networks.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 116(23):11537--11546, 2019.
 
+\bibitem[Schmidt et~al.(2021)]{schmidt2021descending}
+R.~M. Schmidt, F.~Schneider, and P.~Hennig.
+\newblock Descending through a crowded valley: benchmarking deep learning optimizers.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 139, 2021.
+
 \bibitem[Shi et~al.(2006)]{shi2006classical}
 Y.-Y. Shi, L.-M. Duan, and G.~Vidal.
 \newblock Classical simulation of quantum many-body systems with a tree tensor network.
 \newblock \emph{Physical Review A}, 74:022320, 2006.
+
+\bibitem[Sobol'(2001)]{sobol2001global}
+I.~M. Sobol'.
+\newblock Global sensitivity indices for nonlinear mathematical models and their {M}onte {C}arlo estimates.
+\newblock \emph{Mathematics and Computers in Simulation}, 55(1--3):271--280, 2001.
 
 \bibitem[Stoudenmire and Schwab(2016)]{stoudenmire2016supervised}
 E.~M. Stoudenmire and D.~J. Schwab.
@@ -1752,6 +2296,16 @@ A.~Uschmajew and B.~Vandereycken.
 P.-{\AA}. Wedin.
 \newblock Perturbation bounds in connection with singular value decomposition.
 \newblock \emph{BIT Numerical Mathematics}, 12(1):99--111, 1972.
+
+\bibitem[Woodworth et~al.(2020)]{woodworth2020kernel}
+B.~Woodworth, S.~Gunasekar, J.~D. Lee, E.~Moroshko, P.~Savarese, I.~Golan, D.~Soudry, and N.~Srebro.
+\newblock Kernel and rich regimes in overparametrized models.
+\newblock In \emph{Conference on Learning Theory (COLT)}, PMLR 125, 2020.
+
+\bibitem[Yang and Hu(2021)]{yang2021tensor}
+G.~Yang and E.~J. Hu.
+\newblock Tensor programs {IV}: feature learning in infinite-width neural networks.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 139, 2021.
 
 \bibitem[Zhang et~al.(2026)]{zhang2026saddle}
 Y.~Zhang, A.~M. Saxe, and P.~E. Latham.
