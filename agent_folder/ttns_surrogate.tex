@@ -784,6 +784,8 @@ A pragmatic rule is to choose the smallest $K$ for which the defects of Proposit
 \end{remark}
 \section{Training dynamics of TTNs}
 
+
+
 %======================================================================
 \section{How to compare TTNs and DNNs}\label{sec:compare}
 %======================================================================
@@ -1446,6 +1448,30 @@ Table~\ref{tab:evidence} collects the observables by level of evidence. The leve
 For an atom that a DNN acquires hierarchically, one expects the following sequence: its factors become decodable in some layer; then their product becomes decodable; the downstream computation becomes sensitive to its code; its output coefficient $a_{e,q}(t)$ grows towards $1$; and erasing the code of its left factor removes the output component and delays the acquisition of the atoms above it. A TTN student on the teacher's tree has no layer in which the product of the two factors could appear, but it has the same left factors at its bonds and the same output coefficients. The surrogate hypothesis is at its strongest if the trajectories of a TTN student predict, for a DNN student, when the left factors become accessible, when the output coefficients grow, and how interventions on one feature change the acquisition of the others.
 
 The methodological conclusion is two-tiered. Experiments should start with the product law, where the measurement apparatus can be validated against exact and additive decompositions. The same observables, with the Gram corrections and the predictability baselines, then carry over to dependent blocks, and the function and computation tracks to repeated inputs. There, success means agreement in the degree components of the output, in the hidden and computational feature subspaces, and in the responses to interventions; it does not identify copy-cut singular values with canonical features of the input--output function.
+
+
+%======================================================================
+\section{Experiments}\label{sec:experiments}
+The first order of buisness should be to have a much better understanding of the training dynamics of TTNs empirically and be systematic about it. Furthermore to understand the gap between TTNs and DNNs we should also compare their training dynamics in a range of setups. 
+
+We are going to work in teacher-student setups with a known ground truth coming from the teacher. We want to investigate different architectures, initiatialisations, data structure, optimizers, and eventually loss functions.
+
+What phenomena do we want to investigate: saddle to saddle regime, intermediary regime (not too small, not too large init), lazy (large init) regime. What features of the TTN does a student TTN learns, in what order, what are the acquisition time, when we change the data distribution how do acquisition times differ. We also want to investigate other interventions: comparing the trajectories on GD and SG in a given setup, changing batch sizes, studying other optimizers (AdamW, muon), adding weight decay. We want to vary the architectures: TTNs without copy, TTNs with copying, Deep quadratic neural nets, ReLU and other realistic MLPs, adding attention (will require some thinking about how to change the data structure).
+
+An example of a setup to start with. Consider some input data sampled from a gaussian with some covariance matrix $\Sigma_x$. Generically $\Sigma_x$ is not necessarily invertible (we can start with the identity and change this). For a start, we consider a teacher matrix TTN with bond dimension e.g. somewhere between $d_e=10-1e4$ (we can play with this) and hierarchical singular values and vectors given by power law distributions (we can try different distributions but power law is a reasonable start because they mimic the structure of more realistic data). Chose a binary tree TTN teacher with depth between 3 and 10 (start with smaller depth). Then we want to train a student on that tree. Take a binary tree student TTN with bond dimension at least twice the bond dimension of the student but more can also be tried (10x for example). We want to be in the realizable setup in which the teacher can fully learn the student. Train with square-loss with SGD (or some variant, as long as optimizer is fixed). Try with and without weight decay.
+
+During training track at least the following observables: loss, alignment between hierarchical singular vectors of the teacher and the student, hierarchical singular values of the student, acquisition times. 
+
+Vary the data structure via the structure of the teacher (its HSVDs) to see cleanly saddle to saddle and other regimes, maybe add some label noise. 
+
+Vary the student architecture: vary the depth and bond dimension, use a TTN without copying, use a TTN with copying, a deep quadratic networks (see the previous section for the observable to track to define the features and acquisition times), a ReLU network. 
+
+For a given architecture vary the optimizer: SGD with large batch size, small batch size, change the learning rate, use AdamW, use Muon. Compare their loss trajectories, the features that they learn (singular vectors and values).
+
+
+
+%======================================================================
+
 
 %======================================================================
 \section{Experiments (slop)}\label{sec:experiments}

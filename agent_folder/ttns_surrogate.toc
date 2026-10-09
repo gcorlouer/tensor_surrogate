@@ -52,4 +52,5 @@
 \contentsline {paragraph}{Comparing a TTN and a DNN.}{46}{section*.29}%
 \contentsline {paragraph}{Estimation protocol.}{46}{section*.30}%
 \contentsline {subsection}{\numberline {4.11}Summary}{47}{subsection.4.11}%
-\contentsline {section}{\numberline {5}Experiments (slop)}{48}{section.5}%
+\contentsline {section}{\numberline {5}Experiments}{48}{section.5}%
+\contentsline {section}{\numberline {6}Experiments (slop)}{50}{section.6}%
