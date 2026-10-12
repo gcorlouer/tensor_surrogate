@@ -782,7 +782,726 @@ A problem is to choose the degree of the nodes of the TTN. Several consideration
 \end{enumerate}
 A pragmatic rule is to choose the smallest $K$ for which the defects of Proposition~\ref{prop:defect} are below a tolerance at initialization and at a few checkpoints.
 \end{remark}
-\section{Training dynamics of TTNs}
+%======================================================================
+\section{Training dynamics of TTNs}\label{sec:ttn-dynamics}
+%======================================================================
+
+We begin with the smallest balanced tree that already has a non-trivial
+hierarchical factorization: four physical input legs and two bilinear levels.
+The purpose of this section is twofold. First, we derive the population
+gradient flow entry by entry. Second, we rewrite it as an evolution driven by
+the data geometry and by the differential of the TTN parameterization. The
+latter form generalizes directly to larger trees.
+
+%----------------------------------------------------------------------
+\subsection{A four-leaf, depth-two teacher--student model}
+\label{sec:d2-setup}
+%----------------------------------------------------------------------
+
+Let the four input blocks be
+\[
+  x^{(a)}\in\R^{d_a},\qquad a\in\{1,2,3,4\},
+\]
+and consider the balanced tree $((1,2),(3,4))$. We use the minimal
+three-core parameterization in which the two lower cores carry the physical
+legs directly. The student lower cores and root core are
+\[
+  \mathcal A\in\R^{r_L\times d_1\times d_2},\qquad
+  \mathcal B\in\R^{r_R\times d_3\times d_4},\qquad
+  C\in\R^{r_L\times r_R}.
+\]
+The two bond dimensions are $r_L$ and $r_R$. The hidden states at the first
+level are
+\begin{align}
+  h^L_\alpha(x)
+  &=\sum_{i_1=1}^{d_1}\sum_{i_2=1}^{d_2}
+    \mathcal A_{\alpha i_1i_2}
+    x^{(1)}_{i_1}x^{(2)}_{i_2},
+    &&\alpha\in[r_L],
+    \label{eq:d2-hL}\\
+  h^R_\beta(x)
+  &=\sum_{i_3=1}^{d_3}\sum_{i_4=1}^{d_4}
+    \mathcal B_{\beta i_3i_4}
+    x^{(3)}_{i_3}x^{(4)}_{i_4},
+    &&\beta\in[r_R].
+    \label{eq:d2-hR}
+\end{align}
+The root contracts these states:
+\begin{equation}
+  f_\theta(x)
+  =\sum_{\alpha=1}^{r_L}\sum_{\beta=1}^{r_R}
+    C_{\alpha\beta}h^L_\alpha(x)h^R_\beta(x),
+  \qquad
+  \theta=(\mathcal A,\mathcal B,C).
+  \label{eq:d2-output-index}
+\end{equation}
+Equivalently, the represented order-four coefficient tensor
+$\mathsf T_\theta\in\R^{d_1\times d_2\times d_3\times d_4}$ is
+\begin{equation}
+  (\mathsf T_\theta)_{i_1i_2i_3i_4}
+  =\sum_{\alpha=1}^{r_L}\sum_{\beta=1}^{r_R}
+    \mathcal A_{\alpha i_1i_2}
+    C_{\alpha\beta}
+    \mathcal B_{\beta i_3i_4},
+  \label{eq:d2-coefficient-tensor}
+\end{equation}
+so that
+\[
+  f_\theta(x)
+  =\ip{\mathsf T_\theta}
+  {x^{(1)}\otimes x^{(2)}\otimes x^{(3)}\otimes x^{(4)}}.
+\]
+
+To expose the matrix factorization associated with the central cut, define
+\[
+  z:=x^{(1)}\otimes x^{(2)}\in\R^{d_{12}},
+  \qquad
+  w:=x^{(3)}\otimes x^{(4)}\in\R^{d_{34}},
+\]
+where $d_{12}:=d_1d_2$ and $d_{34}:=d_3d_4$. Matricize the lower cores as
+\[
+  A\in\R^{d_{12}\times r_L},
+  \quad A_{(i_1,i_2),\alpha}:=\mathcal A_{\alpha i_1i_2},
+  \qquad
+  B\in\R^{d_{34}\times r_R},
+  \quad B_{(i_3,i_4),\beta}:=\mathcal B_{\beta i_3i_4}.
+\]
+Then
+\begin{equation}
+  h^L=A^\top z,
+  \qquad
+  h^R=B^\top w,
+  \qquad
+  f_\theta(x)=z^\top ACB^\top w.
+  \label{eq:d2-matrix-forward}
+\end{equation}
+The $(12)\mid(34)$ matricization of the represented tensor is therefore
+\begin{equation}
+  M_\theta
+  :=\mathsf T_\theta^{\langle\{1,2\}\rangle}
+  =ACB^\top
+  \in\R^{d_{12}\times d_{34}}.
+  \label{eq:d2-matricization}
+\end{equation}
+
+The teacher has coefficient tensor $\mathsf T^\star$ and central
+matricization $M^\star$. It may be represented by smaller bond dimensions
+$r_L^\star\le r_L$ and $r_R^\star\le r_R$:
+\[
+  M^\star=A^\star C^\star B^{\star\top}.
+\]
+Thus overparameterization means that the student has more bond coordinates
+than the teacher requires; teacher and student still act on the same four
+physical input blocks. The derivation below depends on the teacher only
+through $M^\star$. Put
+\begin{equation}
+  \Delta:=M_\theta-M^\star,
+  \qquad
+  e_\theta(x):=f_\theta(x)-f^\star(x)=z^\top\Delta w,
+  \label{eq:d2-errors}
+\end{equation}
+and consider the population square loss
+\begin{equation}
+  \mathcal L(A,B,C)
+  :=\frac12\E\big[e_\theta(X)^2\big].
+  \label{eq:d2-loss-def}
+\end{equation}
+
+\begin{remark}[Parameterization]
+Equations~\eqref{eq:d2-hL}--\eqref{eq:d2-output-index} treat the two lower
+order-three tensors and the root matrix as the trainable cores. If a lower
+branch is itself factorized into separate leaf maps and an internal core,
+then $A$ or $B$ is an effective contracted core. The function is unchanged,
+but Euclidean gradient flow in the additional factors is obtained by another
+application of the chain rule and is not identical to free gradient flow in
+$A$ or $B$. Likewise, if the two lower occurrences are tied, the gradient of
+the shared parameter is the sum of the two occurrence gradients.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Independent whitened inputs}
+\label{sec:d2-white}
+%----------------------------------------------------------------------
+
+Assume first that the four blocks are independent, centred and whitened:
+\begin{equation}
+  \E[X^{(a)}]=0,
+  \qquad
+  \E[X^{(a)}X^{(a)\top}]=I_{d_a},
+  \qquad
+  X^{(1)},\ldots,X^{(4)}\ \text{independent}.
+  \label{eq:d2-white-assumption}
+\end{equation}
+Independent standard Gaussian blocks are the main example, but Gaussianity
+is not needed in this subsection. Since $z=X^{(1)}\otimes X^{(2)}$ and
+$w=X^{(3)}\otimes X^{(4)}$,
+\begin{align}
+  \E[zz^\top]
+  &=\E[X^{(1)}X^{(1)\top}]\otimes
+    \E[X^{(2)}X^{(2)\top}]
+    =I_{d_{12}},
+    \label{eq:d2-z-white}\\
+  \E[ww^\top]
+  &=\E[X^{(3)}X^{(3)\top}]\otimes
+    \E[X^{(4)}X^{(4)\top}]
+    =I_{d_{34}},
+    \label{eq:d2-w-white}
+\end{align}
+and $z$ and $w$ are independent.
+
+\begin{proposition}[Whitened population loss and gradient flow]
+\label{prop:d2-white-flow}
+Under~\eqref{eq:d2-white-assumption},
+\begin{equation}
+  \mathcal L(A,B,C)
+  =\frac12\norm{ACB^\top-M^\star}_F^2
+  =\frac12\norm{\Delta}_F^2.
+  \label{eq:d2-white-loss}
+\end{equation}
+Its Euclidean gradients are
+\begin{equation}
+  \nabla_A\mathcal L=\Delta BC^\top,
+  \qquad
+  \nabla_B\mathcal L=\Delta^\top AC,
+  \qquad
+  \nabla_C\mathcal L=A^\top\Delta B.
+  \label{eq:d2-white-gradients}
+\end{equation}
+Consequently, population gradient flow is
+\begin{equation}
+  \boxed{
+  \dot A=(M^\star-ACB^\top)BC^\top,
+  \qquad
+  \dot B=(M^\star-ACB^\top)^\top AC,
+  \qquad
+  \dot C=A^\top(M^\star-ACB^\top)B.}
+  \label{eq:d2-white-flow}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+We first reduce the population loss to a Frobenius norm. Using
+$e_\theta=z^\top\Delta w$, cyclicity of the trace, and independence of $z$
+and $w$,
+\begin{align}
+  2\mathcal L
+  &=\E\big[(z^\top\Delta w)^2\big]
+    \notag\\
+  &=\E\big[z^\top\Delta ww^\top\Delta^\top z\big]
+    \notag\\
+  &=\operatorname{tr}\!\left(
+      \Delta\,\E[ww^\top] \,\Delta^\top\E[zz^\top]
+    \right)
+    \notag\\
+  &=\operatorname{tr}(\Delta\Delta^\top)
+   =\norm{\Delta}_F^2,
+  \label{eq:d2-white-loss-derivation}
+\end{align}
+which proves~\eqref{eq:d2-white-loss}.
+
+For the gradients, it is useful to differentiate the prediction before
+performing the expectation. Let $\delta A$ be a perturbation of $A$. From
+\eqref{eq:d2-matrix-forward},
+\begin{align}
+  D_A f_\theta(x)[\delta A]
+  &=z^\top(\delta A)CB^\top w
+    \notag\\
+  &=\ip{z(CB^\top w)^\top}{\delta A}_F.
+  \label{eq:d2-A-directional}
+\end{align}
+Hence the per-example derivative of the half-square loss is
+\[
+  e_\theta(x)\,z(CB^\top w)^\top,
+\]
+and therefore
+\begin{align}
+  \nabla_A\mathcal L
+  &=\E\big[e_\theta\,z(CB^\top w)^\top\big]
+    \notag\\
+  &=\E\big[e_\theta zw^\top\big]BC^\top.
+  \label{eq:d2-A-gradient-residual}
+\end{align}
+The residual-weighted feature matrix is
+\begin{align}
+  \E[e_\theta zw^\top]
+  &=\E\big[z(z^\top\Delta w)w^\top\big]
+    \notag\\
+  &=\E[zz^\top]\,\Delta\,\E[ww^\top]
+    \notag\\
+  &=\Delta.
+  \label{eq:d2-residual-white}
+\end{align}
+Substitution into~\eqref{eq:d2-A-gradient-residual} gives
+$\nabla_A\mathcal L=\Delta BC^\top$.
+
+The two other derivatives are obtained in the same way. For a perturbation
+$\delta B$,
+\begin{align}
+  D_Bf_\theta(x)[\delta B]
+  &=z^\top AC(\delta B)^\top w
+    \notag\\
+  &=\ip{w(C^\top A^\top z)^\top}{\delta B}_F,
+  \label{eq:d2-B-directional}
+\end{align}
+so
+\begin{align}
+  \nabla_B\mathcal L
+  &=\E\big[e_\theta wz^\top\big]AC
+   =\Delta^\top AC.
+  \label{eq:d2-B-gradient}
+\end{align}
+For a perturbation $\delta C$,
+\begin{align}
+  D_Cf_\theta(x)[\delta C]
+  &=z^\top A(\delta C)B^\top w
+    \notag\\
+  &=\ip{(A^\top z)(B^\top w)^\top}{\delta C}_F,
+  \label{eq:d2-C-directional}
+\end{align}
+whence
+\begin{align}
+  \nabla_C\mathcal L
+  &=\E\big[e_\theta(A^\top z)(B^\top w)^\top\big]
+    \notag\\
+  &=A^\top\E[e_\theta zw^\top]B
+   =A^\top\Delta B.
+  \label{eq:d2-C-gradient}
+\end{align}
+Finally, $\dot A=-\nabla_A\mathcal L$, $\dot B=-\nabla_B\mathcal L$ and
+$\dot C=-\nabla_C\mathcal L$, which yields~\eqref{eq:d2-white-flow}.
+\end{proof}
+
+The same calculation can be written directly in the physical indices. Define
+\begin{equation}
+  \Delta_{i_1i_2i_3i_4}
+  :=\sum_{\alpha,\beta}
+    \mathcal A_{\alpha i_1i_2}C_{\alpha\beta}
+    \mathcal B_{\beta i_3i_4}
+    -(\mathsf T^\star)_{i_1i_2i_3i_4}.
+  \label{eq:d2-index-error}
+\end{equation}
+Then
+\begin{align}
+  \frac{\partial\mathcal L}
+       {\partial\mathcal A_{\alpha i_1i_2}}
+  &=\sum_{\beta=1}^{r_R}
+    \sum_{i_3=1}^{d_3}\sum_{i_4=1}^{d_4}
+    \Delta_{i_1i_2i_3i_4}
+    C_{\alpha\beta}\mathcal B_{\beta i_3i_4},
+  \label{eq:d2-index-grad-A}\\
+  \frac{\partial\mathcal L}
+       {\partial\mathcal B_{\beta i_3i_4}}
+  &=\sum_{\alpha=1}^{r_L}
+    \sum_{i_1=1}^{d_1}\sum_{i_2=1}^{d_2}
+    \Delta_{i_1i_2i_3i_4}
+    \mathcal A_{\alpha i_1i_2}C_{\alpha\beta},
+  \label{eq:d2-index-grad-B}\\
+  \frac{\partial\mathcal L}{\partial C_{\alpha\beta}}
+  &=\sum_{i_1=1}^{d_1}\sum_{i_2=1}^{d_2}
+    \sum_{i_3=1}^{d_3}\sum_{i_4=1}^{d_4}
+    \Delta_{i_1i_2i_3i_4}
+    \mathcal A_{\alpha i_1i_2}\mathcal B_{\beta i_3i_4}.
+  \label{eq:d2-index-grad-C}
+\end{align}
+Thus each core is updated by contracting the coefficient error with every
+other core in the tree. If
+$\mathcal E:=\mathsf T^\star-\mathsf T_\theta=-\Delta$ denotes the
+teacher-minus-student error tensor, the corresponding gradient-flow equations
+are obtained from~\eqref{eq:d2-index-grad-A}--\eqref{eq:d2-index-grad-C} by
+replacing $\Delta$ with $\mathcal E$ and dropping the minus sign.
+
+\paragraph{Differential derivation.}
+Once~\eqref{eq:d2-white-loss} is known, the three gradients also follow in
+one line. Since
+\[
+  dM=(dA)CB^\top+A(dC)B^\top+AC(dB)^\top,
+\]
+we have
+\begin{align}
+  d\mathcal L
+  &=\ip{\Delta}{dM}_F
+    \notag\\
+  &=\ip{\Delta BC^\top}{dA}_F
+    +\ip{A^\top\Delta B}{dC}_F
+    +\ip{\Delta^\top AC}{dB}_F,
+  \label{eq:d2-differential-proof}
+\end{align}
+which is exactly~\eqref{eq:d2-white-gradients}.
+
+%----------------------------------------------------------------------
+\subsection{Independent, non-whitened inputs}
+\label{sec:d2-nonwhite}
+%----------------------------------------------------------------------
+
+We now retain independence of the four blocks but allow arbitrary positive
+semidefinite covariances:
+\begin{equation}
+  \E[X^{(a)}]=0,
+  \qquad
+  \E[X^{(a)}X^{(a)\top}]=\Sigma_a\succeq0,
+  \qquad
+  X^{(1)},\ldots,X^{(4)}\ \text{independent}.
+  \label{eq:d2-nonwhite-assumption}
+\end{equation}
+Define the two feature Gram matrices
+\begin{equation}
+  G_L:=\E[zz^\top]=\Sigma_1\otimes\Sigma_2,
+  \qquad
+  G_R:=\E[ww^\top]=\Sigma_3\otimes\Sigma_4.
+  \label{eq:d2-gram-LR}
+\end{equation}
+Neither matrix needs to be invertible.
+
+\begin{proposition}[Covariance-weighted loss and gradient flow]
+\label{prop:d2-nonwhite-flow}
+Under~\eqref{eq:d2-nonwhite-assumption},
+\begin{equation}
+  \mathcal L
+  =\frac12\operatorname{tr}
+    \big(\Delta^\top G_L\Delta G_R\big)
+  =\frac12\norm{G_L^{1/2}\Delta G_R^{1/2}}_F^2.
+  \label{eq:d2-nonwhite-loss}
+\end{equation}
+The coefficient-space gradient is
+\begin{equation}
+  \nabla_M\mathcal L=G_L\Delta G_R.
+  \label{eq:d2-coeff-gradient-nonwhite}
+\end{equation}
+The parameter gradients are
+\begin{equation}
+  \nabla_A\mathcal L=G_L\Delta G_RBC^\top,
+  \qquad
+  \nabla_B\mathcal L=G_R\Delta^\top G_LAC,
+  \qquad
+  \nabla_C\mathcal L=A^\top G_L\Delta G_RB.
+  \label{eq:d2-nonwhite-gradients}
+\end{equation}
+Equivalently, if
+\begin{equation}
+  \mathcal E_\Sigma
+  :=G_L(M^\star-M_\theta)G_R,
+  \label{eq:d2-weighted-error}
+\end{equation}
+then gradient flow is
+\begin{equation}
+  \boxed{
+  \dot A=\mathcal E_\Sigma BC^\top,
+  \qquad
+  \dot B=\mathcal E_\Sigma^\top AC,
+  \qquad
+  \dot C=A^\top\mathcal E_\Sigma B.}
+  \label{eq:d2-nonwhite-flow}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The loss calculation differs from~\eqref{eq:d2-white-loss-derivation} only
+through the two feature Gram matrices:
+\begin{align}
+  2\mathcal L
+  &=\E\big[z^\top\Delta ww^\top\Delta^\top z\big]
+    \notag\\
+  &=\operatorname{tr}
+    \big(\Delta\,G_R\Delta^\top G_L\big)
+    \notag\\
+  &=\operatorname{tr}
+    \big(\Delta^\top G_L\Delta G_R\big)
+   =\norm{G_L^{1/2}\Delta G_R^{1/2}}_F^2.
+  \label{eq:d2-nonwhite-loss-derivation}
+\end{align}
+Differentiating the quadratic form in $M$ gives
+$\nabla_M\mathcal L=G_L\Delta G_R$, because $G_L$ and $G_R$ are symmetric.
+Alternatively, the residual-weighted feature matrix is
+\begin{align}
+  \E[e_\theta zw^\top]
+  &=\E\big[z(z^\top\Delta w)w^\top\big]
+    \notag\\
+  &=\E[zz^\top]\,\Delta\,\E[ww^\top]
+   =G_L\Delta G_R.
+  \label{eq:d2-residual-nonwhite}
+\end{align}
+Substituting this matrix into
+\eqref{eq:d2-A-gradient-residual}, \eqref{eq:d2-B-gradient} and
+\eqref{eq:d2-C-gradient} proves~\eqref{eq:d2-nonwhite-gradients}, and
+negating the gradients gives~\eqref{eq:d2-nonwhite-flow}.
+\end{proof}
+
+In physical indices, define the covariance-weighted coefficient error
+\begin{align}
+  (\Delta_\Sigma)_{i_1i_2i_3i_4}
+  :=\sum_{j_1=1}^{d_1}\sum_{j_2=1}^{d_2}
+    \sum_{j_3=1}^{d_3}\sum_{j_4=1}^{d_4}
+  &(\Sigma_1)_{i_1j_1}(\Sigma_2)_{i_2j_2}
+    (\Sigma_3)_{i_3j_3}(\Sigma_4)_{i_4j_4}
+    \Delta_{j_1j_2j_3j_4}.
+  \label{eq:d2-weighted-index-error}
+\end{align}
+Then the non-whitened gradients have exactly the same contractions as
+\eqref{eq:d2-index-grad-A}--\eqref{eq:d2-index-grad-C}, with $\Delta$
+replaced by $\Delta_\Sigma$. Thus non-whitening does not change the tree
+contraction pattern; it changes the error tensor that is propagated through
+the tree.
+
+\begin{remark}[Whitened analysis coordinates versus parameter dynamics]
+Writing
+\[
+  \widetilde A:=G_L^{1/2}A,
+  \qquad
+  \widetilde B:=G_R^{1/2}B,
+  \qquad
+  \widetilde M^\star:=G_L^{1/2}M^\star G_R^{1/2},
+\]
+turns~\eqref{eq:d2-nonwhite-loss} into
+\[
+  \mathcal L
+  =\frac12\norm{\widetilde A C\widetilde B^\top-
+                       \widetilde M^\star}_F^2.
+\]
+This is a Euclidean description of the \emph{function-space} geometry. It
+does not turn Euclidean gradient flow in $(A,B,C)$ into Euclidean gradient
+flow in $(\widetilde A,\widetilde B,C)$: the change of coordinates also
+changes the parameter-space metric. Input anisotropy therefore acts as a
+preconditioner of the factor dynamics, not merely as a relabelling of the
+target tensor.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{A compact residual-moment formulation}
+\label{sec:d2-compact}
+%----------------------------------------------------------------------
+
+The preceding formulas can be compressed into one equation that remains
+valid even when the four blocks are dependent. For an arbitrary joint input
+law with the required moments, define
+\begin{equation}
+  R_\Delta
+  :=\E\big[e_\theta(X)\,zw^\top\big]
+  =\E\big[z(z^\top\Delta w)w^\top\big]
+  \in\R^{d_{12}\times d_{34}}.
+  \label{eq:d2-residual-moment}
+\end{equation}
+This is the gradient of the population loss with respect to the represented
+matricization:
+\begin{equation}
+  \nabla_M\mathcal L=R_\Delta.
+  \label{eq:d2-general-coeff-gradient}
+\end{equation}
+Indeed, for any perturbation $H$ of $M$,
+\[
+  D_M\mathcal L[H]
+  =\E\big[e_\theta z^\top H w\big]
+  =\ip{R_\Delta}{H}_F.
+\]
+The full parameter gradient is therefore
+\begin{equation}
+  \boxed{
+  \nabla_A\mathcal L=R_\Delta BC^\top,
+  \qquad
+  \nabla_B\mathcal L=R_\Delta^\top AC,
+  \qquad
+  \nabla_C\mathcal L=A^\top R_\Delta B.}
+  \label{eq:d2-general-gradients}
+\end{equation}
+The three data regimes considered above are the special cases
+\begin{equation}
+  R_\Delta=
+  \begin{cases}
+    \Delta,
+      &\text{independent whitened blocks},\\[1mm]
+    G_L\Delta G_R,
+      &\text{independent blocks with arbitrary covariances},\\[1mm]
+    \E[z(z^\top\Delta w)w^\top],
+      &\text{arbitrary dependence}.
+  \end{cases}
+  \label{eq:d2-three-regimes}
+\end{equation}
+Under dependence the last expression generally does not factor through
+second moments of the two sides of the cut.
+
+For an equivalent vectorized form, let
+\begin{equation}
+  \phi(X):=w\otimes z=\vect(zw^\top),
+  \qquad
+  \Gamma:=\E[\phi(X)\phi(X)^\top].
+  \label{eq:d2-feature-gram}
+\end{equation}
+Then
+\begin{equation}
+  \vect(R_\Delta)=\Gamma\vect(\Delta),
+  \qquad
+  \mathcal L
+  =\frac12\vect(\Delta)^\top\Gamma\vect(\Delta).
+  \label{eq:d2-vectorized-loss}
+\end{equation}
+Under independent blocks,
+\begin{equation}
+  \Gamma=G_R\otimes G_L,
+  \label{eq:d2-gamma-product}
+\end{equation}
+and under independent whitened blocks, $\Gamma=I$. If the four blocks are
+jointly Gaussian but dependent, $\Gamma$ is still explicit by Wick's theorem,
+but it is not generally a Kronecker product of leaf covariances. In that
+case it contains the cross-block contractions that are absent under the
+product law.
+
+%----------------------------------------------------------------------
+\subsection{Differential, tangent-kernel, and represented-tensor forms}
+\label{sec:d2-operator}
+%----------------------------------------------------------------------
+
+Define the parameter-to-matricization map
+\begin{equation}
+  \Phi(A,B,C):=ACB^\top.
+  \label{eq:d2-Phi}
+\end{equation}
+Its differential is
+\begin{equation}
+  D\Phi(A,B,C)[\delta A,\delta B,\delta C]
+  =(\delta A)CB^\top+AC(\delta B)^\top+A(\delta C)B^\top.
+  \label{eq:d2-DPhi}
+\end{equation}
+With the Frobenius metric on every parameter block, its adjoint is
+\begin{equation}
+  D\Phi(A,B,C)^*[X]
+  =\big(XBC^\top,\ X^\top AC,\ A^\top X B\big),
+  \label{eq:d2-DPhi-adjoint}
+\end{equation}
+where the three entries correspond to $(A,B,C)$. Hence the entire gradient
+calculation is the chain-rule identity
+\begin{equation}
+  \nabla_{(A,B,C)}\mathcal L
+  =D\Phi(A,B,C)^*[R_\Delta],
+  \qquad
+  (\dot A,\dot B,\dot C)
+  =-D\Phi(A,B,C)^*[R_\Delta].
+  \label{eq:d2-compact-chain-rule}
+\end{equation}
+
+The induced evolution of the represented matricization is
+\begin{equation}
+  \dot M
+  =-D\Phi\,D\Phi^*[R_\Delta]
+  =-\mathcal K_{A,B,C}[R_\Delta],
+  \label{eq:d2-M-flow}
+\end{equation}
+where
+\begin{equation}
+  \boxed{
+  \mathcal K_{A,B,C}[X]
+  :=ACC^\top A^\top X
+    +AA^\top XBB^\top
+    +XBC^\top CB^\top.}
+  \label{eq:d2-K-operator}
+\end{equation}
+The operator $\mathcal K_{A,B,C}=D\Phi D\Phi^*$ is positive semidefinite:
+\begin{align}
+  \ip{X}{\mathcal K_{A,B,C}[X]}_F
+  &=\norm{X^\top AC}_F^2
+    +\norm{A^\top X B}_F^2
+    +\norm{XBC^\top}_F^2
+  \ge0.
+  \label{eq:d2-K-positive}
+\end{align}
+Accordingly,
+\begin{equation}
+  \frac{d}{dt}\mathcal L
+  =-\norm{\nabla_A\mathcal L}_F^2
+   -\norm{\nabla_B\mathcal L}_F^2
+   -\norm{\nabla_C\mathcal L}_F^2
+  =-\ip{R_\Delta}{\mathcal K_{A,B,C}[R_\Delta]}_F
+  \le0.
+  \label{eq:d2-loss-decay}
+\end{equation}
+Even when the population loss is a convex quadratic function of the
+coefficient matrix $M$, the dynamics of $M$ is nonlinear because the tangent
+operator $\mathcal K_{A,B,C}$ changes with the factorization.
+
+Finally, let
+\[
+  m:=\vect(M),
+  \qquad
+  m^\star:=\vect(M^\star),
+  \qquad
+  J_\theta:=D_\theta m.
+\]
+Using~\eqref{eq:d2-vectorized-loss}, the represented coefficient vector obeys
+\begin{equation}
+  \boxed{
+  \dot m
+  =-J_\theta J_\theta^\top\Gamma(m-m^\star).}
+  \label{eq:d2-vectorized-flow}
+\end{equation}
+For independent whitened inputs this reduces to
+\begin{equation}
+  \dot m=-J_\theta J_\theta^\top(m-m^\star),
+  \label{eq:d2-vectorized-flow-white}
+\end{equation}
+whereas for independent non-whitened inputs
+$\Gamma=G_R\otimes G_L$. Equation~\eqref{eq:d2-vectorized-flow} separates
+three objects:
+\[
+  \underbrace{J_\theta J_\theta^\top}_{\text{evolving TTN tangent geometry}}
+  \qquad
+  \underbrace{\Gamma}_{\text{data geometry}}
+  \qquad
+  \underbrace{(m-m^\star)}_{\text{coefficient error}}.
+\]
+This is the depth-two instance of the general TTN coefficient-space evolution
+$\dot T=-DT(\theta)DT(\theta)^*\nabla_T\mathcal L$.
+
+\begin{proposition}[Balance invariants]
+\label{prop:d2-balance}
+For any input law for which the preceding gradients exist, gradient flow
+preserves
+\begin{equation}
+  A^\top A-CC^\top,
+  \qquad
+  B^\top B-C^\top C.
+  \label{eq:d2-balance-invariants}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Write $R:=R_\Delta$. From~\eqref{eq:d2-general-gradients},
+\[
+  \dot A=-RBC^\top,
+  \qquad
+  \dot B=-R^\top AC,
+  \qquad
+  \dot C=-A^\top RB.
+\]
+Therefore
+\begin{align*}
+  \frac{d}{dt}(A^\top A)
+  &=-CB^\top R^\top A-A^\top RBC^\top
+   =\frac{d}{dt}(CC^\top),\\
+  \frac{d}{dt}(B^\top B)
+  &=-C^\top A^\top RB-B^\top R^\top AC
+   =\frac{d}{dt}(C^\top C).
+\end{align*}
+Subtracting proves~\eqref{eq:d2-balance-invariants}.
+\end{proof}
+
+The invariants are the infinitesimal expression of the gauge freedom on the
+two bonds. They show that the distribution of scale among adjacent cores is
+not washed out by gradient flow. Hence initialization is specified not only
+by an overall scale, but also by a balance profile across the levels of the
+tree.
+
+\begin{remark}[Empirical loss]
+For a sample $x_1,\ldots,x_n$, define
+$z_s=x_s^{(1)}\otimes x_s^{(2)}$, $w_s=x_s^{(3)}\otimes x_s^{(4)}$, and
+$e_s=z_s^\top\Delta w_s$. The empirical loss has exactly the same parameter
+gradients as~\eqref{eq:d2-general-gradients}, with
+\[
+  R_\Delta
+  \quad\text{replaced by}\quad
+  \widehat R_\Delta:=\frac1n\sum_{s=1}^n e_s z_sw_s^\top.
+\]
+Under the product law, $\E[\widehat R_\Delta]=G_L\Delta G_R$, but at finite
+$n$ the empirical residual moment contains cross-mode fluctuations and need
+not equal its population value.
+\end{remark}
 
 
 
@@ -1451,16 +2170,27 @@ The methodological conclusion is two-tiered. Experiments should start with the p
 %======================================================================
 \section{First experiments}\label{sec:experiments}
 %======================================================================
-A first round of experiments would be to explore the training dynamics of TTNs empirically. We start with a simple setup with a teacher-student binary trees TTN. Consider a teacher-student of depth between 2 and 4 (number of leaves between 4 and 16). I would also start with small bond dimensions and ranks. For example take bond dimension of $3$ for the teacher, rank $3$ and bond dimension of $4-5$ for the student (overparametrized). Take a quadratic loss, input data sampled from $N(0, I_d)$, $N(0,\frac{\epsilon^2}{d_Rd_L})$ with $d_R$ the dimension of the right bond and $d_L$ the dimension of the left bond and $\epsilon$ is the initialization scale. Specify the spectrum of the teacher via specificying the singular value of the matricization accross one edge $M_e = U_eS_eV_e^{\top}$. Specify $S_e$ singular values via some power law: 
-\[
-\sigma_{e,k} = \frac{k^{-\nu}}{\sum_{j=1}^{r} j^{-2\nu} }
-\] 
-for some $\nu$ and normalize the law (as teacher is normalized to 1). Then sample two orthogonal matrices $U_e$ and $V_e$ to construct the SVD of $T$ at edge $e$. Record the spectra that is induced across other edge cuts. 
+A first round of experiments would explore the training dynamics of TTNs empirically. We start with a simple teacher--student setup in which the teacher and the student are TTNs on the same binary tree, of depth between $2$ and $4$, that is, with between $4$ and $16$ leaves. We write $T^\star$ for the teacher and mark all of its quantities with a star: $M^\star_e=U^\star_eS^\star_eV^{\star\top}_e$ is the SVD of the teacher's matricization at a bond $e$ (Definition~\ref{def:hsvd}), and $M_e=U_eS_eV_e^\top$ is that of the student, which evolves during training.
 
-Track the following observables during training: population loss, singular values of the student (across tree cuts), alignment between singular vectors $U_e^{\star}$ of the teacher and the student $U_e$ (across tree cuts) e.g. $U_e^{\star\top}U_e||_{F}$, track $M_e$ in the SVD basis of the teacher $U_e^{\star}$ and $V_e^{\star}$ track the movement of the NTK from its initialization (to check the regime of training).
+\paragraph{Setting.} We start with small bond dimensions and ranks, for example a teacher with bond dimension $3$ and rank $r=3$, and an overparametrized student with bond dimension $4$ or $5$. The student is trained on the quadratic loss, with inputs sampled from $\mathcal N(0,I_d)$, where $d$ is the input dimension. The entries of its cores are initialized i.i.d.\ from $\mathcal N\big(0,\epsilon^2/(D_LD_R)\big)$, where $D_L$ and $D_R$ are the dimensions of the left and right bonds of the core and $\epsilon$ is the initialization scale.
+
+\paragraph{Teacher.} We specify the spectrum of the teacher through the singular values of its matricization across one bond $e$, $M^\star_e=U^\star_eS^\star_eV^{\star\top}_e$. The singular values $S^\star_e=\diag(\sigma^\star_{e,1},\dots,\sigma^\star_{e,r})$ follow a power law with exponent $\nu$,
+\[
+\sigma^\star_{e,k}=\frac{k^{-\nu}}{\big(\sum_{j=1}^{r}j^{-2\nu}\big)^{1/2}},\qquad k=1,\dots,r,
+\]
+where the denominator normalizes the teacher to unit norm, $\norm{T^\star}_F^2=\sum_{k=1}^r(\sigma^\star_{e,k})^2=1$. We then sample two random matrices $U^\star_e$ and $V^\star_e$ with orthonormal columns, which together with $S^\star_e$ give the SVD of $T^\star$ at $e$. Finally, we record the spectra that this construction induces at the other bonds.
+
+\paragraph{Observables.} During training, we track:
+\begin{itemize}[nosep]
+\item the population loss;
+\item the singular values $\sigma_{e,k}$ of the student at every bond $e$;
+\item the alignment between the singular vectors of the teacher and of the student at every bond, for example $\norm{U^{\star\top}_eU_e}_F$;
+\item the matricization $M_e$ of the student expressed in the singular bases of the teacher, $U^{\star\top}_eM_eV^\star_e$;
+\item the movement of the neural tangent kernel (NTK) away from its initialization, to identify the training regime.
+\end{itemize}
 
 %======================================================================
-\section{Experiments}\label{sec:experiments}
+\section{A possible range of other Experiments}\label{sec:experiments}
 %======================================================================
 
 \setlist[description]{font=\normalfont\itshape,leftmargin=0pt,labelindent=0pt,itemsep=2pt,topsep=3pt,parsep=0pt}
