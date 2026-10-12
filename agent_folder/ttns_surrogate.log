@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  12 OCT 2026 16:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  12 OCT 2026 17:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -567,11 +567,7 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count328
 \l__pdf_internal_box=\box68
-) (./ttns_surrogate.aux
-
-LaTeX Warning: Label `sec:experiments' multiply defined.
-
-)
+) (./ttns_surrogate.aux)
 \openout1 = `ttns_surrogate.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
@@ -766,15 +762,6 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [21]
 
 [22]
-LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 839.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ot1lmss.fd
-File: ot1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `lmss' (encoding: OT1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
 
 [23]
 
@@ -785,11 +772,6 @@ Package microtype Info: Loading generic protrusion settings for font family
 [26]
 
 [27]
-Overfull \hbox (5.50603pt too wide) in paragraph at lines 1448--1451
-\T1/lmr/m/n/10.95 (-20) This is the depth-two in-stance of the gen-eral TTN coefficient-space evo-lu-tion $[] \OT1/lmr/m/n/10.95 (-20) = \OMS/lmsy/m/n/10.95 ^^@\OML/lmm/m/it/10.95 DT\OT1/lmr/m/n/10.95 (-20) (\OML/lmm/m/it/10.95 ^^R\OT1/lmr/m/n/10.95 (-20) )\OML/lmm/m/it/10.95 DT\OT1/lmr/m/n/10.95 (-20) (\OML/lmm/m/it/10.95 ^^R\OT1/lmr/m/n/10.95 (-20) )[]\OMS/lmsy/m/n/10.95 r[]L$\T1/lmr/m/n/10.95 (-20) . 
- []
-
-
 
 [28]
 
@@ -848,7 +830,7 @@ Overfull \hbox (5.50603pt too wide) in paragraph at lines 1448--1451
 [55]
 
 [56]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2185.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1809.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -899,31 +881,29 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 [79]
 
-[80] (./ttns_surrogate.aux)
+[80]
+
+[81] (./ttns_surrogate.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
 Package rerunfilecheck Info: File `ttns_surrogate.out' has not changed.
-(rerunfilecheck)             Checksum: 97556AEDE240CB6C8972FFFA72DD0DD7;10316.
+(rerunfilecheck)             Checksum: 81CF832D3BC174BAAD0A409F2E819518;10311.
  ) 
 Here is how much of TeX's memory you used:
- 26764 strings out of 473190
- 486450 string characters out of 5715801
- 907413 words of memory out of 5000000
- 48489 multiletter control sequences out of 15000+600000
- 704039 words of font info for 367 fonts, out of 8000000 for 9000
+ 26699 strings out of 473190
+ 485315 string characters out of 5715801
+ 907894 words of memory out of 5000000
+ 48448 multiletter control sequences out of 15000+600000
+ 683600 words of font info for 346 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  102i,15n,107p,3206b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmss10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ttns_surrogate.pdf (80 pages, 931791 bytes).
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on ttns_surrogate.pdf (81 pages, 928727 bytes).
 PDF statistics:
- 2203 PDF objects out of 2487 (max. 8388607)
- 2031 compressed objects within 21 object streams
- 572 named destinations out of 1000 (max. 500000)
- 78197 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 2245 PDF objects out of 2487 (max. 8388607)
+ 2074 compressed objects within 21 object streams
+ 582 named destinations out of 1000 (max. 500000)
+ 63861 words of extra memory for PDF output out of 74296 (max. 10000000)
 

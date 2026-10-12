@@ -6,9 +6,9 @@
 \contentsline {section}{\numberline {2}Theoretical background}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{5}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{6}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{7}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{8}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}The hierarchical singular value decomposition}{9}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}Notions of rank}{10}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.5}Notions of rank}{11}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Deep polynomial networks as tree tensor networks}{12}{subsection.2.6}%
 \contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{12}{subsubsection.2.6.1}%
 \contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{13}{subsubsection.2.6.2}%
@@ -17,80 +17,88 @@
 \contentsline {paragraph}{A more direct approach: polynomial activations.}{21}{section*.6}%
 \contentsline {section}{\numberline {3}Training dynamics of TTNs}{22}{section.3}%
 \contentsline {subsection}{\numberline {3.1}A four-leaf, depth-two teacher--student model}{22}{subsection.3.1}%
+\contentsline {paragraph}{Student.}{22}{section*.7}%
+\contentsline {paragraph}{Matrix form.}{23}{section*.8}%
+\contentsline {paragraph}{Teacher and loss.}{23}{section*.9}%
 \contentsline {subsection}{\numberline {3.2}Independent whitened inputs}{24}{subsection.3.2}%
-\contentsline {paragraph}{Differential derivation.}{26}{section*.7}%
+\contentsline {paragraph}{Index form.}{25}{section*.10}%
+\contentsline {paragraph}{Differential derivation.}{25}{section*.11}%
 \contentsline {subsection}{\numberline {3.3}Independent, non-whitened inputs}{26}{subsection.3.3}%
+\contentsline {paragraph}{Index form.}{27}{section*.12}%
 \contentsline {subsection}{\numberline {3.4}A compact residual-moment formulation}{27}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Differential, tangent-kernel, and represented-tensor forms}{28}{subsection.3.5}%
-\contentsline {section}{\numberline {4}How to compare TTNs and DNNs}{29}{section.4}%
+\contentsline {paragraph}{Vectorized form.}{28}{section*.13}%
+\contentsline {subsection}{\numberline {3.5}Differential, tangent-kernel and represented-tensor forms}{28}{subsection.3.5}%
+\contentsline {paragraph}{Represented matricization.}{28}{section*.14}%
+\contentsline {paragraph}{Vectorized flow.}{29}{section*.15}%
+\contentsline {section}{\numberline {4}How to compare TTNs and DNNs}{30}{section.4}%
 \contentsline {subsection}{\numberline {4.1}The teacher--student setting}{30}{subsection.4.1}%
-\contentsline {paragraph}{Teacher.}{30}{section*.8}%
-\contentsline {paragraph}{Data.}{31}{section*.9}%
-\contentsline {paragraph}{Students and time.}{32}{section*.10}%
+\contentsline {paragraph}{Teacher.}{30}{section*.16}%
+\contentsline {paragraph}{Data.}{31}{section*.17}%
+\contentsline {paragraph}{Students and time.}{32}{section*.18}%
 \contentsline {subsection}{\numberline {4.2}The data-weighted HSVD of the teacher}{32}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Atoms: identity and strength}{37}{subsection.4.3}%
-\contentsline {paragraph}{Dependent blocks.}{38}{section*.11}%
-\contentsline {paragraph}{Identity and strength.}{38}{section*.12}%
+\contentsline {subsection}{\numberline {4.3}Atoms: identity and strength}{38}{subsection.4.3}%
+\contentsline {paragraph}{Dependent blocks.}{38}{section*.19}%
+\contentsline {paragraph}{Identity and strength.}{38}{section*.20}%
 \contentsline {subsection}{\numberline {4.4}Output observables: has the predictor acquired an atom?}{39}{subsection.4.4}%
-\contentsline {paragraph}{Interpretation.}{41}{section*.13}%
-\contentsline {paragraph}{Identifiability.}{41}{section*.14}%
+\contentsline {paragraph}{Interpretation.}{41}{section*.21}%
+\contentsline {paragraph}{Identifiability.}{41}{section*.22}%
 \contentsline {subsection}{\numberline {4.5}The functional HSVD of a student}{42}{subsection.4.5}%
-\contentsline {paragraph}{Dependent blocks.}{42}{section*.15}%
-\contentsline {paragraph}{Comparison with the teacher.}{43}{section*.16}%
-\contentsline {paragraph}{Estimation.}{43}{section*.17}%
-\contentsline {subsection}{\numberline {4.6}Teachers with repeated inputs}{44}{subsection.4.6}%
-\contentsline {paragraph}{Function track.}{45}{section*.18}%
-\contentsline {paragraph}{Computation track.}{45}{section*.19}%
-\contentsline {paragraph}{Comparing students with a teacher with repeated inputs.}{46}{section*.20}%
-\contentsline {subsection}{\numberline {4.7}Representation observables: where is an atom represented?}{46}{subsection.4.7}%
-\contentsline {paragraph}{Reading the three scores.}{47}{section*.21}%
-\contentsline {subsection}{\numberline {4.8}Use and causal reliance}{48}{subsection.4.8}%
-\contentsline {paragraph}{Interventions.}{50}{section*.22}%
-\contentsline {paragraph}{What to measure.}{50}{section*.23}%
-\contentsline {paragraph}{Relation with acceleration.}{51}{section*.24}%
-\contentsline {paragraph}{Controls.}{51}{section*.25}%
-\contentsline {subsection}{\numberline {4.9}Observables for TTN students}{51}{subsection.4.9}%
-\contentsline {paragraph}{Product law.}{51}{section*.26}%
-\contentsline {paragraph}{Dependent blocks.}{52}{section*.27}%
-\contentsline {paragraph}{Repeated inputs.}{52}{section*.28}%
+\contentsline {paragraph}{Dependent blocks.}{43}{section*.23}%
+\contentsline {paragraph}{Comparison with the teacher.}{43}{section*.24}%
+\contentsline {paragraph}{Estimation.}{44}{section*.25}%
+\contentsline {subsection}{\numberline {4.6}Teachers with repeated inputs}{45}{subsection.4.6}%
+\contentsline {paragraph}{Function track.}{45}{section*.26}%
+\contentsline {paragraph}{Computation track.}{45}{section*.27}%
+\contentsline {paragraph}{Comparing students with a teacher with repeated inputs.}{46}{section*.28}%
+\contentsline {subsection}{\numberline {4.7}Representation observables: where is an atom represented?}{47}{subsection.4.7}%
+\contentsline {paragraph}{Reading the three scores.}{48}{section*.29}%
+\contentsline {subsection}{\numberline {4.8}Use and causal reliance}{49}{subsection.4.8}%
+\contentsline {paragraph}{Interventions.}{50}{section*.30}%
+\contentsline {paragraph}{What to measure.}{51}{section*.31}%
+\contentsline {paragraph}{Relation with acceleration.}{51}{section*.32}%
+\contentsline {paragraph}{Controls.}{51}{section*.33}%
+\contentsline {subsection}{\numberline {4.9}Observables for TTN students}{52}{subsection.4.9}%
+\contentsline {paragraph}{Product law.}{52}{section*.34}%
+\contentsline {paragraph}{Dependent blocks.}{52}{section*.35}%
+\contentsline {paragraph}{Repeated inputs.}{53}{section*.36}%
 \contentsline {subsection}{\numberline {4.10}Acquisition times, comparison of students, and estimation}{53}{subsection.4.10}%
-\contentsline {paragraph}{Choosing the thresholds.}{53}{section*.29}%
-\contentsline {paragraph}{Comparing a TTN and a DNN.}{53}{section*.30}%
-\contentsline {paragraph}{Estimation protocol.}{54}{section*.31}%
+\contentsline {paragraph}{Choosing the thresholds.}{53}{section*.37}%
+\contentsline {paragraph}{Comparing a TTN and a DNN.}{53}{section*.38}%
+\contentsline {paragraph}{Estimation protocol.}{54}{section*.39}%
 \contentsline {subsection}{\numberline {4.11}Summary}{55}{subsection.4.11}%
 \contentsline {section}{\numberline {5}First experiments}{56}{section.5}%
-\contentsline {paragraph}{Setting.}{56}{section*.32}%
-\contentsline {paragraph}{Teacher.}{56}{section*.33}%
-\contentsline {paragraph}{Observables.}{57}{section*.34}%
+\contentsline {paragraph}{Setting.}{57}{section*.40}%
+\contentsline {paragraph}{Teacher.}{57}{section*.41}%
+\contentsline {paragraph}{Observables.}{57}{section*.42}%
 \contentsline {section}{\numberline {6}A possible range of other Experiments}{57}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Principles}{57}{subsection.6.1}%
-\contentsline {paragraph}{Questions rather than knobs.}{57}{section*.35}%
-\contentsline {paragraph}{Exact before sampled.}{57}{section*.36}%
-\contentsline {paragraph}{One change at a time.}{58}{section*.37}%
-\contentsline {paragraph}{Learnability is a controlled variable.}{58}{section*.38}%
-\contentsline {paragraph}{Validated measurements.}{58}{section*.39}%
-\contentsline {paragraph}{Statistics.}{58}{section*.40}%
+\contentsline {subsection}{\numberline {6.1}Principles}{58}{subsection.6.1}%
+\contentsline {paragraph}{Questions rather than knobs.}{58}{section*.43}%
+\contentsline {paragraph}{Exact before sampled.}{58}{section*.44}%
+\contentsline {paragraph}{One change at a time.}{58}{section*.45}%
+\contentsline {paragraph}{Learnability is a controlled variable.}{58}{section*.46}%
+\contentsline {paragraph}{Validated measurements.}{58}{section*.47}%
+\contentsline {paragraph}{Statistics.}{58}{section*.48}%
 \contentsline {subsection}{\numberline {6.2}Common setting}{58}{subsection.6.2}%
 \contentsline {subsubsection}{\numberline {6.2.1}Teachers and data}{58}{subsubsection.6.2.1}%
-\contentsline {paragraph}{Sizes.}{58}{section*.41}%
-\contentsline {paragraph}{Homogeneous teachers are hard for every student.}{58}{section*.42}%
-\contentsline {paragraph}{Spectra are measured, not prescribed.}{59}{section*.43}%
-\contentsline {paragraph}{Teacher families.}{59}{section*.44}%
-\contentsline {paragraph}{Input laws.}{60}{section*.45}%
+\contentsline {paragraph}{Sizes.}{58}{section*.49}%
+\contentsline {paragraph}{Homogeneous teachers are hard for every student.}{59}{section*.50}%
+\contentsline {paragraph}{Spectra are measured, not prescribed.}{59}{section*.51}%
+\contentsline {paragraph}{Teacher families.}{59}{section*.52}%
+\contentsline {paragraph}{Input laws.}{60}{section*.53}%
 \contentsline {subsubsection}{\numberline {6.2.2}Students and their initialization}{60}{subsubsection.6.2.2}%
-\contentsline {paragraph}{Initializations of TTNs.}{60}{section*.46}%
-\contentsline {paragraph}{The grid of students.}{62}{section*.47}%
-\contentsline {subsubsection}{\numberline {6.2.3}Training protocols and observables}{62}{subsubsection.6.2.3}%
-\contentsline {paragraph}{Training protocols.}{62}{section*.48}%
-\contentsline {paragraph}{Observables.}{63}{section*.49}%
+\contentsline {paragraph}{Initializations of TTNs.}{60}{section*.54}%
+\contentsline {paragraph}{The grid of students.}{62}{section*.55}%
+\contentsline {subsubsection}{\numberline {6.2.3}Training protocols and observables}{63}{subsubsection.6.2.3}%
+\contentsline {paragraph}{Training protocols.}{63}{section*.56}%
+\contentsline {paragraph}{Observables.}{63}{section*.57}%
 \contentsline {subsection}{\numberline {6.3}Phase 0: validation}{64}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Phase 1: the dynamics of TTNs}{64}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.4}Phase 1: the dynamics of TTNs}{65}{subsection.6.4}%
 \contentsline {subsection}{\numberline {6.5}Phase 2: TTNs and DNNs}{68}{subsection.6.5}%
-\contentsline {subsection}{\numberline {6.6}Phase 3: optimizers, noise and finite samples}{70}{subsection.6.6}%
-\contentsline {subsection}{\numberline {6.7}Phase 4: deferred experiments}{72}{subsection.6.7}%
+\contentsline {subsection}{\numberline {6.6}Phase 3: optimizers, noise and finite samples}{71}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Phase 4: deferred experiments}{73}{subsection.6.7}%
 \contentsline {subsection}{\numberline {6.8}Priorities and organization}{73}{subsection.6.8}%
-\contentsline {paragraph}{Priorities.}{73}{section*.69}%
-\contentsline {paragraph}{Division of the work.}{73}{section*.70}%
-\contentsline {paragraph}{Expected outputs.}{74}{section*.71}%
-\contentsline {section}{\numberline {7}Experiments (old)}{75}{section.7}%
+\contentsline {paragraph}{Priorities.}{73}{section*.77}%
+\contentsline {paragraph}{Division of the work.}{74}{section*.78}%
+\contentsline {paragraph}{Expected outputs.}{74}{section*.79}%
+\contentsline {section}{\numberline {7}Experiments (old)}{74}{section.7}%
 \contentsline {section}{\numberline {8}Experiments (slop)}{76}{section.8}%
