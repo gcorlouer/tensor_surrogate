@@ -1,0 +1,39 @@
+\contentsline {section}{\numberline {1}Introduction and summary}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Main results}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Assumptions and what they mean}{4}{subsection.1.2}%
+\contentsline {paragraph}{Outline.}{5}{section*.2}%
+\contentsline {section}{\numberline {2}Setting}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Tree tensor networks and gradient flow}{5}{subsection.2.1}%
+\contentsline {paragraph}{Conserved quantities and balance.}{6}{section*.3}%
+\contentsline {subsection}{\numberline {2.2}Basis targets, saddles and their order}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The three-core model}{7}{subsection.2.3}%
+\contentsline {section}{\numberline {3}How the two notes fit together}{7}{section.3}%
+\contentsline {paragraph}{What each note contributes.}{8}{section*.4}%
+\contentsline {section}{\numberline {4}An exact reduction: the two-channel manifold}{8}{section.4}%
+\contentsline {section}{\numberline {5}Near the saddle: a common clock and the plateaus}{10}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The common clock}{10}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The orientation of a dormant channel}{11}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Escape from a saddle}{12}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Plateaus from a small initialization}{12}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Away from the saddle: transitions}{13}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Where a transition ends}{13}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}How a transition proceeds}{13}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}How a transition changes the other clocks}{14}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Saddle-to-saddle sequences}{15}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Isolated channels and the budget rule}{15}{subsection.7.1}%
+\contentsline {paragraph}{Channels that see several components.}{15}{section*.5}%
+\contentsline {subsection}{\numberline {7.2}Consequences at a one-component saddle}{15}{subsection.7.2}%
+\contentsline {paragraph}{(a) Locality before weight.}{15}{section*.6}%
+\contentsline {paragraph}{(b) The tree decides the order.}{16}{section*.7}%
+\contentsline {paragraph}{(c) The first phase.}{16}{section*.8}%
+\contentsline {paragraph}{(d) Head start with several components.}{16}{section*.9}%
+\contentsline {subsection}{\numberline {7.3}Relative orders and stepping stones}{16}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Bond capacity}{17}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Numerical evidence}{17}{section.8}%
+\contentsline {section}{\numberline {9}Research questions}{19}{section.9}%
+\contentsline {section}{\numberline {A}Proofs}{20}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Proposition~\ref {prop:two-channel}}{20}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Proposition~\ref {prop:orientation}}{21}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Corollaries~\ref {cor:escape} and~\ref {cor:plateau}}{21}{subsection.A.3}%
+\contentsline {subsection}{\numberline {A.4}Propositions~\ref {prop:rebalance} and~\ref {prop:transition}(i)}{22}{subsection.A.4}%
+\contentsline {subsection}{\numberline {A.5}Proposition~\ref {prop:relative-order}}{23}{subsection.A.5}%
