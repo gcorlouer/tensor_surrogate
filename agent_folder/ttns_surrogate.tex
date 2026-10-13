@@ -125,7 +125,7 @@ Function-space agreement is therefore plausible when the two models have close p
 \end{remark}
 
 \paragraph{Outline.}
-Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:ttn-dynamics} derives the gradient flow of a depth-two TTN student, rewrites it as an evolution of the represented tensor, and solves it on the manifold of balanced parameters. Section~\ref{sec:compare} constructs observables for comparing the training dynamics of TTN and DNN students of a TTN teacher. Section~\ref{sec:experiments} lists the experiments suggested in the text.
+Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:ttn-dynamics} derives the gradient flow of a depth-two TTN student, rewrites it as an evolution of the represented tensor, and solves it on the manifold of balanced parameters. Section~\ref{sec:nonaligned} studies these balanced dynamics without assuming that the student is aligned with the teacher: it solves them for students of bond rank one, classifies the saddles by their linear rates, and derives the time scales of alignment, amplification and plateaus. Section~\ref{sec:compare} constructs observables for comparing the training dynamics of TTN and DNN students of a TTN teacher. Section~\ref{sec:experiments} lists the experiments suggested in the text.
 
 %======================================================================
 \section{Theoretical background}\label{sec:background}
@@ -1215,7 +1215,7 @@ Each aligned mode thus follows the dynamics of a balanced linear network of dept
 \item \emph{Extra modes.} A student mode without a teacher counterpart, $\sigma^\star_i=0$, decays algebraically: $\sigma_i(t)=\big(\sigma_i(0)^{-4/3}+4\lambda^L_i\lambda^R_it\big)^{-3/4}$. Outside the aligned manifold, such a mode may instead rotate towards a teacher mode.
 \item \emph{Absent modes.} A mode with $s_i(0)=0$ remains at zero.
 \end{enumerate}
-Without common eigenvectors, $\Sigma_{12}$ and $\Sigma_{34}$ mix the modes, and the decoupling is lost.
+Without common eigenvectors, $\Sigma_{12}$ and $\Sigma_{34}$ mix the modes, and the decoupling is lost; Section~\ref{sec:nonaligned} studies the dynamics without alignment.
 
 \begin{remark}[Scope of the balanced reduction]\label{rem:d2-balanced-scope}
 \leavevmode
@@ -1225,6 +1225,210 @@ Without common eigenvectors, $\Sigma_{12}$ and $\Sigma_{34}$ mix the modes, and 
 \item \emph{Tree-specific dynamics.} For this tree, the balanced dynamics is that of a balanced linear network of depth three (Remark~\ref{rem:d2-one-cut}). Balanced dynamics specific to trees arises when the lower cores are themselves factorized (Remark~\ref{rem:d2-parameterization}), so that several non-equivalent cuts, each with its own balance conditions, are coupled.
 \end{enumerate}
 \end{remark}
+
+%======================================================================
+\section{Balanced dynamics without alignment}\label{sec:nonaligned}
+%======================================================================
+
+Proposition~\ref{prop:d2-aligned} solves the balanced dynamics of the four-leaf model of Section~\ref{sec:ttn-dynamics} when the student starts aligned with the teacher. From a generic initialization, the singular vectors of the student rotate while its singular values grow, and each process changes the signal that drives the other. This section studies the balanced flow~\eqref{eq:d2-balanced-M-flow} without the alignment assumption, for independent whitened blocks, so that $R_\Delta=M-M^\star$, unless stated otherwise. We do not know a closed-form solution in general, and Section~\ref{sec:na-spectral} explains what stands in the way. The flow is solved exactly for a student of bond rank one (Section~\ref{sec:na-rank-one}), which describes the escape from the origin, and the critical points are characterized by their linear rates (Section~\ref{sec:na-saddles}). Approximations then describe the later plateaus (Section~\ref{sec:na-plateaus}) and the end of training (Section~\ref{sec:na-near-aligned}). Sections~\ref{sec:na-nonwhite} and~\ref{sec:na-trees} treat non-whitened inputs and other trees, and Section~\ref{sec:na-summary} collects the time scales.
+
+Throughout, $M^\star=\sum_{q=1}^{r^\star}\sigma^\star_qu^\star_qv^{\star\top}_q$ with $\sigma^\star_1>\dots>\sigma^\star_{r^\star}>0$, and we use the notation of Section~\ref{sec:d2-balanced}: on the balanced manifold, $M=US^3V^\top=\sum_{i\le k}\sigma_iu_iv_i^\top$ with $\sigma_i=s_i^3$, and $\kappa_{ij}=\sigma_i^{4/3}+\sigma_i^{2/3}\sigma_j^{2/3}+\sigma_j^{4/3}$. We distinguish exact statements, which are proved, from leading-order asymptotics and from approximations, which are stated as such. Numerical integrations of the gradient flow of the cores, and symbolic computations, serve as consistency checks of the statements below; they are not part of the proofs.
+
+%----------------------------------------------------------------------
+\subsection{Spectral form of the balanced flow}\label{sec:na-spectral}
+%----------------------------------------------------------------------
+
+Let $\Theta:=U^\top M^\star V\in\R^{k\times k}$ be the teacher written in the singular bases of the student. Its diagonal entries $\Theta_{ii}=u_i^\top M^\star v_i$ are the signals seen by the modes of the student, and its off-diagonal entries measure how far the pairing of the left and right singular vectors of the student is from that of the teacher.
+
+\begin{proposition}[Spectral equations]\label{prop:na-spectral}
+\leavevmode
+\begin{enumerate}[label=(\alph*),nosep]
+\item On a time interval on which a balanced trajectory has constant rank $k$ and simple nonzero singular values, let $\Omega_U:=U^\top\dot U$ and $\Omega_V:=V^\top\dot V$. Then
+\begin{align}
+\dot\sigma_i&=3\sigma_i^{4/3}\big(\Theta_{ii}-\sigma_i\big),\label{eq:na-sv}\\
+(\Omega_U)_{ij}&=\kappa_{ij}\,\frac{\sigma_j\Theta_{ij}+\sigma_i\Theta_{ji}}{\sigma_j^2-\sigma_i^2},\qquad(\Omega_V)_{ij}=\kappa_{ij}\,\frac{\sigma_i\Theta_{ij}+\sigma_j\Theta_{ji}}{\sigma_j^2-\sigma_i^2}\qquad(i\neq j),\label{eq:na-rotation}\\
+(I-UU^\top)\dot U&=(I-UU^\top)M^\star VS,\qquad(I-VV^\top)\dot V=(I-VV^\top)M^{\star\top}US.\label{eq:na-out}
+\end{align}
+For any input law, with $G:=U^\top R_\Delta V$, the same computation gives $\dot\sigma_i=-3\sigma_i^{4/3}G_{ii}$, $(\Omega_U)_{ij}=-\kappa_{ij}(\sigma_jG_{ij}+\sigma_iG_{ji})/(\sigma_j^2-\sigma_i^2)$, $(\Omega_V)_{ij}=-\kappa_{ij}(\sigma_iG_{ij}+\sigma_jG_{ji})/(\sigma_j^2-\sigma_i^2)$, $(I-UU^\top)\dot U=-(I-UU^\top)R_\Delta VS$ and $(I-VV^\top)\dot V=-(I-VV^\top)R_\Delta^\top US$.
+\item For whitened blocks and any balanced initialization, the column and row spaces of $M(t)$ stay in $\operatorname{range}M(0)+\operatorname{range}M^\star$ and in $\operatorname{range}M(0)^\top+\operatorname{range}M^{\star\top}$, respectively. The dynamics therefore takes place in dimension at most $(k_0+r^\star)\times(k_0+r^\star)$, with $k_0:=\rank M(0)$, whatever $d_{12}$ and $d_{34}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) By~\eqref{eq:d2-balanced-kappa}, $U^\top\dot MV=-\kappa\circ G$, with $\circ$ the entrywise product, and $G=S^3-\Theta$ for whitened blocks. Differentiating $M=US^3V^\top$ gives $U^\top\dot MV=\Omega_US^3+\tfrac{d}{dt}S^3-S^3\Omega_V$. Its diagonal gives~\eqref{eq:na-sv}, and its entries $(i,j)$ and $(j,i)$ form a $2\times2$ linear system for $(\Omega_U)_{ij}$ and $(\Omega_V)_{ij}$, whose solution is~\eqref{eq:na-rotation}. Similarly, $(I-UU^\top)\dot U=(I-UU^\top)\dot MVS^{-3}$, and of the three terms of~\eqref{eq:d2-balanced-M-flow} only $-R_\Delta(M^\top M)^{2/3}$ survives the projection; since $(M^\top M)^{2/3}V=VS^4$ and, for whitened blocks, $(I-UU^\top)R_\Delta=-(I-UU^\top)M^\star$, this gives~\eqref{eq:na-out}. The right singular vectors are treated in the same way. (b) Let $P$ be the orthogonal projector onto the orthogonal complement of $\operatorname{range}M(0)+\operatorname{range}M^\star$. Then $PM^\star=0$, and the flow of the cores gives $\tfrac{d}{dt}(PA)=-P(M-M^\star)BC^\top=-(PA)CB^\top BC^\top$, a linear equation for $PA$. On the balanced manifold $\operatorname{range}A=\operatorname{range}M$ (Lemma~\ref{lem:d2-balanced-factors}), so that $PA(0)=0$; hence $PA=0$ and $PM=0$ at all times. The row spaces are treated in the same way.
+\end{proof}
+
+Equation~\eqref{eq:na-sv} has the form of the aligned equation~\eqref{eq:d2-aligned}, with the teacher singular value replaced by the time-dependent signal $\Theta_{ii}$: amplification is driven by alignment. Conversely, \eqref{eq:na-rotation} and~\eqref{eq:na-out} show that alignment is driven by amplification: the off-diagonal entries of $\Theta$ rotate the modes within the current singular subspaces, and the part of the teacher outside these subspaces rotates them out of them, at the rate $s_i=\sigma_i^{1/3}$ of the mode. We do not know a closed-form solution for $k\ge2$, and three features stand in the way. First, every mode has its own clock: the relative growth $\dot\sigma_i/\sigma_i$ and the rotation of mode~$i$ both scale as $s_i$, so that no single change of time normalizes all modes, unlike the rank-one case below. Second, the in-span rotations~\eqref{eq:na-rotation} couple the clocks through the ratios $\kappa_{ij}/(\sigma_j^2-\sigma_i^2)$, which are singular at crossings of singular values, where individual singular vectors are not defined and only singular subspaces can be followed (Remark~\ref{rem:degenerate}). Third, because of the fractional powers in~\eqref{eq:d2-balanced-M-flow}, the flow does not inherit the matrix Riccati structure that makes balanced linear networks with two factors solvable from arbitrary balanced initializations with whitened inputs \citep{braun2022exact}.
+
+%----------------------------------------------------------------------
+\subsection{Rank-one channels: an exact solution}\label{sec:na-rank-one}
+%----------------------------------------------------------------------
+
+Let the student have bond rank one, $k=1$. By Remark~\ref{rem:d2-balanced-scope}(ii) it keeps this rank: $M(t)=s(t)^3u(t)v(t)^\top$ with unit vectors $u$ and $v$, and the cores are $A=suw_L^\top$, $C=sw_Lw_R^\top$ and $B=svw_R^\top$, whose frames $w_L$ and $w_R$ do not move, since $\dot A=-R_\Delta BC^\top$ is proportional to $w_L^\top$, and similarly for $B$ and $C$. Let $\rho:=u^\top M^\star v$ be the signal seen by the channel, $\sigma:=s^3$ its amplitude, and $p^L_q:=u(0)^\top u^\star_q$ and $p^R_q:=v(0)^\top v^\star_q$ its initial overlaps with the teacher modes.
+
+\begin{proposition}[Exact rank-one dynamics]\label{prop:na-rank-one}
+Let $\tau(t):=\int_0^ts$, let $L:=\begin{pmatrix}0&M^\star\\M^{\star\top}&0\end{pmatrix}$ be the symmetric dilation of $M^\star$, and let $y:=(u,v)/\sqrt2$, a unit vector. Then
+\begin{equation}\label{eq:na-rank-one-flow}
+\frac{du}{d\tau}=(I-uu^\top)M^\star v,\qquad\frac{dv}{d\tau}=(I-vv^\top)M^{\star\top}u,\qquad\frac{d\sigma}{d\tau}=3\sigma(\rho-\sigma).
+\end{equation}
+The orientation does not depend on the amplitude, and it is given by
+\begin{equation}\label{eq:na-oja}
+y(\tau)=\frac{e^{\tau L}y(0)}{\norm{e^{\tau L}y(0)}},\qquad\rho(\tau)=\frac12\frac{d}{d\tau}\log Z(\tau),\qquad Z(\tau):=\norm{e^{\tau L}y(0)}^2.
+\end{equation}
+The amplitude and the physical time then follow by quadrature:
+\begin{equation}\label{eq:na-amplitude}
+\sigma(\tau)=\frac{Z(\tau)^{3/2}}{\sigma(0)^{-1}+3\int_0^\tau Z^{3/2}},\qquad t(\tau)=\int_0^\tau Z(q)^{-1/2}\Big(\sigma(0)^{-1}+3\int_0^qZ^{3/2}\Big)^{1/3}dq.
+\end{equation}
+In the singular bases of $M^\star$,
+\begin{equation}\label{eq:na-Z}
+Z(\tau)=\sum_{q=1}^{r^\star}\big(\alpha_q^2e^{2\sigma^\star_q\tau}+\beta_q^2e^{-2\sigma^\star_q\tau}\big)+\gamma^2,\qquad\alpha_q:=\tfrac12(p^L_q+p^R_q),\quad\beta_q:=\tfrac12(p^L_q-p^R_q),
+\end{equation}
+where $\gamma^2:=1-\sum_q(\alpha_q^2+\beta_q^2)$ is the weight of $y(0)$ on the kernel of $L$, and the overlaps of the channel with the teacher modes at time $\tau$ are
+\begin{equation}\label{eq:na-overlaps}
+\tfrac12\big(u^\top u^\star_q+v^\top v^\star_q\big)=\alpha_q\,e^{\sigma^\star_q\tau}Z^{-1/2},\qquad\tfrac12\big(u^\top u^\star_q-v^\top v^\star_q\big)=\beta_q\,e^{-\sigma^\star_q\tau}Z^{-1/2}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For $k=1$, \eqref{eq:na-sv} and~\eqref{eq:na-out} read $\dot\sigma=3\sigma^{4/3}(\rho-\sigma)$, $\dot u=s(I-uu^\top)M^\star v$ and $\dot v=s(I-vv^\top)M^{\star\top}u$; dividing by $\dot\tau=s=\sigma^{1/3}$ gives~\eqref{eq:na-rank-one-flow}. Since $y^\top Ly=u^\top M^\star v=\rho$, the orientation equations read $y'=Ly-(y^\top Ly)y$, which is Oja's flow \citep{oja1982simplified}. If $z:=e^{\tau L}y(0)$, then $(z/\norm z)'=Lz/\norm z-(z^\top Lz)z/\norm z^3$, so that $z/\norm z$ solves the same equation with the same initial value \citep[cf.][]{yan1994global}, and $Z'=2z^\top Lz=2Z\rho$. The amplitude equation is a Bernoulli equation: $1/\sigma$ solves $(1/\sigma)'=3-3\rho/\sigma$, whose solution is the first identity of~\eqref{eq:na-amplitude}, since $\exp(3\int_0^\tau\rho)=Z(\tau)^{3/2}$; and $dt=\sigma^{-1/3}d\tau$ gives the second. Finally, $L$ has the eigenvalues $\pm\sigma^\star_q$ with eigenvectors $(u^\star_q,\pm v^\star_q)/\sqrt2$, and the eigenvalue $0$ on the remaining space; expanding $y(0)$ in this basis gives~\eqref{eq:na-Z} and~\eqref{eq:na-overlaps}.
+\end{proof}
+
+The non-aligned rank-one problem is therefore solved: in the rescaled time $\tau$, the direction of the channel performs a normalized power iteration on the dilation of the teacher, and the amplitude follows by two quadratures. The change of time $\tau=\int s$ is what decouples the two processes, which in physical time run on the same clock $s$. Proposition~\ref{prop:d2-aligned} is the case $y(0)=(u^\star_1,v^\star_1)/\sqrt2$, for which $Z=e^{2\sigma^\star_1\tau}$. The left-right asymmetries $\beta_q$ lie in the negative eigenspaces of $L$ and decay, while the symmetric overlaps $\alpha_q$ grow at the rates $\sigma^\star_q$, with $\alpha_q(\tau)/\alpha_{q'}(\tau)=e^{(\sigma^\star_q-\sigma^\star_{q'})\tau}\alpha_q(0)/\alpha_{q'}(0)$. The channel therefore converges to the teacher mode with the largest $\sigma^\star_q$ among those with $\alpha_q\neq0$. If all $\alpha_q$ vanish, $\rho\le0$ at all times and the channel does not escape.
+
+\begin{corollary}[Escape from the origin]\label{cor:na-escape}
+Assume $\alpha_1\neq0$, fix $\eta\in(0,1)$, and let $t_\eta$ be the first time at which $\sigma(t)=\eta\sigma^\star_1$. As $s(0)\to0$ with $y(0)$ fixed,
+\begin{equation}\label{eq:na-escape}
+t_\eta=\frac{I}{s(0)}+O(1),\qquad I:=\int_0^\infty Z(\tau)^{-1/2}\,d\tau,
+\end{equation}
+where the $O(1)$ term depends on $\eta$, on the spectrum and on $y(0)$, and is not uniform as $\alpha_1\to0$ or $\eta\to1$. Moreover,
+\begin{equation}\label{eq:na-escape-bounds}
+\frac1{\sigma^\star_1}\le I\le\frac{\operatorname{arsinh}(\gamma/|\alpha_1|)}{\sigma^\star_1\gamma}\le\frac1{\sigma^\star_1|\alpha_1|},
+\end{equation}
+where the middle bound is read as its limit $1/(\sigma^\star_1|\alpha_1|)$ when $\gamma=0$, and equality holds on the left if and only if $y(0)=\pm(u^\star_1,v^\star_1)/\sqrt2$.
+\end{corollary}
+
+\begin{proof}
+Let $\epsilon:=s(0)^3$ and $K(\tau):=3\int_0^\tau Z^{3/2}$, so that
+\[
+\sigma=\frac{\epsilon Z^{3/2}}{1+\epsilon K},\qquad t(\tau)=\epsilon^{-1/3}\int_0^\tau Z^{-1/2}(1+\epsilon K)^{1/3}.
+\] Since $Z\sim\alpha_1^2e^{2\sigma^\star_1\tau}$ and $K\sim Z^{3/2}/\sigma^\star_1$ as $\tau\to\infty$, the level $\eta\sigma^\star_1$ is reached at a rescaled time $\tau_\eta$ with $\epsilon Z(\tau_\eta)^{3/2}\to\eta\sigma^\star_1/(1-\eta)$, so that $e^{-\sigma^\star_1\tau_\eta}=O(\epsilon^{1/3})$. Then $t_\eta=\epsilon^{-1/3}\big(I-\int_{\tau_\eta}^\infty Z^{-1/2}\big)+\epsilon^{-1/3}\int_0^{\tau_\eta}Z^{-1/2}\big((1+\epsilon K)^{1/3}-1\big)$. The tail is at most $\epsilon^{-1/3}e^{-\sigma^\star_1\tau_\eta}/(\sigma^\star_1|\alpha_1|)=O(1)$. In the last integral, $(1+\epsilon K)^{1/3}-1\le\min\{\epsilon K/3,(\epsilon K)^{1/3}\}$, and $Z^{-1/2}K\lesssim Z$ and $Z^{-1/2}K^{1/3}=O(1)$ for large $\tau$; the integral is therefore $O(\epsilon^{1/3})$, which contributes $O(1)$ to $t_\eta$. The bounds follow from $\alpha_1^2e^{2\sigma^\star_1\tau}+\gamma^2\le Z(\tau)\le e^{2\sigma^\star_1\tau}$ and $\int_0^\infty(\gamma^2+a^2e^{2\sigma\tau})^{-1/2}d\tau=\operatorname{arsinh}(\gamma/a)/(\sigma\gamma)$, and the upper bound on $Z$ is an equality if and only if $y(0)$ lies in the eigenspace of $L$ for $\sigma^\star_1$.
+\end{proof}
+
+\paragraph{Escape time and initial geometry.}
+To leading order, the escape time is thus the aligned escape time $1/(\sigma^\star_1s(0))$ of Proposition~\ref{prop:d2-aligned}, multiplied by the geometric factor $\sigma^\star_1I\ge1$, which depends only on the initial direction of the channel and on the spectrum of the teacher: misalignment always slows the escape. Consider a random initialization, with $u(0)$ and $v(0)$ uniform on the unit spheres, in the regime of a fixed teacher rank and spectral gap and of dimensions $d_{12}$ and $d_{34}$ of comparable sizes that tend to infinity. Then $\alpha_q^2$ and $\beta_q^2$ are of order $1/d_{12}+1/d_{34}$ in probability, and $\gamma^2=1-O(r^\star/\min(d_{12},d_{34}))$. The integrand of $I$ stays close to one until the growing terms of~\eqref{eq:na-Z} reach order one, which typically happens first for $q=1$, at $\tau\approx\log(1/\alpha_1^2)/(2\sigma^\star_1)$, and the bound~\eqref{eq:na-escape-bounds} gives $\sigma^\star_1I\le\tfrac12\log(1/\alpha_1^2)+\log2+o(1)$. Hence, in probability,
+\begin{equation}\label{eq:na-escape-random}
+t_\eta=\frac{\log(1/\alpha_1^2)+O(1)}{2\sigma^\star_1s(0)},\qquad\log\frac1{\alpha_1^2}=\log\frac{d_{12}d_{34}}{d_{12}+d_{34}}+O(1).
+\end{equation}
+For $\sigma^\star=(2,1.4,0.8)$ and $d_{12}=d_{34}\in\{10^2,10^3,10^4\}$, over several hundred random starts for each dimension, the median of $\sigma^\star_1I-\tfrac12\log(1/\alpha_1^2)$ lies between $0.6$ and $0.7$, its $5\%$ and $95\%$ quantiles lie in $[-0.6,0.75]$, and it never exceeds $\log2+0.05$. The lower tail comes from starts in which a weaker mode has a much larger overlap and drives the escape. A random start therefore lengthens the plateau by a factor of order $\log d$, which is the time spent searching for the direction of the teacher. This search proceeds at the rate $\sigma^\star_1$ of the leading mode, not at the spectral gap, because the part of $y(0)$ on the kernel of $L$, which dominates in high dimension, does not grow.
+
+\paragraph{Alignment and amplification.}
+In $\tau$, alignment and amplification are exactly decoupled; in physical time, both run on the clock $s$. Let $w_1(\tau):=\alpha_1^2e^{2\sigma^\star_1\tau}/Z(\tau)$ be the weight of the leading mode in the direction of the channel; it is nondecreasing, since $(\log w_1)'=2(\sigma^\star_1-\rho)\ge0$. Let $\tau_\varepsilon$ be the rescaled time at which $w_1=1-\varepsilon$, $t_{\rm align}:=t(\tau_\varepsilon)$ and $s_{\rm align}:=s(t_{\rm align})$. For fixed $\varepsilon$, $\eta$ and $y(0)$ with $\alpha_1\neq0$, as $s(0)\to0$,
+\begin{equation}\label{eq:na-align-amp}
+t_\eta-t_{\rm align}=\frac{c_\varepsilon}{\sigma^\star_1s_{\rm align}}+O(1),\qquad1\le c_\varepsilon\le(1-\varepsilon)^{-1/2}:
+\end{equation}
+after alignment, the channel escapes as an aligned mode would from its current amplitude. Indeed, $s_{\rm align}=s(0)Z(\tau_\varepsilon)^{1/2}(1+o(1))$, and for $\tau\ge\tau_\varepsilon$ the monotonicity of $w_1$ gives $\alpha_1^2e^{2\sigma^\star_1\tau}\le Z\le\alpha_1^2e^{2\sigma^\star_1\tau}/(1-\varepsilon)$, which bounds $\int_{\tau_\varepsilon}^\infty Z^{-1/2}$ between $Z(\tau_\varepsilon)^{-1/2}/\sigma^\star_1$ and $(1-\varepsilon)^{-1/2}$ times this value; the rest of the argument is that of Corollary~\ref{cor:na-escape}. For a random start in high dimension, $Z$ stays close to $\gamma^2$ during the search, so that $s_{\rm align}\approx s(0)\gamma/\sqrt\varepsilon$: the direction is acquired during the plateau, at small amplitude, and the amplification becomes visible only at its end.
+
+The condition $s(0)\ll\sigma^{\star1/3}_1Z(\tau_\varepsilon)^{-1/2}$, which states that the channel is still small when it has aligned, is sufficient for alignment to precede amplification; in general, the order of the two events is decided by comparing $t(\tau_\varepsilon)$ with $t_\eta$ in~\eqref{eq:na-amplitude}. When the channel escapes before it aligns, it amplifies a mixture of teacher modes, with $\sigma$ following $\rho(\tau)$, and completes its alignment after the escape, at the faster rate $s\approx\rho^{1/3}$. If moreover $|\alpha_2|\gg|\alpha_1|$, the channel first approaches the strict saddle $\sigma^\star_2u^\star_2v^{\star\top}_2$ (Section~\ref{sec:na-saddles}), and the leading mode overtakes at $\tau_\times=\log|\alpha_2/\alpha_1|/(\sigma^\star_1-\sigma^\star_2)$. The time spent near this saddle, of order $(\tau_\times-\tau_{\rm esc})_+/\sigma^{\star1/3}_2$ with $\tau_{\rm esc}$ the rescaled time of the escape, is logarithmic in the ratio of the overlaps. For fixed $y(0)$ it vanishes as $s(0)\to0$, since $\tau_{\rm esc}$ grows like $\log(1/s(0))$: from a small enough initialization, the channel aligns before it escapes. There is therefore no universal ordering of alignment and amplification; it depends on the initial scale through $\tau_{\rm esc}$, and on the gaps and the overlaps through $\tau_\varepsilon$.
+
+%----------------------------------------------------------------------
+\subsection{Local geometry of the critical points}\label{sec:na-saddles}
+%----------------------------------------------------------------------
+
+On the balanced manifold, by~\eqref{eq:d2-balanced-kappa}, $\dot M=0$ requires $u_i^\top(M^\star-M)v_j=0$ whenever $\sigma_i>0$ or $\sigma_j>0$, i.e.\ $(M^\star-M)V=0$ and $U^\top(M^\star-M)=0$. Hence $M^\star v_i=\sigma_iu_i$ and $M^{\star\top}u_i=\sigma_iv_i$: every active triplet $(u_i,v_i,\sigma_i)$ is a singular triplet of $M^\star$. For a simple teacher spectrum, the critical points of the balanced flow are therefore the partial sums $M_S:=\sum_{q\in S}\sigma^\star_qu^\star_qv^{\star\top}_q$, $S\subseteq[r^\star]$, $|S|\le\min(D_L,D_R)$; repeated teacher singular values give continuous families, parameterized by subspaces of the corresponding singular spaces.
+
+\begin{proposition}[Linear rates at the critical points]\label{prop:na-saddles}
+Let $\kappa^\star_{ij}:=\sigma^{\star4/3}_i+(\sigma^\star_i\sigma^\star_j)^{2/3}+\sigma^{\star4/3}_j$. Linearizing the spectral equations of Proposition~\ref{prop:na-spectral} at $M_S$, along balanced perturbations that keep the rank $|S|$, gives the following rates:
+\begin{enumerate}[label=(\roman*),nosep]
+\item $-3\sigma^{\star4/3}_i$ for $i\in S$: the amplitude of a learned mode;
+\item $-\kappa^\star_{ij}$, twice, for $i<j$ in $S$: rotations within the learned singular subspaces;
+\item $\sigma^{\star1/3}_i(\sigma^\star_j-\sigma^\star_i)$ and $-\sigma^{\star1/3}_i(\sigma^\star_i+\sigma^\star_j)$ for $i\in S$ and $j\in[r^\star]\setminus S$: rotations of a learned mode towards an unlearned one, by the same or by opposite angles on the left and on the right;
+\item $-\sigma^{\star4/3}_i$ for $i\in S$, with multiplicity $(d_{12}-r^\star)+(d_{34}-r^\star)$: rotations towards the kernels of $M^{\star\top}$ and $M^\star$.
+\end{enumerate}
+The rates (i), (iii) and (iv) are also eigenvalues of the linearized gradient flow of the cores, i.e.\ of minus the Hessian of the loss at balanced cores of bond rank $|S|$ representing $M_S$.
+\end{proposition}
+
+\begin{proof}
+(i) is the derivative of $s^2(\sigma^\star_i-s^3)$ at $s^3=\sigma^\star_i$. For a rotation $u_i\mapsto u_i+\varepsilon_Lu^\star_j$, $v_i\mapsto v_i+\varepsilon_Rv^\star_j$ with $j\notin S$, \eqref{eq:na-out} gives $\dot\varepsilon_L=s_i(\sigma^\star_j\varepsilon_R-\sigma^\star_i\varepsilon_L)$ and $\dot\varepsilon_R=s_i(\sigma^\star_j\varepsilon_L-\sigma^\star_i\varepsilon_R)$ with $s_i=\sigma^{\star1/3}_i$, whose eigenvalues are~(iii); (iv) is the case $\sigma^\star_j=0$, in which the left and right rotations decouple. (ii) follows from~\eqref{eq:na-near-aligned} below at $\sigma=\sigma^\star$, where both combinations decay at $\kappa^\star_{ij}$. In the cores, a common rescaling of the three cores of mode $i$, and the rotations of the leg-side singular vectors $u_i$ of $A$ and $v_i$ of $B$ that leave $C$ fixed, span subspaces that are invariant under the linearized flow, because $R_\Delta=M_S-M^\star$ satisfies $R_\Delta v_i=0$ and $u_i^\top R_\Delta=0$; on them, the linearized flow has the rates (i), (iii) and (iv).
+\end{proof}
+
+In the examples that we have computed numerically, a rank-three teacher and $S=\{2\}$, $\{1,3\}$ and $\{2,3\}$, the rates (i)--(iv) are exactly the nonzero eigenvalues of the Hessian in the cores, and the remaining eigenvalues vanish, corresponding to gauge transformations, to changes of the conserved quantities~\eqref{eq:d2-balance-invariants}, and to the creation of new modes, which enters $\dot M$ only quadratically by~\eqref{eq:d2-balanced-kappa}. We have not proved that this holds in general.
+
+The proposition separates two kinds of instability. A learned mode $i$ that is weaker than an unlearned teacher mode $j$ gives a hyperbolic instability, with rate $\lambda_{ij}:=\sigma^{\star1/3}_i(\sigma^\star_j-\sigma^\star_i)$: a perturbation of size $\delta$ along it grows to order one in a time of order $\lambda_{ij}^{-1}\log(1/\delta)$, logarithmic in the perturbation, and for a rank-one channel the escape replaces the learned mode by the stronger one (Proposition~\ref{prop:na-rank-one}). The local geometry of the saddle, through the gap $\sigma^\star_j-\sigma^\star_i$ and the clock $\sigma^{\star1/3}_i$ of the learned mode, sets this escape time. Along the creation of a new mode, by contrast, the flow is degenerate and the escape is algebraic: a dormant channel of amplitude $s$ needs a time of order $I/s$ (Corollary~\ref{cor:na-escape}), set by its amplitude and by its geometry $I$, not by a curvature. The origin, $S=\emptyset$, is degenerate in every direction. When every mode aligns before it escapes, as from a small enough initialization (Section~\ref{sec:na-plateaus}), the visited critical points are $M_{[r]}$, $r=0,1,\dots$, which have no hyperbolic unstable direction: the plateaus are algebraic, of order $1/s(0)$, as in the saddle-to-saddle dynamics of deep linear networks \citep{saxe2014exact,jacot2021saddle}. Hyperbolic saddles are visited only transiently, after a channel has escaped along a weaker mode, and the detour is logarithmic in the overlaps.
+
+%----------------------------------------------------------------------
+\subsection{Plateaus of students of higher rank}\label{sec:na-plateaus}
+%----------------------------------------------------------------------
+
+\paragraph{Scale invariance of the early phase.}
+While $M$ is small, $R_\Delta=M-M^\star\approx-M^\star$, and the balanced flow reduces to $\dot M=\mathcal K_\vartheta[M^\star]$, i.e.\ to gradient ascent of the trilinear form $\ip{M^\star}{ACB^\top}_F$ in the cores. This truncated equation is invariant under $(A,B,C,t)\mapsto(\lambda A,\lambda B,\lambda C,t/\lambda)$. For initializations $\vartheta(0)=s(0)\hat\vartheta$ with a fixed shape $\hat\vartheta$ from which the truncated flow escapes, one therefore expects the first mode to escape at $t_1=s(0)^{-1}(\hat I+o(1))$, with $\hat I$ depending only on $\hat\vartheta$ and $M^\star$. For $k=1$, this is Corollary~\ref{cor:na-escape}, with $\hat I=I$. For $k\ge2$, the modes interact through~\eqref{eq:na-rotation}, $\hat I$ has no closed form, and we have not proved the expansion; for a rank-two student, $s(0)\,t_1$ changes by less than $0.4\%$ between $s(0)=10^{-2}$ and $10^{-3}$.
+
+\paragraph{Deflated normal form.}
+After the first $r$ modes have been acquired, they converge in a time of order one, while the next mode, still dormant, evolves on its slow clock $s_{r+1}$. For $i\le r<j$, \eqref{eq:na-rotation} gives $(\Omega_U)_{ij}=-s_i\Theta_{ji}$ and $(\Omega_V)_{ij}=-s_i\Theta_{ij}$, up to relative corrections of order $(\sigma_j/\sigma_i)^{2/3}$. The dormant singular vectors are thus dragged by the active ones and remain orthogonal to them, while their own motion is~\eqref{eq:na-out}, restricted to the complement of the active subspaces. This suggests that the dormant channel behaves as a rank-one channel in the sense of Proposition~\ref{prop:na-rank-one}, with $M^\star$ replaced by the deflated teacher
+\begin{equation}\label{eq:na-deflated}
+Y_r:=(I-U_rU_r^\top)M^\star(I-V_rV_r^\top)\ \longrightarrow\ \sum_{q>r}\sigma^\star_qu^\star_qv^{\star\top}_q,
+\end{equation}
+where $U_r$ and $V_r$ hold the active singular vectors, and the limit holds once these have aligned. The plateau that follows the acquisition of the $r$-th mode would then last about $I(Y_r)/s_{r+1}$, where $I(Y_r)$ is computed by~\eqref{eq:na-Z} from $Y_r$ and from the direction of the dormant channel at the beginning of the plateau, and $s_{r+1}$ is its amplitude then. This is an approximation, which we have not proved. It requires (a) separated amplitudes, $\sigma_{r+1}\ll\sigma_r$; (b) active modes that have relaxed to teacher modes up to small angles; (c) a target $Y_r$ that varies slowly compared with the alignment of the dormant channel, whose rate is $s_{r+1}$ times the spectral gap of $Y_r$; (d) a simple leading singular value of $Y_r$; and (e) other dormant channels that are negligible or spectrally separated, since dormant channels started at comparable scales interact through~\eqref{eq:na-rotation}. In the example that we have checked numerically ($d_{12}=6$, $d_{34}=4$, $D_L=2$, $D_R=3$, $\sigma^\star=(2,1.4,0.8)$, a rank-two student with random balanced initial cores of amplitudes $3\cdot10^{-3}\times(1,0.8)$), it predicts the length of the second plateau to within $0.1\%$. When the modes are aligned, it reduces to the sequential acquisition of Proposition~\ref{prop:d2-aligned}: the $(r+1)$-th mode escapes after a time $1/(\sigma^\star_{r+1}s_{r+1})$.
+
+%----------------------------------------------------------------------
+\subsection{Near the aligned manifold and near the optimum}\label{sec:na-near-aligned}
+%----------------------------------------------------------------------
+
+Assume that $k=r^\star$, that the singular values of the student are simple, with gaps $|\sigma_i-\sigma_j|$ bounded below, that its modes are matched with those of the teacher, and that, within the singular spaces of the teacher, $U=U^\star e^X$ and $V=V^\star e^Y$ with small skew-symmetric $X$ and $Y$. Rotations out of the singular spaces of the teacher are governed by~\eqref{eq:na-out}, whose rates at the optimum are Proposition~\ref{prop:na-saddles}(iv). Then $\Theta=S^\star-XS^\star+S^\star Y+O(\norm X^2+\norm Y^2)$, with $S^\star:=\diag(\sigma^\star_q)$, so that $\Theta_{ii}=\sigma^\star_i+O(\norm X^2+\norm Y^2)$, and by~\eqref{eq:na-sv} small alignment errors do not affect the amplitudes at first order. Linearizing~\eqref{eq:na-rotation} for $\xi^\pm_{ij}:=X_{ij}\pm Y_{ij}$ gives
+\begin{equation}\label{eq:na-near-aligned}
+\dot\xi^+_{ij}=-\kappa_{ij}\,\frac{\sigma^\star_i-\sigma^\star_j}{\sigma_i-\sigma_j}\,\xi^+_{ij},\qquad\dot\xi^-_{ij}=-\kappa_{ij}\,\frac{\sigma^\star_i+\sigma^\star_j}{\sigma_i+\sigma_j}\,\xi^-_{ij},
+\end{equation}
+up to terms of second order. The coupling is one-way: the amplitudes, given by~\eqref{eq:d2-aligned}, set the rates at which the angles decay. The rate of the symmetric error $\xi^+$ depends on the gaps, and that of the left-right mispairing $\xi^-$ on the sums. If the amplitudes of the student are ordered as those of the teacher, both errors decay. If they are ordered oppositely, $\xi^+_{ij}$ grows at the rate $\kappa_{ij}(\sigma^\star_j-\sigma^\star_i)/(\sigma_i-\sigma_j)$: the current pairing is linearly unstable, and a swap of the modes is expected. The linearization fails near crossings of the singular values of the student, where blocks of singular vectors must be followed instead.
+
+Near the optimum, $M=M^\star+\Delta$, and the right-hand side of~\eqref{eq:d2-balanced-M-flow} is $-\mathcal K_{M^\star+\Delta}[\Delta]=-\mathcal K_{M^\star}[\Delta]+o(\norm\Delta)$, by continuity of the fractional powers in $M$; the remainder is in general of fractional order, not quadratic. Complete $U^\star$ and $V^\star$ into orthonormal bases and set $\sigma^\star_q:=0$ for $q>r^\star$. In these bases, $\tfrac{d}{dt}(U^{\star\top}\Delta V^\star)_{ij}=-\kappa^\star_{ij}(U^{\star\top}\Delta V^\star)_{ij}+o(\norm\Delta)$. Amplitude errors decay at the rates $3\sigma^{\star4/3}_i$ and pairing errors at the rates $\kappa^\star_{ij}$, so that reducing an error by a factor $\varepsilon$ takes $\log(1/\varepsilon)/(3\sigma^{\star4/3}_i)$ and $\log(1/\varepsilon)/\kappa^\star_{ij}$, respectively. In the block orthogonal to both singular spaces of the teacher, which a student of rank larger than $r^\star$ occupies, $\kappa^\star$ vanishes; there the linearization is degenerate, and extra modes decay algebraically, as in the regimes listed after Proposition~\ref{prop:d2-aligned}.
+
+%----------------------------------------------------------------------
+\subsection{Non-whitened inputs}\label{sec:na-nonwhite}
+%----------------------------------------------------------------------
+
+For independent blocks with Gram matrices $\Sigma_{12}$ and $\Sigma_{34}$, $R_\Delta=\Sigma_{12}(M-M^\star)\Sigma_{34}$, and the rank-one reduction is no longer exact: in the rescaled time, the orientation equation acquires the term $-\sigma(v^\top\Sigma_{34}v)(I-uu^\top)\Sigma_{12}u$, which depends on the amplitude unless $u$ is an eigenvector of $\Sigma_{12}$, and similarly for $v$. During the escape of a rank-one channel, however, $\sigma\ll1$ and this term is negligible. To leading order in $\sigma$, Proposition~\ref{prop:na-rank-one} then holds with $M^\star$ replaced by the moment matrix $H:=\Sigma_{12}M^\star\Sigma_{34}$. If $H$ has a simple leading singular value and the channel has a nonzero symmetric overlap with its leading singular pair, the channel aligns with this pair, and the time to reach any fixed amplitude below that of its limit is $I(H)/s(0)+o(1/s(0))$, where $I(H)$ is computed by~\eqref{eq:na-Z} with $H$ in place of $M^\star$; numerically, $s(0)$ times this time converges to $I(H)$. Only after the escape does the channel relax towards the data-weighted rank-one optimum, which, for invertible Gram matrices, is $\Sigma_{12}^{-1/2}\hat N\Sigma_{34}^{-1/2}$, with $\hat N$ the best rank-one approximation of $\Sigma_{12}^{1/2}M^\star\Sigma_{34}^{1/2}$. For a single channel, this supports the conjecture of Experiment~E1.3: the moment matrix sets the time of acquisition, and the data-weighted spectrum sets the decrease of the loss. For several interacting channels, $H$ is the matrix that drives the early phase, but we have not shown that it sets the order of acquisition.
+
+%----------------------------------------------------------------------
+\subsection{Rank-one channels of other trees, and the role of the cuts}\label{sec:na-trees}
+%----------------------------------------------------------------------
+
+The rank-one reduction extends to any TTN. Consider a tree with $N$ cores, in which the cores that carry open legs group the legs into $m$ groups $G_1,\dots,G_m$. In the four-leaf model, $N=3$, $m=2$, $G_1=\{1,2\}$ and $G_2=\{3,4\}$; in its version with leaf cores (Figure~\ref{fig:ttn}(c)), $N=7$ and $m=4$. Consider cores that are exactly balanced at every bond, with bond rank one and a common nonzero scale $s$. By the argument of Remark~\ref{rem:d2-balanced-scope}(ii) applied to each bond, the gradient flow keeps them of bond rank one, and the represented tensor is $T=s^Nw_1\otimes\cdots\otimes w_m$, with unit vectors $w_g$ over the legs of $G_g$. For whitened blocks, with $\rho:=\ip{T^\star}{w_1\otimes\cdots\otimes w_m}$ and $\mu:=s^N$,
+\begin{equation}\label{eq:na-tree}
+\frac{dw_g}{d\tau}=(I-w_gw_g^\top)\,T^\star(w_1,\dots,w_{g-1},\cdot\,,w_{g+1},\dots,w_m),\qquad\frac{d\mu}{d\tau}=N\mu(\rho-\mu),\qquad\frac{d\tau}{dt}=s^{N-2}.
+\end{equation}
+Indeed, each core of a rank-one channel is $s$ times a tensor of unit norm, which is fixed except for the directions $w_g$ of the cores that carry legs, and the gradient of the loss with respect to a core is the contraction of the residual with the other cores, whose total scale is $s^{N-1}$. The triangular structure persists: in $\tau$, the orientation does not depend on the amplitude, and $\mu(\tau)=e^{NA}/(\mu(0)^{-1}+N\int_0^\tau e^{NA})$ with $A:=\int_0^\tau\rho$. If the orientation flow converges to a component with $\rho>0$, so that $\int_0^\infty e^{-(N-2)A}$ is finite, the escape takes $t\approx s(0)^{-(N-2)}\int_0^\infty e^{-(N-2)A(\tau)}d\tau$. This is the scaling $\varsigma^{-(|V|-2)}$ of Section~\ref{sec:exp-students}, with a geometric prefactor; for $N=3$, $e^{-A}=Z^{-1/2}$ and Corollary~\ref{cor:na-escape} is recovered.
+
+What changes with the tree is the orientation flow. For $m=2$, it is Oja's flow on the dilation of the matricization $T^{\star\langle G_1\rangle}$, solved by Proposition~\ref{prop:na-rank-one}: alignment is a power iteration at a single cut, exponentially fast in $\tau$. For $m\ge3$, it is a continuous-time version of the higher-order power method \citep{delathauwer2000best,anandkumar2014tensor}, which we do not know how to solve in closed form. For an orthogonally decomposable teacher $T^\star=\sum_q\sigma^\star_q\,a_{1,q}\otimes\cdots\otimes a_{m,q}$, the overlaps $p_{g,q}:=w_g^\top a_{g,q}$ satisfy $p_{g,q}'=\sigma^\star_q\prod_{h\neq g}p_{h,q}-\rho\,p_{g,q}$. For a rank-one teacher and equal positive initial overlaps $p(0)$ in all groups, $p'=\sigma^\star p^{m-1}(1-p^2)$, and alignment takes $\tau_{\rm align}=p(0)^{-(m-2)}/((m-2)\sigma^\star)+O(\log(1/p(0)))$, i.e.\ of order $d_g^{(m-2)/2}/((m-2)\sigma^\star)$ for overlaps of order $d_g^{-1/2}$, with $d_g$ the dimension of each group. For $m=2$, the same computation gives $p'=\sigma^\star p(1-p^2)$ and $\tau_{\rm align}=\log d_g/(2\sigma^\star)+O(1)$; when each group gathers two legs of dimension $d$, as in the three-core model, $d_g=d^2$ and $\tau_{\rm align}=\log d/\sigma^\star+O(1)$. From a random initialization the overlaps are unequal and of random signs, which changes the constants and the winning component; the scaling $d_g^{(m-2)/2}$ for $m\ge3$ is the robust conclusion, and it is analogous to the role of the information exponent in the escape from a random start in single-index models \citep{benarous2021online}. Finer leg groups thus make the search for the direction of the teacher polynomially slow.
+
+This also clarifies how the dynamics varies across cuts. A rank-one channel has the single singular value $s^N$ at every cut, so that its amplitude is acquired simultaneously at all cuts. Alignment, by contrast, is cut-dependent. For an orthogonally decomposable teacher, at a cut $A\mid A^c$ of the tree, the overlaps of the left and right singular vectors of the channel with those of a teacher component are $\prod_{g\subseteq A}p_{g,q}$ and $\prod_{g\subseteq A^c}p_{g,q}$, while their product, the overlap of the whole channel with the component, is the same at every cut. The singular vector on one side of a cut is therefore aligned no earlier than the leg groups on that side, and an interface of the tree is identified only once the groups below it are. In the three-core model, which groups the legs into two cores, the non-aligned dynamics is that of a matrix (Remark~\ref{rem:d2-one-cut}); factorizing the lower cores into leaf maps changes the search for the direction of the teacher, not only the parameterization.
+
+%----------------------------------------------------------------------
+\subsection{Summary: which times to distinguish}\label{sec:na-summary}
+%----------------------------------------------------------------------
+
+There is no single learning time in the non-aligned setting. Table~\ref{tab:na-times} collects the time scales derived above, for whitened blocks. They call for separate observables: amplitudes $\sigma_i$, or the diagonal of the coupling matrix (Definition~\ref{def:coupling}), for acquisition; overlaps of singular subspaces for alignment, followed as blocks near degeneracies (Remark~\ref{rem:degenerate}); the signals $\Theta_{ii}$; and the off-diagonal of the coupling matrix for the pairing. The decomposition of the error in Proposition~\ref{prop:error-decomposition} separates these contributions.
+
+\begin{table}[tbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.19\textwidth}p{0.27\textwidth}p{0.29\textwidth}p{0.13\textwidth}}
+\hline
+\raggedright Time & \raggedright Setting & \raggedright Expression & \raggedright Status \tabularnewline
+\hline
+\raggedright Escape from the origin & \raggedright rank-one channel, $\alpha_1\neq0$ & \raggedright $I/s(0)+O(1)$, $I=\int_0^\infty Z^{-1/2}\in\big[1/\sigma^\star_1,\,1/(\sigma^\star_1|\alpha_1|)\big]$ & \raggedright leading asymptotic \tabularnewline
+\raggedright Escape from a random start & \raggedright rank-one channel; fixed rank and gap, $d\to\infty$ & \raggedright $(\log(1/\alpha_1^2)+O(1))/(2\sigma^\star_1s(0))$ & \raggedright in probability \tabularnewline
+\raggedright Alignment up to $\varepsilon$ & \raggedright rank-one channel & \raggedright $t(\tau_\varepsilon)$, with $w_1(\tau_\varepsilon)=1-\varepsilon$ & \raggedright exact \tabularnewline
+\raggedright Amplification after alignment & \raggedright rank-one channel, $s(0)\to0$ & \raggedright $c_\varepsilon/(\sigma^\star_1s_{\rm align})$, $1\le c_\varepsilon\le(1-\varepsilon)^{-1/2}$ & \raggedright leading asymptotic \tabularnewline
+\raggedright Plateau after $r$ modes & \raggedright separated amplitudes, relaxed active modes, slowly varying $Y_r$ & \raggedright $I(Y_r)/s_{r+1}$ & \raggedright approximation \tabularnewline
+\raggedright Escape from a strict saddle & \raggedright learned mode $i$ weaker than an unlearned mode $j$ & \raggedright $\lambda_{ij}^{-1}\log(1/\delta)$, $\lambda_{ij}=\sigma^{\star1/3}_i(\sigma^\star_j-\sigma^\star_i)$ & \raggedright linearization \tabularnewline
+\raggedright Swap of mispaired modes & \raggedright amplitudes ordered oppositely to the teacher & \raggedright $\log(1/\delta)\,(\sigma_i-\sigma_j)/\big(\kappa_{ij}(\sigma^\star_j-\sigma^\star_i)\big)$ & \raggedright linearization \tabularnewline
+\raggedright Convergence & \raggedright near the optimum, transverse blocks & \raggedright $\log(1/\varepsilon)/(3\sigma^{\star4/3}_i)$, $\log(1/\varepsilon)/\kappa^\star_{ij}$; algebraic in the null block & \raggedright linearization \tabularnewline
+\raggedright Alignment, deeper trees & \raggedright rank-one channel and teacher, equal overlaps, $m\ge3$ groups & \raggedright $\tau_{\rm align}\approx d_g^{(m-2)/2}/((m-2)\sigma^\star)$ & \raggedright leading asymptotic \tabularnewline
+\hline
+\end{tabular}
+\caption{Time scales of the balanced dynamics without alignment, for whitened blocks; $\delta$ is the size of the initial perturbation along the unstable direction. ``Exact'' and ``leading asymptotic'' refer to Proposition~\ref{prop:na-rank-one}, Corollary~\ref{cor:na-escape} and Section~\ref{sec:na-trees}; ``linearization'' to Proposition~\ref{prop:na-saddles} and Section~\ref{sec:na-near-aligned}; ``approximation'' to the deflated normal form of Section~\ref{sec:na-plateaus}, which is not proved.}
+\label{tab:na-times}
+\end{table}
 
 %======================================================================
 \section{How to compare TTNs and DNNs}\label{sec:compare}
@@ -2392,6 +2596,11 @@ G.~Alain and Y.~Bengio.
 \newblock Understanding intermediate layers using linear classifier probes.
 \newblock arXiv:1610.01644, 2016.
 
+\bibitem[Anandkumar et~al.(2014)]{anandkumar2014tensor}
+A.~Anandkumar, R.~Ge, D.~Hsu, S.~M. Kakade, and M.~Telgarsky.
+\newblock Tensor decompositions for learning latent variable models.
+\newblock \emph{Journal of Machine Learning Research}, 15:2773--2832, 2014.
+
 \bibitem[Arora et~al.(2018)]{arora2018optimization}
 S.~Arora, N.~Cohen, and E.~Hazan.
 \newblock On the optimization of deep networks: implicit acceleration by overparameterization.
@@ -2427,6 +2636,11 @@ B.~Bordelon, A.~Atanasov, and C.~Pehlevan.
 \newblock A dynamical model of neural scaling laws.
 \newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 235, 2024.
 
+\bibitem[Braun et~al.(2022)]{braun2022exact}
+L.~Braun, C.~C.~J. Domin\'e, J.~E. Fitzgerald, and A.~M. Saxe.
+\newblock Exact learning dynamics of deep linear networks with prior knowledge.
+\newblock In \emph{Advances in Neural Information Processing Systems}, volume~35, 2022.
+
 \bibitem[Cagnetta et~al.(2024)]{cagnetta2024deep}
 F.~Cagnetta, L.~Petrini, U.~M. Tomasini, A.~Favero, and M.~Wyart.
 \newblock How deep neural networks learn compositional data: the random hierarchy model.
@@ -2457,10 +2671,15 @@ C.~Davis and W.~M. Kahan.
 \newblock The rotation of eigenvectors by a perturbation.~{III}.
 \newblock \emph{SIAM Journal on Numerical Analysis}, 7(1):1--46, 1970.
 
-\bibitem[De~Lathauwer et~al.(2000)]{delathauwer2000multilinear}
+\bibitem[De~Lathauwer et~al.(2000a)]{delathauwer2000multilinear}
 L.~De~Lathauwer, B.~De~Moor, and J.~Vandewalle.
 \newblock A multilinear singular value decomposition.
 \newblock \emph{SIAM Journal on Matrix Analysis and Applications}, 21(4):1253--1278, 2000.
+
+\bibitem[De~Lathauwer et~al.(2000b)]{delathauwer2000best}
+L.~De~Lathauwer, B.~De~Moor, and J.~Vandewalle.
+\newblock On the best rank-1 and rank-$(R_1,R_2,\dots,R_N)$ approximation of higher-order tensors.
+\newblock \emph{SIAM Journal on Matrix Analysis and Applications}, 21(4):1324--1342, 2000.
 
 \bibitem[de~Silva and Lim(2008)]{desilva2008tensor}
 V.~de~Silva and L.-H. Lim.
@@ -2662,6 +2881,11 @@ R.~O'Donnell.
 \newblock \emph{Analysis of Boolean Functions}.
 \newblock Cambridge University Press, 2014.
 
+\bibitem[Oja(1982)]{oja1982simplified}
+E.~Oja.
+\newblock Simplified neuron model as a principal component analyzer.
+\newblock \emph{Journal of Mathematical Biology}, 15(3):267--273, 1982.
+
 \bibitem[Oseledets(2011)]{oseledets2011tensor}
 I.~V. Oseledets.
 \newblock Tensor-train decomposition.
@@ -2766,6 +2990,11 @@ P.-{\AA}. Wedin.
 B.~Woodworth, S.~Gunasekar, J.~D. Lee, E.~Moroshko, P.~Savarese, I.~Golan, D.~Soudry, and N.~Srebro.
 \newblock Kernel and rich regimes in overparametrized models.
 \newblock In \emph{Conference on Learning Theory (COLT)}, PMLR 125, 2020.
+
+\bibitem[Yan et~al.(1994)]{yan1994global}
+W.-Y. Yan, U.~Helmke, and J.~B. Moore.
+\newblock Global analysis of {O}ja's flow for neural networks.
+\newblock \emph{IEEE Transactions on Neural Networks}, 5(5):674--683, 1994.
 
 \bibitem[Yang and Hu(2021)]{yang2021tensor}
 G.~Yang and E.~J. Hu.

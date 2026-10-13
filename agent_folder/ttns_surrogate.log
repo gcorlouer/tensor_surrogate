@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  12 OCT 2026 19:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  13 OCT 2026 12:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -834,12 +834,8 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [57]
 
 [58]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1906.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
 
-[59{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+[59]
 
 [60]
 
@@ -858,8 +854,12 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 [67]
 
 [68]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2110.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
 
-[69]
+[69{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 
 [70]
 
@@ -887,27 +887,47 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 [82]
 
-[83] (./ttns_surrogate.aux)
+[83]
+
+[84]
+
+[85]
+
+[86]
+
+[87]
+
+[88]
+
+[89]
+
+[90]
+
+[91]
+
+[92]
+
+[93] (./ttns_surrogate.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `ttns_surrogate.out' has not changed.
-(rerunfilecheck)             Checksum: E9810522F4D39A0EA1AB79B8B9A6D7B0;10574.
+(rerunfilecheck)             Checksum: 10654E8C9042CDDB39EB0B358505EEE8;12889.
  ) 
 Here is how much of TeX's memory you used:
- 26743 strings out of 473190
- 486004 string characters out of 5715801
- 904745 words of memory out of 5000000
- 48466 multiletter control sequences out of 15000+600000
- 683600 words of font info for 346 fonts, out of 8000000 for 9000
+ 26862 strings out of 473190
+ 487777 string characters out of 5715801
+ 909249 words of memory out of 5000000
+ 48521 multiletter control sequences out of 15000+600000
+ 684032 words of font info for 351 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 102i,15n,107p,3206b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,16n,107p,3206b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ttns_surrogate.pdf (83 pages, 949245 bytes).
+Output written on ttns_surrogate.pdf (93 pages, 1021230 bytes).
 PDF statistics:
- 2333 PDF objects out of 2487 (max. 8388607)
- 2159 compressed objects within 22 object streams
- 608 named destinations out of 1000 (max. 500000)
- 63869 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 2572 PDF objects out of 2984 (max. 8388607)
+ 2380 compressed objects within 24 object streams
+ 662 named destinations out of 1000 (max. 500000)
+ 63941 words of extra memory for PDF output out of 74296 (max. 10000000)
 

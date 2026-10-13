@@ -2,13 +2,12 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
 \citation{saxe2014exact}
 \citation{saxe2019mathematical}
 \citation{jacot2021saddle,pesme2023saddle}
 \citation{zhang2026saddle}
 \citation{du2018power,sarao2020optimization}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Why training dynamics?}{2}{section*.2}\protected@file@percent }
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{cohen2016expressive}
@@ -19,28 +18,28 @@
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
 \citation{hfl_review}
+\@writefile{toc}{\contentsline {paragraph}{Why training dynamics?}{3}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Why tensor networks?}{3}{section*.3}\protected@file@percent }
 \newlabel{def:acceleration}{{1.1}{3}{Hard and soft acceleration; after {\citealp [Definition~3.1]{hfl_diagonal}}}{theorem.1.1}{}}
-\citation{hfl_surrogate}
 \@writefile{toc}{\contentsline {paragraph}{Two hypotheses.}{4}{section*.4}\protected@file@percent }
 \newlabel{eq:acquisition}{{1.1}{4}{Two hypotheses}{equation.1.1}{}}
 \newlabel{hyp:global}{{1.2}{4}{Global surrogate}{theorem.1.2}{}}
-\newlabel{hyp:local}{{1.3}{4}{Local surrogate}{theorem.1.3}{}}
+\citation{hfl_surrogate}
 \citation{jacot2018neural}
 \citation{hfl_surrogate}
 \citation{furman2026benign}
 \citation{kolda2009tensor}
 \citation{hackbusch2012tensor}
 \citation{lim2021tensors}
+\newlabel{hyp:local}{{1.3}{5}{Local surrogate}{theorem.1.3}{}}
 \newlabel{rem:kernel}{{1.4}{5}{Comparing different parameterizations}{theorem.1.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Outline.}{5}{section*.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Theoretical background}{5}{section.2}\protected@file@percent }
 \newlabel{sec:background}{{2}{5}{Theoretical background}{section.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{5}{subsection.2.1}\protected@file@percent }
-\newlabel{sec:tensors}{{2.1}{5}{Tensors, multilinear maps and matricizations}{subsection.2.1}{}}
 \citation{furman2026benign}
 \citation{kolda2009tensor}
-\citation{furman2026benign}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Tensors, multilinear maps and matricizations}{6}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:tensors}{{2.1}{6}{Tensors, multilinear maps and matricizations}{subsection.2.1}{}}
 \newlabel{prop:tensor-map}{{2.3}{6}{Tensors as multilinear maps; {\citealp [Proposition~A.1]{furman2026benign}}}{theorem.2.3}{}}
 \newlabel{eq:tensor-map}{{2.1}{6}{Tensors as multilinear maps; {\citealp [Proposition~A.1]{furman2026benign}}}{equation.2.1}{}}
 \newlabel{ex:bilinear}{{2.4}{6}{}{theorem.2.4}{}}
@@ -48,47 +47,47 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Tensor networks and tree tensor networks}{6}{subsection.2.2}\protected@file@percent }
 \newlabel{sec:tn}{{2.2}{6}{Tensor networks and tree tensor networks}{subsection.2.2}{}}
 \newlabel{def:tn}{{2.6}{6}{Tensor network}{theorem.2.6}{}}
-\newlabel{eq:contraction}{{2.2}{6}{Tensor network}{equation.2.2}{}}
+\citation{furman2026benign}
 \citation{furman2026benign}
 \citation{hackbusch2009new,grasedyck2010hierarchical}
 \citation{oseledets2011tensor}
 \citation{shi2006classical}
 \citation{stoudenmire2016supervised}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$.}}{7}{figure.1}\protected@file@percent }
-\newlabel{fig:ttn}{{1}{7}{Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$}{figure.1}{}}
+\newlabel{eq:contraction}{{2.2}{7}{Tensor network}{equation.2.2}{}}
 \newlabel{def:ttn}{{2.7}{7}{Tree tensor network}{theorem.2.7}{}}
 \newlabel{eq:ttn-model}{{2.3}{7}{Tensor networks and tree tensor networks}{equation.2.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{7}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:cuts}{{2.3}{7}{Edge cuts, bond dimensions and hierarchical ranks}{subsection.2.3}{}}
+\newlabel{lem:cut}{{2.8}{7}{Edge cuts}{theorem.2.8}{}}
 \citation{grasedyck2011introduction}
 \citation{furman2026benign}
 \citation{furman2026benign}
-\citation{landsberg2012geometry}
-\citation{furman2026benign}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Edge cuts, bond dimensions and hierarchical ranks}{8}{subsection.2.3}\protected@file@percent }
-\newlabel{sec:cuts}{{2.3}{8}{Edge cuts, bond dimensions and hierarchical ranks}{subsection.2.3}{}}
-\newlabel{lem:cut}{{2.8}{8}{Edge cuts}{theorem.2.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$.}}{8}{figure.1}\protected@file@percent }
+\newlabel{fig:ttn}{{1}{8}{Examples of tree tensor networks. Circles are cores, lines between circles are bonds, and dangling lines are open legs. (a) A chain is a deep linear network. (b) A star is a Tucker decomposition. (c) In a tree, cutting the bond $e$ splits the open legs into $A_e=\{1,2\}$ and its complement; the corresponding matricization factors through the bond, $M_e=F_eH_e^\top $ (Lemma~\ref {lem:cut}), so its rank is at most the bond dimension $D_e$}{figure.1}{}}
 \newlabel{def:hrank}{{2.9}{8}{Bond dimension and hierarchical rank}{theorem.2.9}{}}
 \newlabel{prop:realizability}{{2.10}{8}{Realizability; {\citealp {grasedyck2011introduction}}; {\citealp [Proposition~B.1]{furman2026benign}}}{theorem.2.10}{}}
-\newlabel{rem:trees}{{2.11}{8}{Why trees: canonical matricizations}{theorem.2.11}{}}
+\citation{landsberg2012geometry}
+\citation{furman2026benign}
 \citation{hackbusch2012tensor}
 \citation{uschmajew2013geometry}
 \citation{grasedyck2010hierarchical}
+\newlabel{rem:trees}{{2.11}{9}{Why trees: canonical matricizations}{theorem.2.11}{}}
 \newlabel{prop:gauge}{{2.12}{9}{Gauge freedom}{theorem.2.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}The hierarchical singular value decomposition}{9}{subsection.2.4}\protected@file@percent }
 \newlabel{sec:hsvd}{{2.4}{9}{The hierarchical singular value decomposition}{subsection.2.4}{}}
 \newlabel{def:hsvd}{{2.13}{9}{SVD at a bond; hierarchical SVD}{theorem.2.13}{}}
 \newlabel{eq:schmidt-tensor}{{2.4}{9}{SVD at a bond; hierarchical SVD}{equation.2.4}{}}
-\newlabel{prop:nested}{{2.14}{9}{Nestedness; the HSVD is a TTN}{theorem.2.14}{}}
-\newlabel{eq:nested}{{2.5}{9}{Nestedness; the HSVD is a TTN}{equation.2.5}{}}
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{grasedyck2010hierarchical}
 \citation{eckart1936approximation}
 \citation{grasedyck2010hierarchical}
-\citation{davis1970rotation,wedin1972perturbation}
-\citation{kolda2009tensor,lim2021tensors}
+\newlabel{prop:nested}{{2.14}{10}{Nestedness; the HSVD is a TTN}{theorem.2.14}{}}
+\newlabel{eq:nested}{{2.5}{10}{Nestedness; the HSVD is a TTN}{equation.2.5}{}}
 \newlabel{rem:hsvd-canonical}{{2.15}{10}{Canonical and gauge invariant}{theorem.2.15}{}}
 \newlabel{prop:truncation}{{2.16}{10}{Truncation; {\citealp {grasedyck2010hierarchical}}}{theorem.2.16}{}}
-\newlabel{rem:stability}{{2.17}{10}{Stability}{theorem.2.17}{}}
+\citation{davis1970rotation,wedin1972perturbation}
+\citation{kolda2009tensor,lim2021tensors}
 \citation{hitchcock1927expression}
 \citation{hastad1990tensor,hillar2013most}
 \citation{desilva2008tensor}
@@ -100,10 +99,11 @@
 \citation{furman2026benign}
 \citation{furman2026benign}
 \citation{furman2026benign}
+\newlabel{rem:stability}{{2.17}{11}{Stability}{theorem.2.17}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Notions of rank}{11}{subsection.2.5}\protected@file@percent }
 \newlabel{sec:ranks}{{2.5}{11}{Notions of rank}{subsection.2.5}{}}
 \newlabel{prop:rank-comparison}{{2.20}{11}{Comparison of ranks}{theorem.2.20}{}}
-\newlabel{rem:rank-critical}{{2.21}{11}{Ranks and critical points}{theorem.2.21}{}}
+\newlabel{rem:rank-critical}{{2.21}{12}{Ranks and critical points}{theorem.2.21}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Deep polynomial networks as tree tensor networks}{12}{subsection.2.6}\protected@file@percent }
 \newlabel{sec:dpn}{{2.6}{12}{Deep polynomial networks as tree tensor networks}{subsection.2.6}{}}
 \newlabel{def:dpn}{{2.22}{12}{Deep polynomial network}{theorem.2.22}{}}
@@ -111,108 +111,108 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.1}Monomial activations: tied TTNs on copies of the input}{12}{subsubsection.2.6.1}\protected@file@percent }
 \newlabel{prop:monomial-layer}{{2.23}{12}{A monomial layer is one TTN vertex}{theorem.2.23}{}}
 \newlabel{eq:quadratic-layer}{{2.7}{12}{A monomial layer is one TTN vertex}{equation.2.7}{}}
-\newlabel{prop:dmn}{{2.24}{12}{DMNs are tied TTNs}{theorem.2.24}{}}
 \citation{pearce2024bilinear}
 \citation{dooms2025compositionality}
 \citation{furman2026benign}
+\newlabel{prop:dmn}{{2.24}{13}{DMNs are tied TTNs}{theorem.2.24}{}}
 \newlabel{rem:copies}{{2.25}{13}{Copies, not copying}{theorem.2.25}{}}
 \newlabel{rem:symmetries}{{2.26}{13}{Hidden-unit symmetries are gauge transformations}{theorem.2.26}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}General polynomial activations: homogenization}{13}{subsubsection.2.6.2}\protected@file@percent }
-\newlabel{lem:polarization}{{2.28}{13}{Polarization}{theorem.2.28}{}}
 \citation{hfl_local}
 \citation{hfl_local}
 \citation{hfl_surrogate}
+\newlabel{lem:polarization}{{2.28}{14}{Polarization}{theorem.2.28}{}}
 \newlabel{prop:layer-core}{{2.29}{14}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{theorem.2.29}{}}
 \newlabel{eq:Ar}{{2.8}{14}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.8}{}}
 \newlabel{eq:G}{{2.9}{14}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.9}{}}
 \newlabel{eq:diag-identity}{{2.10}{14}{A polynomial layer is one TTN vertex; {\citealp [Section~3]{hfl_local}}}{equation.2.10}{}}
 \newlabel{thm:dpn-ttn}{{2.30}{14}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{theorem.2.30}{}}
-\newlabel{eq:dpn-ttn}{{2.11}{14}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{equation.2.11}{}}
 \citation{hfl_local}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The order-two surrogate of a network with two hidden layers, as a weight-tied binary TTN (Theorem~\ref {thm:dpn-ttn} and Example~\ref {ex:quadratic}, $K=L=2$). Both lower vertices carry the same core $G_1$; the $N=4$ open legs all receive the augmented input $\bar  x=(1,x)\in H_0$; the bonds carry augmented hidden states $\bar  h_1\in H_1=\mathbb  {R}\oplus \mathbb  {R}^{d_1}$; and the root carries $\bar  c^\top G_2$, i.e.\ its output is contracted with $\bar  c=(b_{\mathrm  {out}},c)$. The cut shown defines $M_e$ with $A_e=\{1,2\}$; the other bond of height one gives the complementary bipartition and the same singular values (Proposition~\ref {prop:per-layer}).}}{15}{figure.2}\protected@file@percent }
 \newlabel{fig:quadratic}{{2}{15}{The order-two surrogate of a network with two hidden layers, as a weight-tied binary TTN (Theorem~\ref {thm:dpn-ttn} and Example~\ref {ex:quadratic}, $K=L=2$). Both lower vertices carry the same core $G_1$; the $N=4$ open legs all receive the augmented input $\bar x=(1,x)\in H_0$; the bonds carry augmented hidden states $\bar h_1\in H_1=\R \oplus \R ^{d_1}$; and the root carries $\bar c^\top G_2$, i.e.\ its output is contracted with $\bar c=(b_{\mathrm {out}},c)$. The cut shown defines $M_e$ with $A_e=\{1,2\}$; the other bond of height one gives the complementary bipartition and the same singular values (Proposition~\ref {prop:per-layer})}{figure.2}{}}
+\newlabel{eq:dpn-ttn}{{2.11}{15}{Exact tied-TTN representation of a DPN; {\citealp [Proposition~1]{hfl_local}}; {\citealp [Proposition~1]{hfl_surrogate}}}{equation.2.11}{}}
 \newlabel{rem:qualifications}{{2.31}{15}{What the representation is, and is not}{theorem.2.31}{}}
-\newlabel{ex:quadratic}{{2.32}{15}{Two layers, quadratic activations; {\citealp [Section~4]{hfl_local}}}{theorem.2.32}{}}
+\newlabel{ex:quadratic}{{2.32}{16}{Two layers, quadratic activations; {\citealp [Section~4]{hfl_local}}}{theorem.2.32}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.3}Hierarchical features and learning capacity}{16}{subsubsection.2.6.3}\protected@file@percent }
 \newlabel{sec:features}{{2.6.3}{16}{Hierarchical features and learning capacity}{subsubsection.2.6.3}{}}
 \newlabel{prop:per-layer}{{2.33}{16}{One SVD per layer}{theorem.2.33}{}}
 \newlabel{def:features}{{2.34}{16}{Hierarchical features}{theorem.2.34}{}}
 \newlabel{prop:features}{{2.35}{16}{What hierarchical features are}{theorem.2.35}{}}
-\newlabel{def:capacity}{{2.36}{16}{Learning capacity}{theorem.2.36}{}}
 \citation{holtz2012manifolds,uschmajew2013geometry}
 \citation{hfl_diagonal}
 \citation{roy2007effective}
 \citation{hfl_local}
 \citation{hfl_surrogate}
-\citation{hfl_local}
+\newlabel{def:capacity}{{2.36}{17}{Learning capacity}{theorem.2.36}{}}
 \newlabel{q:capacity}{{2.37}{17}{A global notion of learning capacity}{theorem.2.37}{}}
 \newlabel{rem:capacity-candidates}{{2.38}{17}{Some candidates}{theorem.2.38}{}}
 \newlabel{rem:which-tensor}{{2.39}{17}{Which tensor carries the features?}{theorem.2.39}{}}
+\citation{hfl_local}
 \citation{power2022grokking}
 \citation{nanda2023progress}
-\citation{gromov2023grokking}
 \newlabel{ex:same-function}{{2.40}{18}{Same function, different hierarchical ranks}{theorem.2.40}{}}
 \newlabel{q:interpretability}{{2.41}{18}{Interpretability}{theorem.2.41}{}}
 \newlabel{ex:modular}{{2.42}{18}{Modular addition}{theorem.2.42}{}}
+\citation{gromov2023grokking}
 \citation{hfl_local}
 \citation{bai2020taylorized}
-\citation{hfl_local}
-\citation{morala2025nn2poly}
-\citation{bai2020taylorized}
-\citation{huang2020dynamics}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7}Surrogate model of a deep neural network}{19}{subsection.2.7}\protected@file@percent }
 \newlabel{sec:surrogate}{{2.7}{19}{Surrogate model of a deep neural network}{subsection.2.7}{}}
 \newlabel{def:taylor-surrogate}{{2.43}{19}{Layerwise Taylor surrogate; {\citealp [Section~2.2]{hfl_local}}}{theorem.2.43}{}}
 \newlabel{def:ttn-surrogate}{{2.44}{19}{TTN surrogate}{theorem.2.44}{}}
 \newlabel{rem:surrogate-def}{{2.45}{19}{On the definition}{theorem.2.45}{}}
 \citation{hfl_local}
+\citation{morala2025nn2poly}
+\citation{bai2020taylorized}
+\citation{huang2020dynamics}
 \citation{hfl_local}
+\citation{hfl_local}
+\newlabel{lem:taylor}{{2.46}{20}{Taylor remainders}{theorem.2.46}{}}
+\newlabel{prop:defect}{{2.47}{20}{Loss-gradient defect; {\citealp [Proposition~2]{hfl_local}}}{theorem.2.47}{}}
 \citation{hfl_local}
 \citation{hfl_local}
 \citation{hfl_surrogate}
-\newlabel{lem:taylor}{{2.46}{20}{Taylor remainders}{theorem.2.46}{}}
-\newlabel{prop:defect}{{2.47}{20}{Loss-gradient defect; {\citealp [Proposition~2]{hfl_local}}}{theorem.2.47}{}}
-\newlabel{prop:gronwall}{{2.48}{20}{Trajectory comparison; {\citealp [Section~6]{hfl_local}}}{theorem.2.48}{}}
 \citation{hfl_surrogate}
 \citation{saxe2014exact}
 \citation{hfl_local}
 \citation{hfl_surrogate}
+\newlabel{prop:gronwall}{{2.48}{21}{Trajectory comparison; {\citealp [Section~6]{hfl_local}}}{theorem.2.48}{}}
 \newlabel{rem:floor}{{2.49}{21}{Fixed centres have an error floor}{theorem.2.49}{}}
 \newlabel{prop:sv-dynamics}{{2.50}{21}{Dynamics of hierarchical singular values}{theorem.2.50}{}}
-\@writefile{toc}{\contentsline {paragraph}{A more direct approach: polynomial activations.}{21}{section*.6}\protected@file@percent }
-\newlabel{def:poly-proxy}{{2.51}{21}{Polynomial-activation proxy}{theorem.2.51}{}}
 \citation{hfl_surrogate}
 \citation{hfl_surrogate}
 \citation{pearce2024bilinear}
+\@writefile{toc}{\contentsline {paragraph}{A more direct approach: polynomial activations.}{22}{section*.6}\protected@file@percent }
+\newlabel{def:poly-proxy}{{2.51}{22}{Polynomial-activation proxy}{theorem.2.51}{}}
 \newlabel{rem:algebraic-dynamic}{{2.52}{22}{Algebraic equivalence is not dynamical equivalence}{theorem.2.52}{}}
 \newlabel{rem:degree}{{2.53}{22}{Choosing the degree}{theorem.2.53}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Training dynamics of TTNs}{22}{section.3}\protected@file@percent }
-\newlabel{sec:ttn-dynamics}{{3}{22}{Training dynamics of TTNs}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}A four-leaf, depth-two teacher--student model}{22}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:d2-setup}{{3.1}{22}{A four-leaf, depth-two teacher--student model}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Student.}{22}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Training dynamics of TTNs}{23}{section.3}\protected@file@percent }
+\newlabel{sec:ttn-dynamics}{{3}{23}{Training dynamics of TTNs}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}A four-leaf, depth-two teacher--student model}{23}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:d2-setup}{{3.1}{23}{A four-leaf, depth-two teacher--student model}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Student.}{23}{section*.7}\protected@file@percent }
 \newlabel{eq:d2-hL}{{3.1}{23}{Student}{equation.3.1}{}}
 \newlabel{eq:d2-hR}{{3.2}{23}{Student}{equation.3.2}{}}
 \newlabel{eq:d2-output-index}{{3.3}{23}{Student}{equation.3.3}{}}
 \newlabel{eq:d2-coefficient-tensor}{{3.4}{23}{Student}{equation.3.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Matrix form.}{23}{section*.8}\protected@file@percent }
-\newlabel{eq:d2-matrix-forward}{{3.5}{23}{Matrix form}{equation.3.5}{}}
-\newlabel{eq:d2-matricization}{{3.6}{23}{Matrix form}{equation.3.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Teacher and loss.}{23}{section*.9}\protected@file@percent }
-\newlabel{eq:d2-errors}{{3.7}{23}{Teacher and loss}{equation.3.7}{}}
 \citation{saxe2014exact}
+\newlabel{eq:d2-matrix-forward}{{3.5}{24}{Matrix form}{equation.3.5}{}}
+\newlabel{eq:d2-matricization}{{3.6}{24}{Matrix form}{equation.3.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Teacher and loss.}{24}{section*.9}\protected@file@percent }
+\newlabel{eq:d2-errors}{{3.7}{24}{Teacher and loss}{equation.3.7}{}}
 \newlabel{eq:d2-loss-def}{{3.8}{24}{Teacher and loss}{equation.3.8}{}}
 \newlabel{rem:d2-parameterization}{{3.1}{24}{Parameterization}{theorem.3.1}{}}
 \newlabel{rem:d2-one-cut}{{3.2}{24}{One cut, three factors}{theorem.3.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Independent whitened inputs}{24}{subsection.3.2}\protected@file@percent }
 \newlabel{sec:d2-white}{{3.2}{24}{Independent whitened inputs}{subsection.3.2}{}}
 \newlabel{eq:d2-white-assumption}{{3.9}{24}{Independent whitened inputs}{equation.3.9}{}}
-\newlabel{eq:d2-z-white}{{3.10}{24}{Independent whitened inputs}{equation.3.10}{}}
-\newlabel{eq:d2-w-white}{{3.11}{24}{Independent whitened inputs}{equation.3.11}{}}
-\newlabel{prop:d2-white-flow}{{3.3}{24}{Whitened population loss and gradient flow}{theorem.3.3}{}}
-\newlabel{eq:d2-white-loss}{{3.12}{24}{Whitened population loss and gradient flow}{equation.3.12}{}}
-\newlabel{eq:d2-white-gradients}{{3.13}{24}{Whitened population loss and gradient flow}{equation.3.13}{}}
-\newlabel{eq:d2-white-flow}{{3.14}{24}{Whitened population loss and gradient flow}{equation.3.14}{}}
+\newlabel{eq:d2-z-white}{{3.10}{25}{Independent whitened inputs}{equation.3.10}{}}
+\newlabel{eq:d2-w-white}{{3.11}{25}{Independent whitened inputs}{equation.3.11}{}}
+\newlabel{prop:d2-white-flow}{{3.3}{25}{Whitened population loss and gradient flow}{theorem.3.3}{}}
+\newlabel{eq:d2-white-loss}{{3.12}{25}{Whitened population loss and gradient flow}{equation.3.12}{}}
+\newlabel{eq:d2-white-gradients}{{3.13}{25}{Whitened population loss and gradient flow}{equation.3.13}{}}
+\newlabel{eq:d2-white-flow}{{3.14}{25}{Whitened population loss and gradient flow}{equation.3.14}{}}
 \newlabel{eq:d2-white-loss-derivation}{{3.15}{25}{Independent whitened inputs}{equation.3.15}{}}
 \newlabel{eq:d2-A-directional}{{3.16}{25}{Independent whitened inputs}{equation.3.16}{}}
 \newlabel{eq:d2-A-gradient-residual}{{3.17}{25}{Independent whitened inputs}{equation.3.17}{}}
@@ -221,12 +221,12 @@
 \newlabel{eq:d2-C-directional}{{3.20}{25}{Independent whitened inputs}{equation.3.20}{}}
 \newlabel{eq:d2-B-gradient}{{3.21}{25}{Independent whitened inputs}{equation.3.21}{}}
 \newlabel{eq:d2-C-gradient}{{3.22}{25}{Independent whitened inputs}{equation.3.22}{}}
-\@writefile{toc}{\contentsline {paragraph}{Index form.}{25}{section*.10}\protected@file@percent }
-\newlabel{eq:d2-index-error}{{3.23}{25}{Index form}{equation.3.23}{}}
-\newlabel{eq:d2-index-grad-A}{{3.24}{25}{Index form}{equation.3.24}{}}
-\newlabel{eq:d2-index-grad-B}{{3.25}{25}{Index form}{equation.3.25}{}}
-\newlabel{eq:d2-index-grad-C}{{3.26}{25}{Index form}{equation.3.26}{}}
-\newlabel{eq:d2-index-flow}{{3.27}{25}{Index form}{equation.3.27}{}}
+\@writefile{toc}{\contentsline {paragraph}{Index form.}{26}{section*.10}\protected@file@percent }
+\newlabel{eq:d2-index-error}{{3.23}{26}{Index form}{equation.3.23}{}}
+\newlabel{eq:d2-index-grad-A}{{3.24}{26}{Index form}{equation.3.24}{}}
+\newlabel{eq:d2-index-grad-B}{{3.25}{26}{Index form}{equation.3.25}{}}
+\newlabel{eq:d2-index-grad-C}{{3.26}{26}{Index form}{equation.3.26}{}}
+\newlabel{eq:d2-index-flow}{{3.27}{26}{Index form}{equation.3.27}{}}
 \@writefile{toc}{\contentsline {paragraph}{Differential derivation.}{26}{section*.11}\protected@file@percent }
 \newlabel{eq:d2-differential-proof}{{3.28}{26}{Differential derivation}{equation.3.28}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Independent, non-whitened inputs}{26}{subsection.3.3}\protected@file@percent }
@@ -235,267 +235,316 @@
 \newlabel{eq:d2-gram-LR}{{3.30}{26}{Independent, non-whitened inputs}{equation.3.30}{}}
 \newlabel{prop:d2-nonwhite-flow}{{3.4}{26}{Data-weighted loss and gradient flow}{theorem.3.4}{}}
 \newlabel{eq:d2-nonwhite-loss}{{3.31}{26}{Data-weighted loss and gradient flow}{equation.3.31}{}}
-\newlabel{eq:d2-coeff-gradient-nonwhite}{{3.32}{26}{Data-weighted loss and gradient flow}{equation.3.32}{}}
-\newlabel{eq:d2-nonwhite-gradients}{{3.33}{26}{Data-weighted loss and gradient flow}{equation.3.33}{}}
-\newlabel{eq:d2-weighted-error}{{3.34}{26}{Data-weighted loss and gradient flow}{equation.3.34}{}}
-\newlabel{eq:d2-nonwhite-flow}{{3.35}{26}{Data-weighted loss and gradient flow}{equation.3.35}{}}
-\newlabel{eq:d2-nonwhite-loss-derivation}{{3.36}{26}{Independent, non-whitened inputs}{equation.3.36}{}}
-\newlabel{eq:d2-residual-nonwhite}{{3.37}{26}{Independent, non-whitened inputs}{equation.3.37}{}}
+\newlabel{eq:d2-coeff-gradient-nonwhite}{{3.32}{27}{Data-weighted loss and gradient flow}{equation.3.32}{}}
+\newlabel{eq:d2-nonwhite-gradients}{{3.33}{27}{Data-weighted loss and gradient flow}{equation.3.33}{}}
+\newlabel{eq:d2-weighted-error}{{3.34}{27}{Data-weighted loss and gradient flow}{equation.3.34}{}}
+\newlabel{eq:d2-nonwhite-flow}{{3.35}{27}{Data-weighted loss and gradient flow}{equation.3.35}{}}
+\newlabel{eq:d2-nonwhite-loss-derivation}{{3.36}{27}{Independent, non-whitened inputs}{equation.3.36}{}}
+\newlabel{eq:d2-residual-nonwhite}{{3.37}{27}{Independent, non-whitened inputs}{equation.3.37}{}}
 \@writefile{toc}{\contentsline {paragraph}{Index form.}{27}{section*.12}\protected@file@percent }
 \newlabel{eq:d2-weighted-index-error}{{3.38}{27}{Index form}{equation.3.38}{}}
 \newlabel{rem:d2-whitened-coordinates}{{3.5}{27}{Whitened analysis coordinates versus parameter dynamics}{theorem.3.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}A compact residual-moment formulation}{27}{subsection.3.4}\protected@file@percent }
-\newlabel{sec:d2-compact}{{3.4}{27}{A compact residual-moment formulation}{subsection.3.4}{}}
-\newlabel{eq:d2-residual-moment}{{3.39}{27}{A compact residual-moment formulation}{equation.3.39}{}}
-\newlabel{eq:d2-general-coeff-gradient}{{3.40}{27}{A compact residual-moment formulation}{equation.3.40}{}}
-\newlabel{eq:d2-general-gradients}{{3.41}{27}{A compact residual-moment formulation}{equation.3.41}{}}
-\newlabel{eq:d2-three-regimes}{{3.42}{27}{A compact residual-moment formulation}{equation.3.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}A compact residual-moment formulation}{28}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:d2-compact}{{3.4}{28}{A compact residual-moment formulation}{subsection.3.4}{}}
+\newlabel{eq:d2-residual-moment}{{3.39}{28}{A compact residual-moment formulation}{equation.3.39}{}}
+\newlabel{eq:d2-general-coeff-gradient}{{3.40}{28}{A compact residual-moment formulation}{equation.3.40}{}}
+\newlabel{eq:d2-general-gradients}{{3.41}{28}{A compact residual-moment formulation}{equation.3.41}{}}
+\newlabel{eq:d2-three-regimes}{{3.42}{28}{A compact residual-moment formulation}{equation.3.42}{}}
 \@writefile{toc}{\contentsline {paragraph}{Vectorized form.}{28}{section*.13}\protected@file@percent }
 \newlabel{eq:d2-feature-gram}{{3.43}{28}{Vectorized form}{equation.3.43}{}}
 \newlabel{eq:d2-vectorized-loss}{{3.44}{28}{Vectorized form}{equation.3.44}{}}
 \newlabel{eq:d2-gamma-product}{{3.45}{28}{Vectorized form}{equation.3.45}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Differential, tangent-kernel and represented-tensor forms}{28}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:d2-operator}{{3.5}{28}{Differential, tangent-kernel and represented-tensor forms}{subsection.3.5}{}}
-\newlabel{eq:d2-DPhi}{{3.46}{28}{Differential, tangent-kernel and represented-tensor forms}{equation.3.46}{}}
-\newlabel{eq:d2-DPhi-adjoint}{{3.47}{28}{Differential, tangent-kernel and represented-tensor forms}{equation.3.47}{}}
-\newlabel{eq:d2-compact-chain-rule}{{3.48}{28}{Differential, tangent-kernel and represented-tensor forms}{equation.3.48}{}}
-\@writefile{toc}{\contentsline {paragraph}{Represented matricization.}{28}{section*.14}\protected@file@percent }
-\newlabel{eq:d2-M-flow}{{3.49}{28}{Represented matricization}{equation.3.49}{}}
-\newlabel{eq:d2-K-operator}{{3.50}{28}{Represented matricization}{equation.3.50}{}}
-\newlabel{eq:d2-K-positive}{{3.51}{28}{Represented matricization}{equation.3.51}{}}
-\newlabel{eq:d2-loss-decay}{{3.52}{28}{Represented matricization}{equation.3.52}{}}
-\citation{du2018algorithmic}
-\citation{saxe2014exact,arora2018optimization}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Differential, tangent-kernel and represented-tensor forms}{29}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:d2-operator}{{3.5}{29}{Differential, tangent-kernel and represented-tensor forms}{subsection.3.5}{}}
+\newlabel{eq:d2-DPhi}{{3.46}{29}{Differential, tangent-kernel and represented-tensor forms}{equation.3.46}{}}
+\newlabel{eq:d2-DPhi-adjoint}{{3.47}{29}{Differential, tangent-kernel and represented-tensor forms}{equation.3.47}{}}
+\newlabel{eq:d2-compact-chain-rule}{{3.48}{29}{Differential, tangent-kernel and represented-tensor forms}{equation.3.48}{}}
+\@writefile{toc}{\contentsline {paragraph}{Represented matricization.}{29}{section*.14}\protected@file@percent }
+\newlabel{eq:d2-M-flow}{{3.49}{29}{Represented matricization}{equation.3.49}{}}
+\newlabel{eq:d2-K-operator}{{3.50}{29}{Represented matricization}{equation.3.50}{}}
+\newlabel{eq:d2-K-positive}{{3.51}{29}{Represented matricization}{equation.3.51}{}}
+\newlabel{eq:d2-loss-decay}{{3.52}{29}{Represented matricization}{equation.3.52}{}}
 \@writefile{toc}{\contentsline {paragraph}{Vectorized flow.}{29}{section*.15}\protected@file@percent }
 \newlabel{eq:d2-vectorized-flow}{{3.53}{29}{Vectorized flow}{equation.3.53}{}}
 \newlabel{eq:d2-vectorized-flow-white}{{3.54}{29}{Vectorized flow}{equation.3.54}{}}
-\newlabel{prop:d2-balance}{{3.6}{29}{Balance invariants}{theorem.3.6}{}}
-\newlabel{eq:d2-balance-invariants}{{3.55}{29}{Balance invariants}{equation.3.55}{}}
-\newlabel{rem:d2-empirical}{{3.7}{29}{Empirical loss}{theorem.3.7}{}}
-\citation{arora2018optimization}
+\citation{du2018algorithmic}
+\citation{saxe2014exact,arora2018optimization}
+\newlabel{prop:d2-balance}{{3.6}{30}{Balance invariants}{theorem.3.6}{}}
+\newlabel{eq:d2-balance-invariants}{{3.55}{30}{Balance invariants}{equation.3.55}{}}
+\newlabel{rem:d2-empirical}{{3.7}{30}{Empirical loss}{theorem.3.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Gradient flow on the balanced manifold}{30}{subsection.3.6}\protected@file@percent }
 \newlabel{sec:d2-balanced}{{3.6}{30}{Gradient flow on the balanced manifold}{subsection.3.6}{}}
 \newlabel{eq:d2-balanced}{{3.56}{30}{Gradient flow on the balanced manifold}{equation.3.56}{}}
-\newlabel{lem:d2-balanced-factors}{{3.8}{30}{Balanced cores}{theorem.3.8}{}}
-\newlabel{eq:d2-balanced-factors}{{3.57}{30}{Balanced cores}{equation.3.57}{}}
-\newlabel{eq:d2-balanced-grams}{{3.58}{30}{Balanced cores}{equation.3.58}{}}
-\newlabel{prop:d2-balanced-flow}{{3.9}{30}{Closed dynamics of the represented matricization}{theorem.3.9}{}}
-\newlabel{eq:d2-balanced-K}{{3.59}{30}{Closed dynamics of the represented matricization}{equation.3.59}{}}
-\newlabel{eq:d2-balanced-M-flow}{{3.60}{30}{Closed dynamics of the represented matricization}{equation.3.60}{}}
-\newlabel{eq:d2-balanced-loss-decay}{{3.61}{30}{Closed dynamics of the represented matricization}{equation.3.61}{}}
+\citation{arora2018optimization}
+\newlabel{lem:d2-balanced-factors}{{3.8}{31}{Balanced cores}{theorem.3.8}{}}
+\newlabel{eq:d2-balanced-factors}{{3.57}{31}{Balanced cores}{equation.3.57}{}}
+\newlabel{eq:d2-balanced-grams}{{3.58}{31}{Balanced cores}{equation.3.58}{}}
+\newlabel{prop:d2-balanced-flow}{{3.9}{31}{Closed dynamics of the represented matricization}{theorem.3.9}{}}
+\newlabel{eq:d2-balanced-K}{{3.59}{31}{Closed dynamics of the represented matricization}{equation.3.59}{}}
+\newlabel{eq:d2-balanced-M-flow}{{3.60}{31}{Closed dynamics of the represented matricization}{equation.3.60}{}}
+\newlabel{eq:d2-balanced-loss-decay}{{3.61}{31}{Closed dynamics of the represented matricization}{equation.3.61}{}}
 \citation{saxe2014exact}
-\@writefile{toc}{\contentsline {paragraph}{Spectral form.}{31}{section*.16}\protected@file@percent }
-\newlabel{eq:d2-balanced-kappa}{{3.62}{31}{Spectral form}{equation.3.62}{}}
-\newlabel{eq:d2-balanced-sv}{{3.63}{31}{Spectral form}{equation.3.63}{}}
-\@writefile{toc}{\contentsline {paragraph}{Aligned modes.}{31}{section*.17}\protected@file@percent }
-\newlabel{prop:d2-aligned}{{3.10}{31}{Aligned modes}{theorem.3.10}{}}
-\newlabel{eq:d2-aligned}{{3.64}{31}{Aligned modes}{equation.3.64}{}}
-\newlabel{rem:d2-balanced-scope}{{3.11}{32}{Scope of the balanced reduction}{theorem.3.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}How to compare TTNs and DNNs}{32}{section.4}\protected@file@percent }
-\newlabel{sec:compare}{{4}{32}{How to compare TTNs and DNNs}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Spectral form.}{32}{section*.16}\protected@file@percent }
+\newlabel{eq:d2-balanced-kappa}{{3.62}{32}{Spectral form}{equation.3.62}{}}
+\newlabel{eq:d2-balanced-sv}{{3.63}{32}{Spectral form}{equation.3.63}{}}
+\@writefile{toc}{\contentsline {paragraph}{Aligned modes.}{32}{section*.17}\protected@file@percent }
+\newlabel{prop:d2-aligned}{{3.10}{32}{Aligned modes}{theorem.3.10}{}}
+\newlabel{eq:d2-aligned}{{3.64}{32}{Aligned modes}{equation.3.64}{}}
+\newlabel{rem:d2-balanced-scope}{{3.11}{33}{Scope of the balanced reduction}{theorem.3.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Balanced dynamics without alignment}{33}{section.4}\protected@file@percent }
+\newlabel{sec:nonaligned}{{4}{33}{Balanced dynamics without alignment}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Spectral form of the balanced flow}{33}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:na-spectral}{{4.1}{33}{Spectral form of the balanced flow}{subsection.4.1}{}}
+\citation{braun2022exact}
+\newlabel{prop:na-spectral}{{4.1}{34}{Spectral equations}{theorem.4.1}{}}
+\newlabel{eq:na-sv}{{4.1}{34}{Spectral equations}{equation.4.1}{}}
+\newlabel{eq:na-rotation}{{4.2}{34}{Spectral equations}{equation.4.2}{}}
+\newlabel{eq:na-out}{{4.3}{34}{Spectral equations}{equation.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Rank-one channels: an exact solution}{34}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:na-rank-one}{{4.2}{34}{Rank-one channels: an exact solution}{subsection.4.2}{}}
+\citation{oja1982simplified}
+\citation{yan1994global}
+\newlabel{prop:na-rank-one}{{4.2}{35}{Exact rank-one dynamics}{theorem.4.2}{}}
+\newlabel{eq:na-rank-one-flow}{{4.4}{35}{Exact rank-one dynamics}{equation.4.4}{}}
+\newlabel{eq:na-oja}{{4.5}{35}{Exact rank-one dynamics}{equation.4.5}{}}
+\newlabel{eq:na-amplitude}{{4.6}{35}{Exact rank-one dynamics}{equation.4.6}{}}
+\newlabel{eq:na-Z}{{4.7}{35}{Exact rank-one dynamics}{equation.4.7}{}}
+\newlabel{eq:na-overlaps}{{4.8}{35}{Exact rank-one dynamics}{equation.4.8}{}}
+\newlabel{cor:na-escape}{{4.3}{36}{Escape from the origin}{theorem.4.3}{}}
+\newlabel{eq:na-escape}{{4.9}{36}{Escape from the origin}{equation.4.9}{}}
+\newlabel{eq:na-escape-bounds}{{4.10}{36}{Escape from the origin}{equation.4.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Escape time and initial geometry.}{36}{section*.18}\protected@file@percent }
+\newlabel{eq:na-escape-random}{{4.11}{36}{Escape time and initial geometry}{equation.4.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Alignment and amplification.}{37}{section*.19}\protected@file@percent }
+\newlabel{eq:na-align-amp}{{4.12}{37}{Alignment and amplification}{equation.4.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Local geometry of the critical points}{37}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:na-saddles}{{4.3}{37}{Local geometry of the critical points}{subsection.4.3}{}}
+\newlabel{prop:na-saddles}{{4.4}{37}{Linear rates at the critical points}{theorem.4.4}{}}
+\citation{saxe2014exact,jacot2021saddle}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Plateaus of students of higher rank}{38}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:na-plateaus}{{4.4}{38}{Plateaus of students of higher rank}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Scale invariance of the early phase.}{38}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Deflated normal form.}{38}{section*.21}\protected@file@percent }
+\newlabel{eq:na-deflated}{{4.13}{38}{Deflated normal form}{equation.4.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Near the aligned manifold and near the optimum}{39}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:na-near-aligned}{{4.5}{39}{Near the aligned manifold and near the optimum}{subsection.4.5}{}}
+\newlabel{eq:na-near-aligned}{{4.14}{39}{Near the aligned manifold and near the optimum}{equation.4.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Non-whitened inputs}{39}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:na-nonwhite}{{4.6}{39}{Non-whitened inputs}{subsection.4.6}{}}
+\citation{delathauwer2000best,anandkumar2014tensor}
+\citation{benarous2021online}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Rank-one channels of other trees, and the role of the cuts}{40}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:na-trees}{{4.7}{40}{Rank-one channels of other trees, and the role of the cuts}{subsection.4.7}{}}
+\newlabel{eq:na-tree}{{4.15}{40}{Rank-one channels of other trees, and the role of the cuts}{equation.4.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Time scales of the balanced dynamics without alignment, for whitened blocks; $\delta $ is the size of the initial perturbation along the unstable direction. ``Exact'' and ``leading asymptotic'' refer to Proposition~\ref {prop:na-rank-one}, Corollary~\ref {cor:na-escape} and Section~\ref {sec:na-trees}; ``linearization'' to Proposition~\ref {prop:na-saddles} and Section~\ref {sec:na-near-aligned}; ``approximation'' to the deflated normal form of Section~\ref {sec:na-plateaus}, which is not proved.}}{41}{table.1}\protected@file@percent }
+\newlabel{tab:na-times}{{1}{41}{Time scales of the balanced dynamics without alignment, for whitened blocks; $\delta $ is the size of the initial perturbation along the unstable direction. ``Exact'' and ``leading asymptotic'' refer to Proposition~\ref {prop:na-rank-one}, Corollary~\ref {cor:na-escape} and Section~\ref {sec:na-trees}; ``linearization'' to Proposition~\ref {prop:na-saddles} and Section~\ref {sec:na-near-aligned}; ``approximation'' to the deflated normal form of Section~\ref {sec:na-plateaus}, which is not proved}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Summary: which times to distinguish}{41}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:na-summary}{{4.8}{41}{Summary: which times to distinguish}{subsection.4.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}How to compare TTNs and DNNs}{41}{section.5}\protected@file@percent }
+\newlabel{sec:compare}{{5}{41}{How to compare TTNs and DNNs}{section.5}{}}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}The teacher--student setting}{33}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:compare-setting}{{4.1}{33}{The teacher--student setting}{subsection.4.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Teacher.}{33}{section*.18}\protected@file@percent }
-\newlabel{eq:teacher}{{4.1}{33}{Teacher}{equation.4.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Data.}{33}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The teacher--student setting}{42}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:compare-setting}{{5.1}{42}{The teacher--student setting}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Teacher.}{42}{section*.22}\protected@file@percent }
+\newlabel{eq:teacher}{{5.1}{42}{Teacher}{equation.5.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use}).}}{43}{figure.3}\protected@file@percent }
+\newlabel{fig:compare}{{3}{43}{Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use})}{figure.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Data.}{43}{section*.23}\protected@file@percent }
+\newlabel{eq:gram}{{5.2}{43}{Data}{equation.5.2}{}}
+\newlabel{eq:independent-blocks}{{5.3}{43}{Data}{equation.5.3}{}}
 \citation{hfl_surrogate}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use}).}}{34}{figure.3}\protected@file@percent }
-\newlabel{fig:compare}{{3}{34}{Comparing a student with a TTN teacher. (a) Cutting the bond $e$ splits the teacher into the subtree below $e$ (blue), which computes the left factors $\phi ^\star _{e,q}$ of the inputs $x^{(1)},x^{(2)}$, and its environment (orange), which computes the right factors $\psi ^\star _{e,q}$ of $x^{(3)},x^{(4)}$. An atom is the product of two such factors, weighted by a singular value of the data-weighted HSVD (Sections~\ref {sec:dw-hsvd} and~\ref {sec:atoms}). (b) For a student, one asks whether its output contains the atom (Section~\ref {sec:output-obs}), whether the factors and the atom can be read off a hidden layer, here $h_2$ (Section~\ref {sec:representation}), and whether the layers above use and rely on that code (Section~\ref {sec:use})}{figure.3}{}}
-\newlabel{eq:gram}{{4.2}{34}{Data}{equation.4.2}{}}
-\newlabel{eq:independent-blocks}{{4.3}{34}{Data}{equation.4.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{Students and time.}{35}{section*.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}The data-weighted HSVD of the teacher}{35}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:dw-hsvd}{{4.2}{35}{The data-weighted HSVD of the teacher}{subsection.4.2}{}}
-\newlabel{eq:teacher-cut}{{4.4}{35}{The data-weighted HSVD of the teacher}{equation.4.4}{}}
-\newlabel{def:dw-hsvd}{{4.1}{35}{Data-weighted HSVD}{theorem.4.1}{}}
-\newlabel{eq:singular-functions}{{4.5}{35}{Data-weighted HSVD}{equation.4.5}{}}
-\newlabel{prop:dw-hsvd}{{4.2}{36}{Properties of the data-weighted HSVD}{theorem.4.2}{}}
-\newlabel{eq:dw-expansion}{{4.6}{36}{Properties of the data-weighted HSVD}{equation.4.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Students and time.}{44}{section*.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The data-weighted HSVD of the teacher}{44}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:dw-hsvd}{{5.2}{44}{The data-weighted HSVD of the teacher}{subsection.5.2}{}}
+\newlabel{eq:teacher-cut}{{5.4}{44}{The data-weighted HSVD of the teacher}{equation.5.4}{}}
+\newlabel{def:dw-hsvd}{{5.1}{45}{Data-weighted HSVD}{theorem.5.1}{}}
+\newlabel{eq:singular-functions}{{5.5}{45}{Data-weighted HSVD}{equation.5.5}{}}
+\newlabel{prop:dw-hsvd}{{5.2}{45}{Properties of the data-weighted HSVD}{theorem.5.2}{}}
+\newlabel{eq:dw-expansion}{{5.6}{45}{Properties of the data-weighted HSVD}{equation.5.6}{}}
+\newlabel{prop:dw-product}{{5.3}{46}{Product law: one data-weighted TTN}{theorem.5.3}{}}
+\newlabel{ex:dw}{{5.4}{46}{Why the data weighting matters}{theorem.5.4}{}}
 \citation{hfl_local}
-\newlabel{prop:dw-product}{{4.3}{37}{Product law: one data-weighted TTN}{theorem.4.3}{}}
-\newlabel{ex:dw}{{4.4}{37}{Why the data weighting matters}{theorem.4.4}{}}
-\newlabel{rem:second-moments}{{4.5}{37}{Which moments of the data enter}{theorem.4.5}{}}
-\newlabel{eq:moment-operator}{{4.7}{37}{Which moments of the data enter}{equation.4.7}{}}
 \citation{grasedyck2010hierarchical}
 \citation{hfl_diagonal}
-\newlabel{prop:bond-messages}{{4.6}{38}{Data-weighted SVD from the bond messages}{theorem.4.6}{}}
-\newlabel{rem:dw-compute}{{4.7}{38}{Computing the data-weighted HSVD}{theorem.4.7}{}}
-\newlabel{prop:dw-nested}{{4.8}{39}{Hierarchical composition of the features}{theorem.4.8}{}}
-\newlabel{eq:feature-composition}{{4.8}{39}{Hierarchical composition of the features}{equation.4.8}{}}
-\newlabel{rem:dw-nested}{{4.9}{39}{Features of the teacher are built from features of the teacher}{theorem.4.9}{}}
+\newlabel{rem:second-moments}{{5.5}{47}{Which moments of the data enter}{theorem.5.5}{}}
+\newlabel{eq:moment-operator}{{5.7}{47}{Which moments of the data enter}{equation.5.7}{}}
+\newlabel{prop:bond-messages}{{5.6}{47}{Data-weighted SVD from the bond messages}{theorem.5.6}{}}
+\newlabel{rem:dw-compute}{{5.7}{48}{Computing the data-weighted HSVD}{theorem.5.7}{}}
+\newlabel{prop:dw-nested}{{5.8}{48}{Hierarchical composition of the features}{theorem.5.8}{}}
+\newlabel{eq:feature-composition}{{5.8}{48}{Hierarchical composition of the features}{equation.5.8}{}}
+\newlabel{rem:dw-nested}{{5.9}{49}{Features of the teacher are built from features of the teacher}{theorem.5.9}{}}
+\newlabel{rem:joint-identifiability}{{5.10}{49}{When are the data-weighted features properties of the data?}{theorem.5.10}{}}
+\newlabel{eq:identifiability}{{5.9}{49}{When are the data-weighted features properties of the data?}{equation.5.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Atoms: identity and strength}{49}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:atoms}{{5.3}{49}{Atoms: identity and strength}{subsection.5.3}{}}
+\newlabel{def:atom}{{5.11}{49}{Atoms}{theorem.5.11}{}}
 \citation{eckart1936approximation}
-\newlabel{rem:joint-identifiability}{{4.10}{40}{When are the data-weighted features properties of the data?}{theorem.4.10}{}}
-\newlabel{eq:identifiability}{{4.9}{40}{When are the data-weighted features properties of the data?}{equation.4.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Atoms: identity and strength}{40}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:atoms}{{4.3}{40}{Atoms: identity and strength}{subsection.4.3}{}}
-\newlabel{def:atom}{{4.11}{40}{Atoms}{theorem.4.11}{}}
-\newlabel{prop:atoms}{{4.12}{40}{Atoms}{theorem.4.12}{}}
 \citation{hfl_diagonal}
-\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{41}{section*.21}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Identity and strength.}{41}{section*.22}\protected@file@percent }
-\newlabel{rem:degenerate}{{4.13}{41}{Degenerate atoms}{theorem.4.13}{}}
-\newlabel{rem:edge-specific}{{4.14}{41}{Atoms are attached to bonds}{theorem.4.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Output observables: has the predictor acquired an atom?}{42}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:output-obs}{{4.4}{42}{Output observables: has the predictor acquired an atom?}{subsection.4.4}{}}
-\newlabel{def:coupling}{{4.15}{42}{Coupling matrix and acquisition coefficients}{theorem.4.15}{}}
-\newlabel{eq:coupling}{{4.10}{42}{Coupling matrix and acquisition coefficients}{equation.4.10}{}}
-\newlabel{prop:error-decomposition}{{4.16}{42}{Exact error decomposition at a bond}{theorem.4.16}{}}
-\newlabel{eq:error-decomposition}{{4.11}{42}{Exact error decomposition at a bond}{equation.4.11}{}}
-\@writefile{toc}{\contentsline {paragraph}{Interpretation.}{43}{section*.23}\protected@file@percent }
+\newlabel{prop:atoms}{{5.12}{50}{Atoms}{theorem.5.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{50}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identity and strength.}{50}{section*.26}\protected@file@percent }
+\newlabel{rem:degenerate}{{5.13}{50}{Degenerate atoms}{theorem.5.13}{}}
+\newlabel{rem:edge-specific}{{5.14}{51}{Atoms are attached to bonds}{theorem.5.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Output observables: has the predictor acquired an atom?}{51}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:output-obs}{{5.4}{51}{Output observables: has the predictor acquired an atom?}{subsection.5.4}{}}
+\newlabel{def:coupling}{{5.15}{51}{Coupling matrix and acquisition coefficients}{theorem.5.15}{}}
+\newlabel{eq:coupling}{{5.10}{51}{Coupling matrix and acquisition coefficients}{equation.5.10}{}}
+\newlabel{prop:error-decomposition}{{5.16}{52}{Exact error decomposition at a bond}{theorem.5.16}{}}
+\newlabel{eq:error-decomposition}{{5.11}{52}{Exact error decomposition at a bond}{equation.5.11}{}}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {paragraph}{Identifiability.}{44}{section*.24}\protected@file@percent }
-\newlabel{rem:output-ablation}{{4.17}{44}{Removing an atom from the output is not informative}{theorem.4.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}The functional HSVD of a student}{44}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:student-fsvd}{{4.5}{44}{The functional HSVD of a student}{subsection.4.5}{}}
-\newlabel{def:fhsvd}{{4.18}{44}{Functional HSVD}{theorem.4.18}{}}
+\@writefile{toc}{\contentsline {paragraph}{Interpretation.}{53}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identifiability.}{53}{section*.28}\protected@file@percent }
+\newlabel{rem:output-ablation}{{5.17}{53}{Removing an atom from the output is not informative}{theorem.5.17}{}}
 \citation{hfl_surrogate}
 \citation{hfl_diagonal}
-\newlabel{eq:student-fsvd}{{4.12}{45}{Functional HSVD}{equation.4.12}{}}
-\newlabel{prop:fhsvd}{{4.19}{45}{What the functional HSVD measures}{theorem.4.19}{}}
-\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{45}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}The functional HSVD of a student}{54}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:student-fsvd}{{5.5}{54}{The functional HSVD of a student}{subsection.5.5}{}}
+\newlabel{def:fhsvd}{{5.18}{54}{Functional HSVD}{theorem.5.18}{}}
+\newlabel{eq:student-fsvd}{{5.12}{54}{Functional HSVD}{equation.5.12}{}}
+\newlabel{prop:fhsvd}{{5.19}{54}{What the functional HSVD measures}{theorem.5.19}{}}
 \citation{hfl_diagonal}
 \citation{hfl_local}
 \citation{hfl_local}
 \citation{koltchinskii2000random}
 \citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{55}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Comparison with the teacher.}{55}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Estimation.}{55}{section*.31}\protected@file@percent }
+\newlabel{eq:crossed-grid}{{5.13}{55}{Estimation}{equation.5.13}{}}
 \citation{hfl_local}
-\@writefile{toc}{\contentsline {paragraph}{Comparison with the teacher.}{46}{section*.26}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Estimation.}{46}{section*.27}\protected@file@percent }
-\newlabel{eq:crossed-grid}{{4.13}{46}{Estimation}{equation.4.13}{}}
-\newlabel{rem:fsvd-cost}{{4.20}{46}{Cost, and proxies for large inputs}{theorem.4.20}{}}
 \citation{hfl_surrogate}
+\newlabel{rem:fsvd-cost}{{5.20}{56}{Cost, and proxies for large inputs}{theorem.5.20}{}}
+\newlabel{rem:scope}{{5.21}{56}{Scope: real data}{theorem.5.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Teachers with repeated inputs}{56}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:repeated-input}{{5.6}{56}{Teachers with repeated inputs}{subsection.5.6}{}}
 \citation{janson1997gaussian}
-\newlabel{rem:scope}{{4.21}{47}{Scope: real data}{theorem.4.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Teachers with repeated inputs}{47}{subsection.4.6}\protected@file@percent }
-\newlabel{sec:repeated-input}{{4.6}{47}{Teachers with repeated inputs}{subsection.4.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Function track.}{47}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Computation track.}{48}{section*.29}\protected@file@percent }
-\newlabel{prop:dpn-agop}{{4.22}{48}{Data-weighted computational HSVD of a polynomial network}{theorem.4.22}{}}
+\@writefile{toc}{\contentsline {paragraph}{Function track.}{57}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Computation track.}{57}{section*.33}\protected@file@percent }
+\newlabel{prop:dpn-agop}{{5.22}{57}{Data-weighted computational HSVD of a polynomial network}{theorem.5.22}{}}
 \citation{hfl_local}
+\@writefile{toc}{\contentsline {paragraph}{Comparing students with a teacher with repeated inputs.}{58}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Representation observables: where is an atom represented?}{58}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:representation}{{5.7}{58}{Representation observables: where is an atom represented?}{subsection.5.7}{}}
+\newlabel{def:probe}{{5.23}{58}{Linear acquisition scores}{theorem.5.23}{}}
 \citation{hotelling1936relations}
-\@writefile{toc}{\contentsline {paragraph}{Comparing students with a teacher with repeated inputs.}{49}{section*.30}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Representation observables: where is an atom represented?}{49}{subsection.4.7}\protected@file@percent }
-\newlabel{sec:representation}{{4.7}{49}{Representation observables: where is an atom represented?}{subsection.4.7}{}}
-\newlabel{def:probe}{{4.23}{49}{Linear acquisition scores}{theorem.4.23}{}}
-\newlabel{prop:probe}{{4.24}{49}{Closed forms and invariances}{theorem.4.24}{}}
 \citation{alain2016understanding}
 \citation{hewitt2019designing}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {paragraph}{Reading the three scores.}{50}{section*.31}\protected@file@percent }
-\newlabel{rem:probe-meaning}{{4.25}{50}{What linear decodability does and does not mean}{theorem.4.25}{}}
-\newlabel{rem:probe-dependence}{{4.26}{50}{Dependent blocks create a predictability confound}{theorem.4.26}{}}
+\newlabel{prop:probe}{{5.24}{59}{Closed forms and invariances}{theorem.5.24}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reading the three scores.}{59}{section*.35}\protected@file@percent }
+\newlabel{rem:probe-meaning}{{5.25}{59}{What linear decodability does and does not mean}{theorem.5.25}{}}
 \citation{hfl_review}
-\newlabel{hyp:layer-bond}{{4.27}{51}{Layer--bond correspondence}{theorem.4.27}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Use and causal reliance}{51}{subsection.4.8}\protected@file@percent }
-\newlabel{sec:use}{{4.8}{51}{Use and causal reliance}{subsection.4.8}{}}
+\newlabel{rem:probe-dependence}{{5.26}{60}{Dependent blocks create a predictability confound}{theorem.5.26}{}}
+\newlabel{hyp:layer-bond}{{5.27}{60}{Layer--bond correspondence}{theorem.5.27}{}}
 \citation{radhakrishnan2024mechanism}
-\newlabel{def:sensitivity}{{4.28}{52}{Downstream sensitivity}{theorem.4.28}{}}
-\newlabel{rem:other-jacobians}{{4.29}{52}{Two other Jacobian observables}{theorem.4.29}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Use and causal reliance}{61}{subsection.5.8}\protected@file@percent }
+\newlabel{sec:use}{{5.8}{61}{Use and causal reliance}{subsection.5.8}{}}
+\newlabel{def:sensitivity}{{5.28}{61}{Downstream sensitivity}{theorem.5.28}{}}
 \citation{belrose2023leace}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {paragraph}{Interventions.}{53}{section*.32}\protected@file@percent }
-\newlabel{def:interventions}{{4.30}{53}{Erasure and injection}{theorem.4.30}{}}
-\newlabel{prop:erasure}{{4.31}{53}{Erasure removes all linear information}{theorem.4.31}{}}
-\@writefile{toc}{\contentsline {paragraph}{What to measure.}{53}{section*.33}\protected@file@percent }
+\newlabel{rem:other-jacobians}{{5.29}{62}{Two other Jacobian observables}{theorem.5.29}{}}
+\@writefile{toc}{\contentsline {paragraph}{Interventions.}{62}{section*.36}\protected@file@percent }
+\newlabel{def:interventions}{{5.30}{62}{Erasure and injection}{theorem.5.30}{}}
+\newlabel{prop:erasure}{{5.31}{62}{Erasure removes all linear information}{theorem.5.31}{}}
 \citation{hfl_diagonal}
 \citation{hfl_surrogate}
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
-\@writefile{toc}{\contentsline {paragraph}{Relation with acceleration.}{54}{section*.34}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Controls.}{54}{section*.35}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Observables for TTN students}{54}{subsection.4.9}\protected@file@percent }
-\newlabel{sec:ttn-students}{{4.9}{54}{Observables for TTN students}{subsection.4.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{Product law.}{54}{section*.36}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{55}{section*.37}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Repeated inputs.}{55}{section*.38}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.10}Acquisition times, comparison of students, and estimation}{55}{subsection.4.10}\protected@file@percent }
-\newlabel{sec:compare-protocol}{{4.10}{55}{Acquisition times, comparison of students, and estimation}{subsection.4.10}{}}
-\newlabel{def:acq-times}{{4.32}{55}{Acquisition times}{theorem.4.32}{}}
+\@writefile{toc}{\contentsline {paragraph}{What to measure.}{63}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Relation with acceleration.}{63}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Controls.}{63}{section*.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Observables for TTN students}{63}{subsection.5.9}\protected@file@percent }
+\newlabel{sec:ttn-students}{{5.9}{63}{Observables for TTN students}{subsection.5.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Product law.}{63}{section*.40}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Dependent blocks.}{64}{section*.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Repeated inputs.}{64}{section*.42}\protected@file@percent }
 \citation{hfl_surrogate}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {paragraph}{Choosing the thresholds.}{56}{section*.39}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Comparing a TTN and a DNN.}{56}{section*.40}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Estimation protocol.}{56}{section*.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Acquisition times, comparison of students, and estimation}{65}{subsection.5.10}\protected@file@percent }
+\newlabel{sec:compare-protocol}{{5.10}{65}{Acquisition times, comparison of students, and estimation}{subsection.5.10}{}}
+\newlabel{def:acq-times}{{5.32}{65}{Acquisition times}{theorem.5.32}{}}
+\@writefile{toc}{\contentsline {paragraph}{Choosing the thresholds.}{65}{section*.43}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Comparing a TTN and a DNN.}{65}{section*.44}\protected@file@percent }
 \citation{hfl_diagonal}
 \citation{raghu2017svcca}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.11}Summary}{57}{subsection.4.11}\protected@file@percent }
-\newlabel{sec:compare-summary}{{4.11}{57}{Summary}{subsection.4.11}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables.}}{58}{table.1}\protected@file@percent }
-\newlabel{tab:evidence}{{1}{58}{Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables}{table.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}First experiments}{58}{section.5}\protected@file@percent }
-\newlabel{sec:first-experiments}{{5}{58}{First experiments}{section.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces What each regime of input laws allows. Independence of the blocks is a source of orthogonality and of exact computability, not a prerequisite for comparing the training dynamics of TTNs and DNNs.}}{59}{table.2}\protected@file@percent }
-\newlabel{tab:regimes}{{2}{59}{What each regime of input laws allows. Independence of the blocks is a source of orthogonality and of exact computability, not a prerequisite for comparing the training dynamics of TTNs and DNNs}{table.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Setting.}{59}{section*.42}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Teacher.}{59}{section*.43}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Observables.}{59}{section*.44}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}A possible range of other Experiments}{60}{section.6}\protected@file@percent }
-\newlabel{sec:experiments}{{6}{60}{A possible range of other Experiments}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Principles}{60}{subsection.6.1}\protected@file@percent }
-\newlabel{sec:exp-principles}{{6.1}{60}{Principles}{subsection.6.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Questions rather than knobs.}{60}{section*.45}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Exact before sampled.}{60}{section*.46}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{One change at a time.}{60}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Estimation protocol.}{66}{section*.45}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables.}}{67}{table.2}\protected@file@percent }
+\newlabel{tab:evidence}{{2}{67}{Levels of evidence that a student has acquired an atom $(e,q)$ of the teacher, and the corresponding observables}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11}Summary}{67}{subsection.5.11}\protected@file@percent }
+\newlabel{sec:compare-summary}{{5.11}{67}{Summary}{subsection.5.11}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces What each regime of input laws allows. Independence of the blocks is a source of orthogonality and of exact computability, not a prerequisite for comparing the training dynamics of TTNs and DNNs.}}{68}{table.3}\protected@file@percent }
+\newlabel{tab:regimes}{{3}{68}{What each regime of input laws allows. Independence of the blocks is a source of orthogonality and of exact computability, not a prerequisite for comparing the training dynamics of TTNs and DNNs}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}First experiments}{68}{section.6}\protected@file@percent }
+\newlabel{sec:first-experiments}{{6}{68}{First experiments}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Setting.}{68}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Teacher.}{68}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Observables.}{69}{section*.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}A possible range of other Experiments}{69}{section.7}\protected@file@percent }
+\newlabel{sec:experiments}{{7}{69}{A possible range of other Experiments}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Principles}{69}{subsection.7.1}\protected@file@percent }
+\newlabel{sec:exp-principles}{{7.1}{69}{Principles}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Questions rather than knobs.}{69}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Exact before sampled.}{70}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{One change at a time.}{70}{section*.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Learnability is a controlled variable.}{70}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Validated measurements.}{70}{section*.53}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Statistics.}{70}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Common setting}{70}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:exp-setting}{{7.2}{70}{Common setting}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.1}Teachers and data}{70}{subsubsection.7.2.1}\protected@file@percent }
+\newlabel{sec:exp-teachers}{{7.2.1}{70}{Teachers and data}{subsubsection.7.2.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Sizes.}{70}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Homogeneous teachers are hard for every student.}{70}{section*.56}\protected@file@percent }
 \citation{abbe2023sgd}
 \citation{benarous2021online,abbe2023sgd}
 \citation{furman2026benign}
-\@writefile{toc}{\contentsline {paragraph}{Learnability is a controlled variable.}{61}{section*.48}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Validated measurements.}{61}{section*.49}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Statistics.}{61}{section*.50}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Common setting}{61}{subsection.6.2}\protected@file@percent }
-\newlabel{sec:exp-setting}{{6.2}{61}{Common setting}{subsection.6.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Teachers and data}{61}{subsubsection.6.2.1}\protected@file@percent }
-\newlabel{sec:exp-teachers}{{6.2.1}{61}{Teachers and data}{subsubsection.6.2.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Sizes.}{61}{section*.51}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Homogeneous teachers are hard for every student.}{61}{section*.52}\protected@file@percent }
 \citation{hackbusch2017interconnection}
 \citation{hfl_diagonal}
+\@writefile{toc}{\contentsline {paragraph}{Spectra are measured, not prescribed.}{71}{section*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Teacher families.}{71}{section*.58}\protected@file@percent }
 \citation{hfl_surrogate}
 \citation{hfl_diagonal}
 \citation{hfl_surrogate}
 \citation{furman2026benign}
-\@writefile{toc}{\contentsline {paragraph}{Spectra are measured, not prescribed.}{62}{section*.53}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Teacher families.}{62}{section*.54}\protected@file@percent }
 \citation{furman2026benign}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Base configuration. Every experiment departs from it only in the factors that it varies.}}{72}{table.4}\protected@file@percent }
+\newlabel{tab:exp-base}{{4}{72}{Base configuration. Every experiment departs from it only in the factors that it varies}{table.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Input laws.}{72}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.2}Students and their initialization}{72}{subsubsection.7.2.2}\protected@file@percent }
+\newlabel{sec:exp-students}{{7.2.2}{72}{Students and their initialization}{subsubsection.7.2.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Initializations of TTNs.}{72}{section*.60}\protected@file@percent }
 \citation{hfl_diagonal}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Base configuration. Every experiment departs from it only in the factors that it varies.}}{63}{table.3}\protected@file@percent }
-\newlabel{tab:exp-base}{{3}{63}{Base configuration. Every experiment departs from it only in the factors that it varies}{table.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{Input laws.}{63}{section*.55}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Students and their initialization}{63}{subsubsection.6.2.2}\protected@file@percent }
-\newlabel{sec:exp-students}{{6.2.2}{63}{Students and their initialization}{subsubsection.6.2.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Initializations of TTNs.}{63}{section*.56}\protected@file@percent }
 \citation{du2018algorithmic}
 \citation{furman2026benign}
 \citation{kunin2024get}
 \citation{chizat2019lazy}
+\newlabel{eq:conserved}{{7.1}{73}{Initializations of TTNs}{equation.7.1}{}}
 \citation{yang2021tensor}
-\newlabel{eq:conserved}{{6.1}{64}{Initializations of TTNs}{equation.6.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{The grid of students.}{64}{section*.57}\protected@file@percent }
 \citation{pearce2024bilinear}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces The grid of students: connectivity in rows, node map in columns. Neighbouring students differ in a single respect. The core students, in bold, are run in every comparison; the others are run when a comparison between neighbours requires them.}}{74}{table.5}\protected@file@percent }
+\newlabel{tab:exp-grid}{{5}{74}{The grid of students: connectivity in rows, node map in columns. Neighbouring students differ in a single respect. The core students, in bold, are run in every comparison; the others are run when a comparison between neighbours requires them}{table.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{The grid of students.}{74}{section*.61}\protected@file@percent }
 \citation{cohen2021gradient}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces The grid of students: connectivity in rows, node map in columns. Neighbouring students differ in a single respect. The core students, in bold, are run in every comparison; the others are run when a comparison between neighbours requires them.}}{65}{table.4}\protected@file@percent }
-\newlabel{tab:exp-grid}{{4}{65}{The grid of students: connectivity in rows, node map in columns. Neighbouring students differ in a single respect. The core students, in bold, are run in every comparison; the others are run when a comparison between neighbours requires them}{table.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}Training protocols and observables}{65}{subsubsection.6.2.3}\protected@file@percent }
-\newlabel{sec:exp-observables}{{6.2.3}{65}{Training protocols and observables}{subsubsection.6.2.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{Training protocols.}{65}{section*.58}\protected@file@percent }
 \citation{hoeffding1948class,efron1981jackknife}
 \citation{odonnell2014analysis}
 \citation{sobol2001global}
-\@writefile{toc}{\contentsline {paragraph}{Observables.}{66}{section*.59}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Phase 0: validation}{66}{subsection.6.3}\protected@file@percent }
-\newlabel{sec:exp-phase0}{{6.3}{66}{Phase 0: validation}{subsection.6.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.3}Training protocols and observables}{75}{subsubsection.7.2.3}\protected@file@percent }
+\newlabel{sec:exp-observables}{{7.2.3}{75}{Training protocols and observables}{subsubsection.7.2.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Training protocols.}{75}{section*.62}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Observables.}{75}{section*.63}\protected@file@percent }
 \citation{hfl_surrogate}
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Phase 0: validation}{76}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:exp-phase0}{{7.3}{76}{Phase 0: validation}{subsection.7.3}{}}
 \citation{chizat2019lazy,woodworth2020kernel,yang2021tensor,kunin2024get}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Phase 1: the dynamics of TTNs}{67}{subsection.6.4}\protected@file@percent }
-\newlabel{sec:exp-phase1}{{6.4}{67}{Phase 1: the dynamics of TTNs}{subsection.6.4}{}}
 \citation{saxe2014exact,jacot2021saddle}
 \citation{razin2022implicit}
 \citation{furman2026benign}
 \citation{hillar2013most}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Phase 1: the dynamics of TTNs}{77}{subsection.7.4}\protected@file@percent }
+\newlabel{sec:exp-phase1}{{7.4}{77}{Phase 1: the dynamics of TTNs}{subsection.7.4}{}}
 \citation{saxe2014exact}
 \citation{saxe2014exact}
 \citation{hfl_diagonal}
@@ -508,16 +557,16 @@
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
 \citation{hfl_diagonal}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Phase 2: TTNs and DNNs}{80}{subsection.7.5}\protected@file@percent }
+\newlabel{sec:exp-phase2}{{7.5}{80}{Phase 2: TTNs and DNNs}{subsection.7.5}{}}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Phase 2: TTNs and DNNs}{71}{subsection.6.5}\protected@file@percent }
-\newlabel{sec:exp-phase2}{{6.5}{71}{Phase 2: TTNs and DNNs}{subsection.6.5}{}}
 \citation{barak2022hidden}
 \citation{hfl_surrogate}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Phase 3: optimizers, noise and finite samples}{82}{subsection.7.6}\protected@file@percent }
+\newlabel{sec:exp-phase3}{{7.6}{82}{Phase 3: optimizers, noise and finite samples}{subsection.7.6}{}}
 \citation{li2017stochastic}
 \citation{damian2021label}
 \citation{cohen2021gradient}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Phase 3: optimizers, noise and finite samples}{73}{subsection.6.6}\protected@file@percent }
-\newlabel{sec:exp-phase3}{{6.6}{73}{Phase 3: optimizers, noise and finite samples}{subsection.6.6}{}}
 \citation{kingma2015adam,loshchilov2019decoupled}
 \citation{jordan2024muon}
 \citation{bernstein2024old}
@@ -525,105 +574,110 @@
 \citation{hfl_surrogate}
 \citation{razin2022implicit}
 \citation{power2022grokking}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Phase 4: deferred experiments}{75}{subsection.6.7}\protected@file@percent }
-\newlabel{sec:exp-phase4}{{6.7}{75}{Phase 4: deferred experiments}{subsection.6.7}{}}
 \citation{hfl_surrogate}
 \citation{cagnetta2024deep}
 \citation{hfl_surrogate}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Priorities and organization}{76}{subsection.6.8}\protected@file@percent }
-\newlabel{sec:exp-organization}{{6.8}{76}{Priorities and organization}{subsection.6.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{Priorities.}{76}{section*.79}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Division of the work.}{76}{section*.80}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Phase 4: deferred experiments}{85}{subsection.7.7}\protected@file@percent }
+\newlabel{sec:exp-phase4}{{7.7}{85}{Phase 4: deferred experiments}{subsection.7.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.8}Priorities and organization}{85}{subsection.7.8}\protected@file@percent }
+\newlabel{sec:exp-organization}{{7.8}{85}{Priorities and organization}{subsection.7.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Priorities.}{85}{section*.83}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Division of the work.}{85}{section*.84}\protected@file@percent }
 \citation{hfl_surrogate}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Summary of the experiments. Person~A owns the TTN side and person~B the other students and the comparison (Section~\ref {sec:exp-organization}); in E3.1--E3.3, each person runs the experiment on their own students.}}{77}{table.5}\protected@file@percent }
-\newlabel{tab:exp-summary}{{5}{77}{Summary of the experiments. Person~A owns the TTN side and person~B the other students and the comparison (Section~\ref {sec:exp-organization}); in E3.1--E3.3, each person runs the experiment on their own students}{table.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Expected outputs.}{77}{section*.81}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Indicative schedule for two people working full time.}}{78}{table.6}\protected@file@percent }
-\newlabel{tab:exp-plan}{{6}{78}{Indicative schedule for two people working full time}{table.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Experiments (old)}{78}{section.7}\protected@file@percent }
-\newlabel{sec:experiments-old}{{7}{78}{Experiments (old)}{section.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Expected outputs.}{86}{section*.85}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Experiments (old)}{86}{section.8}\protected@file@percent }
+\newlabel{sec:experiments-old}{{8}{86}{Experiments (old)}{section.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Summary of the experiments. Person~A owns the TTN side and person~B the other students and the comparison (Section~\ref {sec:exp-organization}); in E3.1--E3.3, each person runs the experiment on their own students.}}{87}{table.6}\protected@file@percent }
+\newlabel{tab:exp-summary}{{6}{87}{Summary of the experiments. Person~A owns the TTN side and person~B the other students and the comparison (Section~\ref {sec:exp-organization}); in E3.1--E3.3, each person runs the experiment on their own students}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Indicative schedule for two people working full time.}}{87}{table.7}\protected@file@percent }
+\newlabel{tab:exp-plan}{{7}{87}{Indicative schedule for two people working full time}{table.7}{}}
 \citation{hfl_surrogate}
 \citation{hfl_local}
 \citation{gromov2023grokking}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Experiments (slop)}{88}{section.9}\protected@file@percent }
+\newlabel{sec:experiments-slop}{{9}{88}{Experiments (slop)}{section.9}{}}
 \bibcite{abbe2023sgd}{{1}{2023}{{Abbe et~al.}}{{}}}
 \bibcite{alain2016understanding}{{2}{2016}{{Alain and Bengio}}{{}}}
-\bibcite{arora2018optimization}{{3}{2018}{{Arora et~al.}}{{}}}
-\bibcite{bai2020taylorized}{{4}{2020}{{Bai et~al.}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Experiments (slop)}{79}{section.8}\protected@file@percent }
-\newlabel{sec:experiments-slop}{{8}{79}{Experiments (slop)}{section.8}{}}
-\bibcite{barak2022hidden}{{5}{2022}{{Barak et~al.}}{{}}}
-\bibcite{belrose2023leace}{{6}{2023}{{Belrose et~al.}}{{}}}
-\bibcite{benarous2021online}{{7}{2021}{{Ben~Arous et~al.}}{{}}}
-\bibcite{bernstein2024old}{{8}{2024}{{Bernstein and Newhouse}}{{}}}
-\bibcite{bordelon2024dynamical}{{9}{2024}{{Bordelon et~al.}}{{}}}
-\bibcite{cagnetta2024deep}{{10}{2024}{{Cagnetta et~al.}}{{}}}
-\bibcite{chizat2019lazy}{{11}{2019}{{Chizat et~al.}}{{}}}
-\bibcite{cohen2016expressive}{{12}{2016}{{Cohen et~al.}}{{}}}
-\bibcite{cohen2021gradient}{{13}{2021}{{Cohen et~al.}}{{}}}
-\bibcite{damian2021label}{{14}{2021}{{Damian et~al.}}{{}}}
-\bibcite{davis1970rotation}{{15}{1970}{{Davis and Kahan}}{{}}}
-\bibcite{delathauwer2000multilinear}{{16}{2000}{{De~Lathauwer et~al.}}{{}}}
-\bibcite{desilva2008tensor}{{17}{2008}{{de~Silva and Lim}}{{}}}
-\bibcite{hfl_diagonal}{{18}{2026}{{Diagonal TTN note}}{{}}}
-\bibcite{dooms2025compositionality}{{19}{2025}{{Dooms et~al.}}{{}}}
-\bibcite{du2018power}{{20}{2018}{{Du and Lee}}{{}}}
-\bibcite{du2018algorithmic}{{21}{2018}{{Du et~al.}}{{}}}
-\bibcite{eckart1936approximation}{{22}{1936}{{Eckart and Young}}{{}}}
-\bibcite{efron1981jackknife}{{23}{1981}{{Efron and Stein}}{{}}}
-\bibcite{furman2026benign}{{24}{2026}{{Furman et~al.}}{{}}}
-\bibcite{grasedyck2010hierarchical}{{25}{2010}{{Grasedyck}}{{}}}
-\bibcite{grasedyck2011introduction}{{26}{2011}{{Grasedyck and Hackbusch}}{{}}}
-\bibcite{gromov2023grokking}{{27}{2023}{{Gromov}}{{}}}
-\bibcite{hackbusch2012tensor}{{28}{2012}{{Hackbusch}}{{}}}
-\bibcite{hackbusch2009new}{{29}{2009}{{Hackbusch and K\"uhn}}{{}}}
-\bibcite{hackbusch2017interconnection}{{30}{2017}{{Hackbusch and Uschmajew}}{{}}}
-\bibcite{hastad1990tensor}{{31}{1990}{{H{\r a}stad}}{{}}}
-\bibcite{hewitt2019designing}{{32}{2019}{{Hewitt and Liang}}{{}}}
-\bibcite{hillar2013most}{{33}{2013}{{Hillar and Lim}}{{}}}
-\bibcite{hitchcock1927expression}{{34}{1927}{{Hitchcock}}{{}}}
-\bibcite{hoeffding1948class}{{35}{1948}{{Hoeffding}}{{}}}
-\bibcite{holtz2012manifolds}{{36}{2012}{{Holtz et~al.}}{{}}}
-\bibcite{hotelling1936relations}{{37}{1936}{{Hotelling}}{{}}}
-\bibcite{huang2020dynamics}{{38}{2020}{{Huang and Yau}}{{}}}
-\bibcite{jacot2018neural}{{39}{2018}{{Jacot et~al.}}{{}}}
-\bibcite{jacot2021saddle}{{40}{2021}{{Jacot et~al.}}{{}}}
-\bibcite{janson1997gaussian}{{41}{1997}{{Janson}}{{}}}
-\bibcite{jordan2024muon}{{42}{2024}{{Jordan et~al.}}{{}}}
-\bibcite{kingma2015adam}{{43}{2015}{{Kingma and Ba}}{{}}}
-\bibcite{kolda2009tensor}{{44}{2009}{{Kolda and Bader}}{{}}}
-\bibcite{koltchinskii2000random}{{45}{2000}{{Koltchinskii and Gin\'e}}{{}}}
-\bibcite{kunin2024get}{{46}{2024}{{Kunin et~al.}}{{}}}
-\bibcite{landsberg2012geometry}{{47}{2012}{{Landsberg et~al.}}{{}}}
-\bibcite{li2017stochastic}{{48}{2017}{{Li et~al.}}{{}}}
-\bibcite{lim2021tensors}{{49}{2021}{{Lim}}{{}}}
-\bibcite{hfl_review}{{50}{2026}{{Literature review}}{{}}}
-\bibcite{hfl_local}{{51}{2026}{{Local TN note}}{{}}}
-\bibcite{loshchilov2019decoupled}{{52}{2019}{{Loshchilov and Hutter}}{{}}}
-\bibcite{michaud2023quantization}{{53}{2023}{{Michaud et~al.}}{{}}}
-\bibcite{morala2025nn2poly}{{54}{2025}{{Morala et~al.}}{{}}}
-\bibcite{nanda2023progress}{{55}{2023}{{Nanda et~al.}}{{}}}
-\bibcite{odonnell2014analysis}{{56}{2014}{{O'Donnell}}{{}}}
-\bibcite{oseledets2011tensor}{{57}{2011}{{Oseledets}}{{}}}
-\bibcite{pearce2024bilinear}{{58}{2024}{{Pearce et~al.}}{{}}}
-\bibcite{pesme2023saddle}{{59}{2023}{{Pesme and Flammarion}}{{}}}
-\bibcite{power2022grokking}{{60}{2022}{{Power et~al.}}{{}}}
-\bibcite{radhakrishnan2024mechanism}{{61}{2024}{{Radhakrishnan et~al.}}{{}}}
-\bibcite{raghu2017svcca}{{62}{2017}{{Raghu et~al.}}{{}}}
-\bibcite{razin2022implicit}{{63}{2022}{{Razin et~al.}}{{}}}
-\bibcite{roy2007effective}{{64}{2007}{{Roy and Vetterli}}{{}}}
-\bibcite{saad1995online}{{65}{1995}{{Saad and Solla}}{{}}}
-\bibcite{sarao2020optimization}{{66}{2020}{{Sarao~Mannelli et~al.}}{{}}}
-\bibcite{saxe2014exact}{{67}{2014}{{Saxe et~al.}}{{}}}
-\bibcite{saxe2019mathematical}{{68}{2019}{{Saxe et~al.}}{{}}}
-\bibcite{schmidt2021descending}{{69}{2021}{{Schmidt et~al.}}{{}}}
-\bibcite{shi2006classical}{{70}{2006}{{Shi et~al.}}{{}}}
-\bibcite{sobol2001global}{{71}{2001}{{Sobol'}}{{}}}
-\bibcite{stoudenmire2016supervised}{{72}{2016}{{Stoudenmire and Schwab}}{{}}}
-\bibcite{hfl_surrogate}{{73}{2026}{{Surrogate note}}{{}}}
-\bibcite{tucker1966some}{{74}{1966}{{Tucker}}{{}}}
-\bibcite{uschmajew2013geometry}{{75}{2013}{{Uschmajew and Vandereycken}}{{}}}
-\bibcite{wedin1972perturbation}{{76}{1972}{{Wedin}}{{}}}
-\bibcite{woodworth2020kernel}{{77}{2020}{{Woodworth et~al.}}{{}}}
-\bibcite{yang2021tensor}{{78}{2021}{{Yang and Hu}}{{}}}
-\bibcite{zhang2026saddle}{{79}{2026}{{Zhang et~al.}}{{}}}
-\gdef \@abspage@last{83}
+\bibcite{anandkumar2014tensor}{{3}{2014}{{Anandkumar et~al.}}{{}}}
+\bibcite{arora2018optimization}{{4}{2018}{{Arora et~al.}}{{}}}
+\bibcite{bai2020taylorized}{{5}{2020}{{Bai et~al.}}{{}}}
+\bibcite{barak2022hidden}{{6}{2022}{{Barak et~al.}}{{}}}
+\bibcite{belrose2023leace}{{7}{2023}{{Belrose et~al.}}{{}}}
+\bibcite{benarous2021online}{{8}{2021}{{Ben~Arous et~al.}}{{}}}
+\bibcite{bernstein2024old}{{9}{2024}{{Bernstein and Newhouse}}{{}}}
+\bibcite{bordelon2024dynamical}{{10}{2024}{{Bordelon et~al.}}{{}}}
+\bibcite{braun2022exact}{{11}{2022}{{Braun et~al.}}{{}}}
+\bibcite{cagnetta2024deep}{{12}{2024}{{Cagnetta et~al.}}{{}}}
+\bibcite{chizat2019lazy}{{13}{2019}{{Chizat et~al.}}{{}}}
+\bibcite{cohen2016expressive}{{14}{2016}{{Cohen et~al.}}{{}}}
+\bibcite{cohen2021gradient}{{15}{2021}{{Cohen et~al.}}{{}}}
+\bibcite{damian2021label}{{16}{2021}{{Damian et~al.}}{{}}}
+\bibcite{davis1970rotation}{{17}{1970}{{Davis and Kahan}}{{}}}
+\bibcite{delathauwer2000multilinear}{{18}{2000a}{{De~Lathauwer et~al.}}{{}}}
+\bibcite{delathauwer2000best}{{19}{2000b}{{De~Lathauwer et~al.}}{{}}}
+\bibcite{desilva2008tensor}{{20}{2008}{{de~Silva and Lim}}{{}}}
+\bibcite{hfl_diagonal}{{21}{2026}{{Diagonal TTN note}}{{}}}
+\bibcite{dooms2025compositionality}{{22}{2025}{{Dooms et~al.}}{{}}}
+\bibcite{du2018power}{{23}{2018}{{Du and Lee}}{{}}}
+\bibcite{du2018algorithmic}{{24}{2018}{{Du et~al.}}{{}}}
+\bibcite{eckart1936approximation}{{25}{1936}{{Eckart and Young}}{{}}}
+\bibcite{efron1981jackknife}{{26}{1981}{{Efron and Stein}}{{}}}
+\bibcite{furman2026benign}{{27}{2026}{{Furman et~al.}}{{}}}
+\bibcite{grasedyck2010hierarchical}{{28}{2010}{{Grasedyck}}{{}}}
+\bibcite{grasedyck2011introduction}{{29}{2011}{{Grasedyck and Hackbusch}}{{}}}
+\bibcite{gromov2023grokking}{{30}{2023}{{Gromov}}{{}}}
+\bibcite{hackbusch2012tensor}{{31}{2012}{{Hackbusch}}{{}}}
+\bibcite{hackbusch2009new}{{32}{2009}{{Hackbusch and K\"uhn}}{{}}}
+\bibcite{hackbusch2017interconnection}{{33}{2017}{{Hackbusch and Uschmajew}}{{}}}
+\bibcite{hastad1990tensor}{{34}{1990}{{H{\r a}stad}}{{}}}
+\bibcite{hewitt2019designing}{{35}{2019}{{Hewitt and Liang}}{{}}}
+\bibcite{hillar2013most}{{36}{2013}{{Hillar and Lim}}{{}}}
+\bibcite{hitchcock1927expression}{{37}{1927}{{Hitchcock}}{{}}}
+\bibcite{hoeffding1948class}{{38}{1948}{{Hoeffding}}{{}}}
+\bibcite{holtz2012manifolds}{{39}{2012}{{Holtz et~al.}}{{}}}
+\bibcite{hotelling1936relations}{{40}{1936}{{Hotelling}}{{}}}
+\bibcite{huang2020dynamics}{{41}{2020}{{Huang and Yau}}{{}}}
+\bibcite{jacot2018neural}{{42}{2018}{{Jacot et~al.}}{{}}}
+\bibcite{jacot2021saddle}{{43}{2021}{{Jacot et~al.}}{{}}}
+\bibcite{janson1997gaussian}{{44}{1997}{{Janson}}{{}}}
+\bibcite{jordan2024muon}{{45}{2024}{{Jordan et~al.}}{{}}}
+\bibcite{kingma2015adam}{{46}{2015}{{Kingma and Ba}}{{}}}
+\bibcite{kolda2009tensor}{{47}{2009}{{Kolda and Bader}}{{}}}
+\bibcite{koltchinskii2000random}{{48}{2000}{{Koltchinskii and Gin\'e}}{{}}}
+\bibcite{kunin2024get}{{49}{2024}{{Kunin et~al.}}{{}}}
+\bibcite{landsberg2012geometry}{{50}{2012}{{Landsberg et~al.}}{{}}}
+\bibcite{li2017stochastic}{{51}{2017}{{Li et~al.}}{{}}}
+\bibcite{lim2021tensors}{{52}{2021}{{Lim}}{{}}}
+\bibcite{hfl_review}{{53}{2026}{{Literature review}}{{}}}
+\bibcite{hfl_local}{{54}{2026}{{Local TN note}}{{}}}
+\bibcite{loshchilov2019decoupled}{{55}{2019}{{Loshchilov and Hutter}}{{}}}
+\bibcite{michaud2023quantization}{{56}{2023}{{Michaud et~al.}}{{}}}
+\bibcite{morala2025nn2poly}{{57}{2025}{{Morala et~al.}}{{}}}
+\bibcite{nanda2023progress}{{58}{2023}{{Nanda et~al.}}{{}}}
+\bibcite{odonnell2014analysis}{{59}{2014}{{O'Donnell}}{{}}}
+\bibcite{oja1982simplified}{{60}{1982}{{Oja}}{{}}}
+\bibcite{oseledets2011tensor}{{61}{2011}{{Oseledets}}{{}}}
+\bibcite{pearce2024bilinear}{{62}{2024}{{Pearce et~al.}}{{}}}
+\bibcite{pesme2023saddle}{{63}{2023}{{Pesme and Flammarion}}{{}}}
+\bibcite{power2022grokking}{{64}{2022}{{Power et~al.}}{{}}}
+\bibcite{radhakrishnan2024mechanism}{{65}{2024}{{Radhakrishnan et~al.}}{{}}}
+\bibcite{raghu2017svcca}{{66}{2017}{{Raghu et~al.}}{{}}}
+\bibcite{razin2022implicit}{{67}{2022}{{Razin et~al.}}{{}}}
+\bibcite{roy2007effective}{{68}{2007}{{Roy and Vetterli}}{{}}}
+\bibcite{saad1995online}{{69}{1995}{{Saad and Solla}}{{}}}
+\bibcite{sarao2020optimization}{{70}{2020}{{Sarao~Mannelli et~al.}}{{}}}
+\bibcite{saxe2014exact}{{71}{2014}{{Saxe et~al.}}{{}}}
+\bibcite{saxe2019mathematical}{{72}{2019}{{Saxe et~al.}}{{}}}
+\bibcite{schmidt2021descending}{{73}{2021}{{Schmidt et~al.}}{{}}}
+\bibcite{shi2006classical}{{74}{2006}{{Shi et~al.}}{{}}}
+\bibcite{sobol2001global}{{75}{2001}{{Sobol'}}{{}}}
+\bibcite{stoudenmire2016supervised}{{76}{2016}{{Stoudenmire and Schwab}}{{}}}
+\bibcite{hfl_surrogate}{{77}{2026}{{Surrogate note}}{{}}}
+\bibcite{tucker1966some}{{78}{1966}{{Tucker}}{{}}}
+\bibcite{uschmajew2013geometry}{{79}{2013}{{Uschmajew and Vandereycken}}{{}}}
+\bibcite{wedin1972perturbation}{{80}{1972}{{Wedin}}{{}}}
+\bibcite{woodworth2020kernel}{{81}{2020}{{Woodworth et~al.}}{{}}}
+\bibcite{yan1994global}{{82}{1994}{{Yan et~al.}}{{}}}
+\bibcite{yang2021tensor}{{83}{2021}{{Yang and Hu}}{{}}}
+\bibcite{zhang2026saddle}{{84}{2026}{{Zhang et~al.}}{{}}}
+\gdef \@abspage@last{93}
