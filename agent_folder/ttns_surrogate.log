@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  12 OCT 2026 17:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.4)  12 OCT 2026 19:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -830,16 +830,16 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [55]
 
 [56]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1809.
+
+[57]
+
+[58]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1906.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-[57{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
-
-[58]
-
-[59]
+[59{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 
 [60]
 
@@ -883,27 +883,31 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 [80]
 
-[81] (./ttns_surrogate.aux)
+[81]
+
+[82]
+
+[83] (./ttns_surrogate.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `ttns_surrogate.out' has not changed.
-(rerunfilecheck)             Checksum: 81CF832D3BC174BAAD0A409F2E819518;10311.
+(rerunfilecheck)             Checksum: E9810522F4D39A0EA1AB79B8B9A6D7B0;10574.
  ) 
 Here is how much of TeX's memory you used:
- 26699 strings out of 473190
- 485315 string characters out of 5715801
- 907894 words of memory out of 5000000
- 48448 multiletter control sequences out of 15000+600000
+ 26743 strings out of 473190
+ 486004 string characters out of 5715801
+ 904745 words of memory out of 5000000
+ 48466 multiletter control sequences out of 15000+600000
  683600 words of font info for 346 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  102i,15n,107p,3206b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ttns_surrogate.pdf (81 pages, 928727 bytes).
+Output written on ttns_surrogate.pdf (83 pages, 949245 bytes).
 PDF statistics:
- 2245 PDF objects out of 2487 (max. 8388607)
- 2074 compressed objects within 21 object streams
- 582 named destinations out of 1000 (max. 500000)
- 63861 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 2333 PDF objects out of 2487 (max. 8388607)
+ 2159 compressed objects within 22 object streams
+ 608 named destinations out of 1000 (max. 500000)
+ 63869 words of extra memory for PDF output out of 74296 (max. 10000000)
 

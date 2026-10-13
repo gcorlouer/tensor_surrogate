@@ -125,7 +125,7 @@ Function-space agreement is therefore plausible when the two models have close p
 \end{remark}
 
 \paragraph{Outline.}
-Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:ttn-dynamics} derives the gradient flow of a depth-two TTN student and rewrites it as an evolution of the represented tensor. Section~\ref{sec:compare} constructs observables for comparing the training dynamics of TTN and DNN students of a TTN teacher. Section~\ref{sec:experiments} lists the experiments suggested in the text.
+Section~\ref{sec:background} defines tensors, tensor networks and TTNs (Sections~\ref{sec:tensors}--\ref{sec:tn}), their edge matricizations and hierarchical ranks (Section~\ref{sec:cuts}), the HSVD (Section~\ref{sec:hsvd}) and the relevant notions of rank (Section~\ref{sec:ranks}). It then shows that deep polynomial networks are weight-tied TTNs and defines hierarchical features and learning capacity (Section~\ref{sec:dpn}), and constructs the TTN surrogate of a smooth DNN (Section~\ref{sec:surrogate}). Section~\ref{sec:ttn-dynamics} derives the gradient flow of a depth-two TTN student, rewrites it as an evolution of the represented tensor, and solves it on the manifold of balanced parameters. Section~\ref{sec:compare} constructs observables for comparing the training dynamics of TTN and DNN students of a TTN teacher. Section~\ref{sec:experiments} lists the experiments suggested in the text.
 
 %======================================================================
 \section{Theoretical background}\label{sec:background}
@@ -786,7 +786,7 @@ A pragmatic rule is to choose the smallest $K$ for which the defects of Proposit
 \section{Training dynamics of TTNs}\label{sec:ttn-dynamics}
 %======================================================================
 
-We derive the population gradient flow of a TTN student on the smallest balanced binary tree with two bilinear levels: four input blocks, two lower cores that each combine two blocks, and a root core that combines the messages of the lower cores. The purpose is twofold. First, we write the gradient flow explicitly, entry by entry. Second, we rewrite it as an evolution of the represented tensor, driven by the geometry of the data and by the differential of the TTN parameterization. This second form is an instance of the coefficient-space evolution of Proposition~\ref{prop:sv-dynamics}, and it generalizes directly to larger trees. In this smallest example, the two bonds cut the legs in the same way, so the dynamics are those of a matrix factorized into three factors, in a geometry set by the data (Remark~\ref{rem:d2-one-cut}).
+We derive the population gradient flow of a TTN student on the smallest balanced binary tree with two bilinear levels: four input blocks, two lower cores that each combine two blocks, and a root core that combines the messages of the lower cores. The purpose is twofold. First, we write the gradient flow explicitly, entry by entry. Second, we rewrite it as an evolution of the represented tensor, driven by the geometry of the data and by the differential of the TTN parameterization. This second form is an instance of the coefficient-space evolution of Proposition~\ref{prop:sv-dynamics}, and it generalizes directly to larger trees. On the manifold of balanced parameters, which gradient flow preserves, this evolution closes, and it decouples into scalar equations for the singular values when the student is aligned with the teacher (Section~\ref{sec:d2-balanced}). In this smallest example, the two bonds cut the legs in the same way, so the dynamics are those of a matrix factorized into three factors, in a geometry set by the data (Remark~\ref{rem:d2-one-cut}).
 
 %----------------------------------------------------------------------
 \subsection{A four-leaf, depth-two teacher--student model}\label{sec:d2-setup}
@@ -1127,6 +1127,103 @@ For a sample $x_1,\dots,x_n$ with noiseless labels $y_s=f^\star(x_s)$, let $z_s$
 \widehat R_\Delta:=\frac1n\sum_{s=1}^ne_s\,z_sw_s^\top.
 \]
 For fixed $\vartheta$ and independent samples, $\E[\widehat R_\Delta]=R_\Delta$, which equals $\Sigma_{12}\Delta\Sigma_{34}$ when $z$ and $w$ are independent. At finite $n$, however, $\widehat R_\Delta$ contains cross-mode fluctuations and need not equal its population value.
+\end{remark}
+
+%----------------------------------------------------------------------
+\subsection{Gradient flow on the balanced manifold}\label{sec:d2-balanced}
+%----------------------------------------------------------------------
+
+By Proposition~\ref{prop:d2-balance}, the set of \emph{balanced} parameters, on which both conserved quantities vanish,
+\begin{equation}\label{eq:d2-balanced}
+A^\top A=CC^\top,\qquad B^\top B=C^\top C,
+\end{equation}
+is invariant under gradient flow, for every input law \citep[cf.][]{du2018algorithmic}. These are matrix identities, not equalities of norms. They are the stationarity conditions of the parameter norm $\norm{A}_F^2+\norm{B}_F^2+\norm{C}_F^2$ along the orbits of the gauge group, i.e.\ they characterize the balanced, or minimum-norm, gauge of Remark~\ref{rem:hsvd-canonical}. Gradient flow preserves balance, and imbalance alike: it does not drive an unbalanced initialization towards balance. On the balanced manifold, the dynamics simplifies in two steps. Balance alone closes the evolution~\eqref{eq:d2-M-flow} of the represented matricization; balance together with an alignment of the student with the teacher decouples it into one scalar equation per singular value. As Remark~\ref{rem:d2-one-cut} leads one to expect, both steps are the depth-three instances of known results for deep linear networks \citep{saxe2014exact,arora2018optimization}.
+
+\begin{lemma}[Balanced cores]\label{lem:d2-balanced-factors}
+Let $\vartheta$ satisfy~\eqref{eq:d2-balanced}, and let $k:=\rank C$. There are $S=\diag(s_1,\dots,s_k)$ with $s_i>0$, and matrices $U\in\R^{d_{12}\times k}$, $V\in\R^{d_{34}\times k}$, $W_L\in\R^{D_L\times k}$ and $W_R\in\R^{D_R\times k}$ with orthonormal columns, such that
+\begin{equation}\label{eq:d2-balanced-factors}
+A=USW_L^\top,\qquad C=W_LSW_R^\top,\qquad B=VSW_R^\top.
+\end{equation}
+Consequently, $M(\vartheta)=US^3V^\top$ is a compact SVD, so that the nonzero singular values of $M$ are $\sigma_i=s_i^3$, $i\in[k]$, and
+\begin{equation}\label{eq:d2-balanced-grams}
+AA^\top=(MM^\top)^{1/3},\qquad BB^\top=(M^\top M)^{1/3},
+\end{equation}
+where powers of positive semidefinite matrices are taken in their eigenbases.
+\end{lemma}
+
+\begin{proof}
+Let $C=W_LSW_R^\top$ be a compact SVD. By~\eqref{eq:d2-balanced}, $A^\top A=CC^\top=W_LS^2W_L^\top$. Hence $U:=AW_LS^{-1}$ has orthonormal columns, and $\norm{A(I-W_LW_L^\top)}_F^2=\operatorname{tr}\big((I-W_LW_L^\top)A^\top A(I-W_LW_L^\top)\big)=0$, so that $A=AW_LW_L^\top=USW_L^\top$. The same argument, applied to $B^\top B=C^\top C=W_RS^2W_R^\top$, gives $B=VSW_R^\top$ with $V:=BW_RS^{-1}$. Then $M=ACB^\top=US^3V^\top$, $MM^\top=US^6U^\top$ and $AA^\top=US^2U^\top=(MM^\top)^{1/3}$, and similarly for $B$.
+\end{proof}
+
+Balance thus spreads each singular value of $M$ evenly over the three cores, $s_i=\sigma_i^{1/3}$, and the cores carry the singular vectors of the central cut: $U$ and $V$ are the left and right singular vectors of $M$ (Definition~\ref{def:hsvd}), while $W_L$ and $W_R$ are orthonormal frames in the two bonds, on which the orthogonal gauge transformations act.
+
+\begin{proposition}[Closed dynamics of the represented matricization]\label{prop:d2-balanced-flow}
+If $\vartheta$ is balanced, then for every $X\in\R^{d_{12}\times d_{34}}$,
+\begin{equation}\label{eq:d2-balanced-K}
+\mathcal K_\vartheta[X]=(MM^\top)^{2/3}X+(MM^\top)^{1/3}X(M^\top M)^{1/3}+X(M^\top M)^{2/3}.
+\end{equation}
+Consequently, along gradient flow from a balanced initialization and for any input law,
+\begin{equation}\label{eq:d2-balanced-M-flow}
+\dot M=-(MM^\top)^{2/3}R_\Delta-(MM^\top)^{1/3}R_\Delta(M^\top M)^{1/3}-R_\Delta(M^\top M)^{2/3},
+\end{equation}
+and
+\begin{equation}\label{eq:d2-balanced-loss-decay}
+\frac{d}{dt}\mathcal L=-\norm{(MM^\top)^{1/3}R_\Delta}_F^2-\norm{(MM^\top)^{1/6}R_\Delta(M^\top M)^{1/6}}_F^2-\norm{R_\Delta(M^\top M)^{1/3}}_F^2.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By~\eqref{eq:d2-balanced}, $ACC^\top A^\top=A(A^\top A)A^\top=(AA^\top)^2$ and $BC^\top CB^\top=B(B^\top B)B^\top=(BB^\top)^2$. Substituting these identities and~\eqref{eq:d2-balanced-grams} into~\eqref{eq:d2-K-operator} gives~\eqref{eq:d2-balanced-K}, and~\eqref{eq:d2-M-flow} then gives~\eqref{eq:d2-balanced-M-flow}, since balance is preserved. In~\eqref{eq:d2-loss-decay}, the same identities give $\norm{\nabla_A\mathcal L}_F^2=\norm{R_\Delta BC^\top}_F^2=\norm{R_\Delta BB^\top}_F^2$, $\norm{\nabla_B\mathcal L}_F^2=\norm{R_\Delta^\top AC}_F^2=\norm{AA^\top R_\Delta}_F^2$ and $\norm{\nabla_C\mathcal L}_F^2=\operatorname{tr}\big(R_\Delta^\top AA^\top R_\Delta BB^\top\big)$, which is~\eqref{eq:d2-balanced-loss-decay}.
+\end{proof}
+
+Balance therefore closes the dynamics: since $R_\Delta$ is a function of $M$ (Section~\ref{sec:d2-compact}), \eqref{eq:d2-balanced-M-flow} is an equation for $M$ alone, and the cores are no longer needed to specify the evolution of the function. For independent whitened blocks, $R_\Delta=M-M^\star$ and~\eqref{eq:d2-balanced-M-flow} is the end-to-end equation of a balanced linear network of depth three \citep{arora2018optimization}; when $z$ and $w$ are independent, $R_\Delta=\Sigma_{12}(M-M^\star)\Sigma_{34}$. The fractional powers are not Lipschitz at rank-deficient $M$, and $M$ has rank at most $\min(D_L,D_R)$, so~\eqref{eq:d2-balanced-M-flow} should be read along the balanced trajectory of the cores, which the polynomial gradient flow determines uniquely. By~\eqref{eq:d2-balanced-loss-decay}, small singular values of $M$ slow down the decrease of the loss.
+
+\paragraph{Spectral form.}
+Let $(u_i)_{i\in[d_{12}]}$ and $(v_j)_{j\in[d_{34}]}$ be orthonormal bases of left and right singular vectors of $M$, with $M=\sum_{i\le k}\sigma_iu_iv_i^\top$, and set $\sigma_i:=0$ for $i>k$ in both bases. By~\eqref{eq:d2-balanced-K}, $\mathcal K_\vartheta$ is diagonal in the basis $(u_iv_j^\top)$ of $\R^{d_{12}\times d_{34}}$:
+\begin{equation}\label{eq:d2-balanced-kappa}
+\mathcal K_\vartheta[u_iv_j^\top]=\kappa_{ij}\,u_iv_j^\top,\qquad\kappa_{ij}:=\sigma_i^{4/3}+\sigma_i^{2/3}\sigma_j^{2/3}+\sigma_j^{4/3},
+\end{equation}
+so that $u_i^\top\dot Mv_j=-\kappa_{ij}\,u_i^\top R_\Delta v_j$. On the balanced manifold, the tangent operator acts on the mode $u_iv_i^\top$ with eigenvalue $3\sigma_i^{4/3}$, and it vanishes on the directions $u_iv_j^\top$ orthogonal to both singular subspaces of $M$. For a simple nonzero singular value, Proposition~\ref{prop:sv-dynamics} gives
+\begin{equation}\label{eq:d2-balanced-sv}
+\dot\sigma_i=u_i^\top\dot Mv_i=-3\sigma_i^{4/3}\,u_i^\top R_\Delta v_i,
+\end{equation}
+that is, $\dot\sigma_i=3\sigma_i^{4/3}\big(u_i^\top M^\star v_i-\sigma_i\big)$ for independent whitened blocks. This equation is exact on the balanced manifold, but it is not closed in the singular values: the off-diagonal entries $u_i^\top R_\Delta v_j$, $i\neq j$, rotate the singular vectors and change their overlaps $u_i^\top M^\star v_i$ with the teacher.
+
+\paragraph{Aligned modes.}
+The rotation stops when the student and the teacher share their singular vectors, and these vectors also diagonalize the Gram matrices of the data.
+
+\begin{proposition}[Aligned modes]\label{prop:d2-aligned}
+Let $z$ and $w$ be independent, and let $U=(u_1,\dots,u_k)$ and $V=(v_1,\dots,v_k)$ have orthonormal columns with $\Sigma_{12}u_i=\lambda^L_iu_i$ and $\Sigma_{34}v_i=\lambda^R_iv_i$. Assume that the teacher is $M^\star=\sum_{i=1}^k\sigma^\star_iu_iv_i^\top$, with $\sigma^\star_i\ge0$, and that the initialization is balanced of the form~\eqref{eq:d2-balanced-factors}, with these $U$ and $V$, frames $W_L$ and $W_R$, and $S(0)=\diag(s_1(0),\dots,s_k(0))$, $s_i(0)\ge0$. Then the cores keep the form~\eqref{eq:d2-balanced-factors}, with fixed $U$, $V$, $W_L$ and $W_R$, and with $S(t)=\diag(s_1(t),\dots,s_k(t))$ solving
+\begin{equation}\label{eq:d2-aligned}
+\dot s_i=\lambda^L_i\lambda^R_i\,s_i^2\big(\sigma^\star_i-s_i^3\big),\qquad\text{equivalently}\qquad\dot\sigma_i=3\lambda^L_i\lambda^R_i\,\sigma_i^{4/3}\big(\sigma^\star_i-\sigma_i\big),\quad\sigma_i=s_i^3.
+\end{equation}
+For independent whitened blocks, $\lambda^L_i=\lambda^R_i=1$.
+\end{proposition}
+
+\begin{proof}
+For cores of the form~\eqref{eq:d2-balanced-factors}, $M=US^3V^\top$ and, by~\eqref{eq:d2-three-regimes}, $R_\Delta=\Sigma_{12}(M-M^\star)\Sigma_{34}=U\Lambda(S^3-S^\star)V^\top$, with $\Lambda:=\diag(\lambda^L_i\lambda^R_i)$ and $S^\star:=\diag(\sigma^\star_i)$. By~\eqref{eq:d2-general-gradients},
+\[
+\dot A=-R_\Delta BC^\top=U\dot SW_L^\top,\qquad\dot C=-A^\top R_\Delta B=W_L\dot SW_R^\top,\qquad\dot B=-R_\Delta^\top AC=V\dot SW_R^\top,
+\]
+with $\dot S=\Lambda S^2(S^\star-S^3)$, which is~\eqref{eq:d2-aligned}. The cores of this form therefore solve the gradient flow, which, being polynomial, has a unique solution.
+\end{proof}
+
+Each aligned mode thus follows the dynamics of a balanced linear network of depth three \citep{saxe2014exact}, in which the three cores of the mode share the singular value $s_i$. Four regimes follow from~\eqref{eq:d2-aligned}.
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{Escape from a small initialization.} While $s_i^3\ll\sigma^\star_i$, $\dot s_i\approx\lambda^L_i\lambda^R_i\sigma^\star_is_i^2$, so that $s_i(t)\approx s_i(0)/\big(1-\lambda^L_i\lambda^R_i\sigma^\star_is_i(0)\,t\big)$, and the mode leaves the neighbourhood of zero after a time of order $1/\big(\lambda^L_i\lambda^R_i\sigma^\star_is_i(0)\big)$. This is the case $|V|=3$ of the scaling $\varsigma^{-(|V|-2)}$ of Section~\ref{sec:exp-students}, and the time is inversely proportional to the moment singular value $\lambda^L_i\sigma^\star_i\lambda^R_i$, as in the two-leaf computation of Experiment~E1.3. From a common small initial scale, the modes are therefore acquired in decreasing order of $\lambda^L_i\lambda^R_i\sigma^\star_i$.
+\item \emph{Convergence.} Near $\sigma_i=\sigma^\star_i>0$, the error $\sigma^\star_i-\sigma_i$ decays exponentially, at the rate $3\lambda^L_i\lambda^R_i\sigma^{\star4/3}_i$.
+\item \emph{Extra modes.} A student mode without a teacher counterpart, $\sigma^\star_i=0$, decays algebraically: $\sigma_i(t)=\big(\sigma_i(0)^{-4/3}+4\lambda^L_i\lambda^R_it\big)^{-3/4}$. Outside the aligned manifold, such a mode may instead rotate towards a teacher mode.
+\item \emph{Absent modes.} A mode with $s_i(0)=0$ remains at zero.
+\end{enumerate}
+Without common eigenvectors, $\Sigma_{12}$ and $\Sigma_{34}$ mix the modes, and the decoupling is lost.
+
+\begin{remark}[Scope of the balanced reduction]\label{rem:d2-balanced-scope}
+\leavevmode
+\begin{enumerate}[label=(\roman*),nosep]
+\item \emph{Balance is a property of the initialization.} Small initializations are only approximately balanced: their invariants~\eqref{eq:d2-balance-invariants} are of the order of the square of the initial scale, which becomes negligible relative to the cores once these have grown.
+\item \emph{Exact balance freezes the bond rank.} Under~\eqref{eq:d2-balanced}, the row space of $A$ and the column space of $C$ coincide. If $\Pi$ is the orthogonal projector onto this space at $t=0$, then $X:=A(I-\Pi)$ and $Y:=(I-\Pi)C$ satisfy the linear equations $\dot X=-R_\Delta BY^\top$ and $\dot Y=-X^\top R_\Delta B$, and vanish at $t=0$, hence at all times. Therefore $\rank M(t)\le\rank C(0)$: on the balanced manifold, modes absent at initialization are never acquired, in accordance with the vanishing of $\mathcal K_\vartheta$ on the directions orthogonal to both singular subspaces of $M$. A balanced initialization must therefore have rank at least that of the teacher, whereas from generic small initializations, which have full bond rank, new modes appear in the course of training.
+\item \emph{Tree-specific dynamics.} For this tree, the balanced dynamics is that of a balanced linear network of depth three (Remark~\ref{rem:d2-one-cut}). Balanced dynamics specific to trees arises when the lower cores are themselves factorized (Remark~\ref{rem:d2-parameterization}), so that several non-equivalent cuts, each with its own balance conditions, are coupled.
+\end{enumerate}
 \end{remark}
 
 %======================================================================
@@ -2294,6 +2391,11 @@ E.~Abbe, E.~Boix-Adser\`a, and T.~Misiakiewicz.
 G.~Alain and Y.~Bengio.
 \newblock Understanding intermediate layers using linear classifier probes.
 \newblock arXiv:1610.01644, 2016.
+
+\bibitem[Arora et~al.(2018)]{arora2018optimization}
+S.~Arora, N.~Cohen, and E.~Hazan.
+\newblock On the optimization of deep networks: implicit acceleration by overparameterization.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, PMLR 80, 2018.
 
 \bibitem[Bai et~al.(2020)]{bai2020taylorized}
 Y.~Bai, B.~Krause, H.~Wang, C.~Xiong, and R.~Socher.
